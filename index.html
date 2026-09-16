@@ -9,7 +9,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
-    <!-- مكاتب Firebase מתضمنة Auth لـ Google -->
+    <!-- مكاتب Firebase متضمنة Auth لـ Google -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
@@ -170,13 +170,13 @@
                         </select>
                     </div>
                     <div>
-                        <select id="coverUnitId" onchange="updateCoverLessonDropdown()" required class="w-full p-3.5 border border-slate-200 rounded-xl bg-slate-50 text-sm font-bold">
-                            <option value="" disabled selected>-- اختار الوحدة --</option>
+                        <select id="coverUnitId" onchange="updateCoverLessonDropdown()" class="w-full p-3.5 border border-slate-200 rounded-xl bg-slate-50 text-sm font-bold">
+                            <option value="">-- اختار الوحدة (اختياري) --</option>
                         </select>
                     </div>
                     <div>
-                        <select id="coverLessonId" required class="w-full p-3.5 border border-slate-200 rounded-xl bg-slate-50 text-sm font-bold">
-                            <option value="" disabled selected>-- اختار الدرس --</option>
+                        <select id="coverLessonId" class="w-full p-3.5 border border-slate-200 rounded-xl bg-slate-50 text-sm font-bold">
+                            <option value="">-- اختار الدرس (اختياري) --</option>
                         </select>
                     </div>
                     <div class="md:col-span-3">
@@ -320,12 +320,12 @@
                     <a href="https://wa.me/201090337409" target="_blank" class="block w-full bg-green-50 hover:bg-green-500 text-green-700 hover:text-white p-3 rounded-xl transition-all border border-green-200 group">
                         <div class="text-2xl mb-1 group-hover:scale-110 transition-transform">👨‍🏫</div>
                         <div class="font-black text-sm">مستر چو</div>
-                        <div class="text-[10px] font-bold opacity-80 mt-1">🌍</div>
+                        <div class="text-[10px] font-bold opacity-80 mt-1">🌍 جغرافيا</div>
                     </a>
                     <a href="https://wa.me/201019517904" target="_blank" class="block w-full bg-teal-50 hover:bg-teal-500 text-teal-700 hover:text-white p-3 rounded-xl transition-all border border-teal-200 group">
-                        <div class="text-2xl mb-1 group-hover:scale-110 transition-transform">👨‍🏫</div>
+                        <div class="text-2xl mb-1 group-hover:scale-110 transition-transform">👑</div>
                         <div class="font-black text-sm">مستر فتحي</div>
-                        <div class="text-[10px] font-bold opacity-80 mt-1">🌍</div>
+                        <div class="text-[10px] font-bold opacity-80 mt-1">👁️ فراعنة</div>
                     </a>
                 </div>
             </div>
@@ -407,6 +407,11 @@
                         if (snap.exists()) {
                             localStorage.setItem('geox_student_user', JSON.stringify(snap.val()));
                             updateStudentUI(snap.val());
+                            
+                            // تحديث فوري لصفحة الدرس لو الطالب كان واقف فيها (لتحويل الزرار بدون Refresh)
+                            if (currentLesson && !document.getElementById('student-content-container').classList.contains('hidden')) {
+                                openLessonContent(currentLesson, document.getElementById('content-title').innerText.replace('📄 ',''), true);
+                            }
                         } else {
                             pendingGoogleUser = user;
                             document.getElementById('phone-modal').classList.remove('hidden');
@@ -448,6 +453,11 @@
                 document.getElementById('phone-modal').classList.add('hidden');
                 updateStudentUI(studentData);
                 alert('تم التسجيل بنجاح! أهلاً بك يا بطل 🎓');
+                
+                // تحديث فوري لصفحة الدرس
+                if (currentLesson && !document.getElementById('student-content-container').classList.contains('hidden')) {
+                    openLessonContent(currentLesson, document.getElementById('content-title').innerText.replace('📄 ',''), true);
+                }
             });
         }
 
@@ -645,9 +655,41 @@
             document.getElementById(id).classList.remove('hidden'); const btn = document.getElementById('btn-'+id); if(btn) { btn.classList.remove('bg-white','text-slate-600'); btn.classList.add('active','bg-indigo-600','text-white'); }
         }
 
-        function updateCoverUnitDropdown() { const g = document.getElementById('coverGrade').value; const sel = document.getElementById('coverUnitId'); sel.innerHTML = `<option value="STAGE_COVER_${g}">🎨 صورة غلاف السنة الدراسية كاملة</option>`; CURRICULUM.filter(u=>u.grade===g).forEach(u => sel.innerHTML+=`<option value="${u.id}">📖 ${u.title.split(':')[0]}</option>`); document.getElementById('coverLessonId').innerHTML = '<option value="" disabled selected>-- اختار الدرس (أو سيبها للوحدة) --</option>'; }
-        function updateCoverLessonDropdown() { const uId = document.getElementById('coverUnitId').value; const sel = document.getElementById('coverLessonId'); sel.innerHTML = '<option value="UNIT_ONLY">-- تخصيص الصورة للوحدة فقط --</option>'; const u = CURRICULUM.find(x=>x.id===uId); if(u) { u.lessons.forEach(l => sel.innerHTML+=`<option value="${l.id}">📄 ${l.t}</option>`); } }
-        function handleCoverUpload(e) { e.preventDefault(); const uId = document.getElementById('coverUnitId').value; const lId = document.getElementById('coverLessonId').value; const targetId = (lId && lId !== 'UNIT_ONLY' && lId !== '') ? lId : uId; const file = document.getElementById('coverImage').files[0]; const reader = new FileReader(); reader.onload = e => { const img = new Image(); img.onload = () => { const cvs = document.createElement('canvas'); const W=1280, H=720; let w=img.width, h=img.height; if(w>h){h*=W/w;w=W;}else{w*=H/h;h=H;} cvs.width=w; cvs.height=h; cvs.getContext('2d').drawImage(img,0,0,w,h); database.ref('covers/'+targetId).set(cvs.toDataURL('image/jpeg', 0.6)).then(()=>alert('✅ تم الرفع والتحديث بنجاح!')); }; img.src = e.target.result; }; reader.readAsDataURL(file); }
+        function updateCoverUnitDropdown() { 
+            const g = document.getElementById('coverGrade').value; 
+            const sel = document.getElementById('coverUnitId'); 
+            sel.innerHTML = `<option value="">-- اختار الوحدة (أو سيبها للسنة) --</option>`; 
+            CURRICULUM.filter(u=>u.grade===g).forEach(u => sel.innerHTML+=`<option value="${u.id}">📖 ${u.title.split(':')[0]}</option>`); 
+            document.getElementById('coverLessonId').innerHTML = '<option value="">-- اختار الدرس (أو سيبها) --</option>'; 
+        }
+        function updateCoverLessonDropdown() { 
+            const uId = document.getElementById('coverUnitId').value; 
+            const sel = document.getElementById('coverLessonId'); 
+            sel.innerHTML = '<option value="">-- اختار الدرس (أو سيبها) --</option>'; 
+            const u = CURRICULUM.find(x=>x.id===uId); 
+            if(u) { u.lessons.forEach(l => sel.innerHTML+=`<option value="${l.id}">📄 ${l.t}</option>`); } 
+        }
+        function handleCoverUpload(e) { 
+            e.preventDefault(); 
+            const g = document.getElementById('coverGrade').value;
+            const uId = document.getElementById('coverUnitId').value; 
+            const lId = document.getElementById('coverLessonId').value; 
+            
+            let targetId = 'STAGE_COVER_' + g; // غلاف السنة بشكل افتراضي
+            if (uId && uId !== '') targetId = uId; // لو اختار وحدة
+            if (lId && lId !== '') targetId = lId; // لو اختار درس
+            
+            const file = document.getElementById('coverImage').files[0]; 
+            const reader = new FileReader(); 
+            reader.onload = e => { 
+                const img = new Image(); img.onload = () => { 
+                    const cvs = document.createElement('canvas'); const W=1280, H=720; 
+                    let w=img.width, h=img.height; if(w>h){h*=W/w;w=W;}else{w*=H/h;h=H;} 
+                    cvs.width=w; cvs.height=h; cvs.getContext('2d').drawImage(img,0,0,w,h); 
+                    database.ref('covers/'+targetId).set(cvs.toDataURL('image/jpeg', 0.6)).then(()=>alert('✅ تم الرفع والتحديث بنجاح!')); 
+                }; img.src = e.target.result; 
+            }; reader.readAsDataURL(file); 
+        }
 
         function updateContentUnitDropdown() { const g = document.getElementById('contentGrade').value; const sel = document.getElementById('contentUnitId'); sel.innerHTML = '<option value="" disabled selected>-- الوحدة --</option>'; CURRICULUM.filter(u=>u.grade===g).forEach(u => sel.innerHTML+=`<option value="${u.id}">${u.title.split(':')[0]}</option>`); document.getElementById('contentLessonId').innerHTML = '<option value="" disabled selected>-- الدرس --</option>'; document.getElementById('lessonYoutube').value=''; document.getElementById('lessonExamText').value=''; document.getElementById('pdfStatus').innerText=''; }
         function updateContentLessonDropdown() { const uId = document.getElementById('contentUnitId').value; const sel = document.getElementById('contentLessonId'); sel.innerHTML = '<option value="" disabled selected>-- الدرس --</option>'; const u = CURRICULUM.find(x=>x.id===uId); if(u) { u.lessons.forEach(l => sel.innerHTML+=`<option value="${l.id}">${l.t}</option>`); sel.innerHTML+=`<option value="${u.id}_review">🌟 المراجعة الشاملة</option>`; } document.getElementById('lessonYoutube').value=''; document.getElementById('lessonExamText').value=''; document.getElementById('pdfStatus').innerText=''; }
