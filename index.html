@@ -5,17 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Geo X Platform</title>
     
-    <!-- إعدادات تطبيق الموبايل (PWA) -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#0B1437">
     <link rel="icon" href="./logo-transparent.png" type="image/png">
     <link rel="apple-touch-icon" href="./logo-transparent.png">
 
-    <!-- مكاتب التصميم وتصدير الإكسيل -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
-    <!-- مكاتب Firebase متضمنة Auth لـ Google -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
@@ -62,7 +59,7 @@
         <div class="container mx-auto px-4 py-2 md:py-3 flex justify-between items-center relative">
             
             <div class="flex items-center gap-2 md:gap-3 cursor-pointer group z-10" onclick="openSocialModal()">
-                <img src="./logo-transparent.png" alt="Geo X Logo" class="h-12 md:h-14 w-auto object-contain drop-shadow-[0_0_8px_rgba(255,255,255,0.2)] group-hover:scale-110 transition-transform">
+                <img src="./logo-transparent.png" loading="lazy" decoding="async" alt="Geo X Logo" class="h-12 md:h-14 w-auto object-contain drop-shadow-[0_0_8px_rgba(255,255,255,0.2)] group-hover:scale-110 transition-transform">
                 <div class="hidden sm:block">
                     <h1 class="text-xl font-black tracking-tight text-white group-hover:text-emerald-400 transition-colors">Geo X</h1>
                 </div>
@@ -75,7 +72,6 @@
                 <button id="install-app-btn" onclick="installPWA()" class="hidden bg-indigo-600 px-3 py-1 md:py-1.5 rounded-lg text-white text-[10px] md:text-xs font-bold border border-indigo-400 hover:bg-indigo-500 transition-colors shadow-lg animate-pulse mt-1">تثبيت التطبيق 📲</button>
             </div>
 
-            <!-- زر الدخول وصورة الطالب -->
             <div id="nav-actions" class="flex items-center gap-3 z-10">
                 <button id="student-greeting" class="px-4 py-2 rounded-xl font-bold bg-white/10 hover:bg-white/20 text-white border border-white/10 transition-all text-xs md:text-sm flex items-center gap-2 shadow-sm">
                     تسجيل الدخول
@@ -95,7 +91,7 @@
                 </div>
                 
                 <div class="mb-10 md:mb-14 text-center">
-                    <button onclick="openGlobalLeaderboard('prep3')" class="w-full md:w-auto bg-gradient-to-r from-amber-400 to-orange-500 text-white font-black py-4 px-8 md:px-12 rounded-[2rem] shadow-[0_10px_30px_rgba(245,158,11,0.3)] hover:scale-[1.02] transition-all text-lg md:text-xl border-4 border-white">🏆 لوحة الشرف لأوائل المنصة 🏆</button>
+                    <button onclick="openGlobalLeaderboard('prep3')" class="w-full md:w-auto bg-gradient-to-r from-amber-400 to-orange-500 text-white font-black py-4 px-8 md:px-12 rounded-[2rem] shadow-[0_10px_30px_rgba(245,158,11,0.3)] hover:scale-[1.02] transition-all text-lg md:text-xl border-4 border-white">🏆 أبطال المنصة 🏆</button>
                 </div>
 
                 <div id="stages-grid" class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto"></div>
@@ -150,7 +146,6 @@
                 </div>
             </div>
 
-            <!-- Exam Screen -->
             <div id="exam-screen" class="hidden fixed inset-0 bg-[#F4F7FE] z-[100] overflow-y-auto no-select" oncontextmenu="return false;">
                 <div class="container mx-auto max-w-3xl py-8 px-4 relative">
                     <div id="exam-active-header" class="sticky top-4 bg-white/95 backdrop-blur-lg p-4 rounded-2xl shadow-sm border border-slate-200 flex justify-between items-center z-50 mb-8 gap-3">
@@ -279,15 +274,14 @@
         </div>
     </div>
 
-    <!-- تحديث البروفايل (إضافة رفع الصورة) -->
+    <!-- تحديث البروفايل (إضافة رفع الصورة والإطارات الذكية) -->
     <div id="profile-modal" class="hidden fixed inset-0 bg-[#0B1437]/80 backdrop-blur-sm z-[300] flex items-center justify-center p-4">
         <div class="bg-white rounded-[2rem] w-full max-w-lg overflow-hidden shadow-2xl border border-slate-100 flex flex-col max-h-[90vh]">
             <div class="bg-gradient-to-br from-[#0F172A] to-[#1E293B] p-6 text-center relative shrink-0">
                 <button onclick="document.getElementById('profile-modal').classList.add('hidden')" class="absolute top-4 left-4 text-slate-400 text-2xl hover:text-white transition-colors">✖</button>
                 
-                <!-- حاوية الصورة ورفعها -->
                 <div class="relative w-20 h-20 mx-auto mb-3">
-                    <div id="profile-modal-avatar" class="w-20 h-20 bg-white/10 rounded-3xl flex items-center justify-center text-4xl border border-white/20 text-emerald-400 overflow-hidden shadow-lg">𓂀</div>
+                    <div id="profile-modal-avatar" class="w-20 h-20 bg-white/10 rounded-full flex items-center justify-center text-4xl border border-white/20 text-emerald-400 overflow-hidden shadow-lg">𓂀</div>
                     <label for="profile-pic-upload" class="absolute -bottom-2 -left-2 bg-emerald-500 hover:bg-emerald-600 text-white w-8 h-8 rounded-xl flex items-center justify-center cursor-pointer shadow-lg border-2 border-[#1E293B] transition-all hover:scale-110 text-xs">
                         📷
                     </label>
@@ -360,10 +354,11 @@
         </div>
     </div>
 
+    <!-- أبطال المنصة 🏆 -->
     <div id="global-leaderboard-modal" class="hidden fixed inset-0 bg-[#0B1437]/90 backdrop-blur-md z-[600] flex items-center justify-center p-4">
         <div class="bg-white rounded-[2rem] w-full max-w-2xl overflow-hidden shadow-2xl border border-slate-100 flex flex-col max-h-[90vh]">
             <div class="bg-gradient-to-r from-amber-400 to-orange-500 p-5 flex justify-between items-center shrink-0">
-                <h3 class="text-xl font-black text-white drop-shadow-md">🏆 لوحة الشرف للأوائل</h3>
+                <h3 class="text-xl font-black text-white drop-shadow-md">🏆 أبطال المنصة</h3>
                 <button onclick="document.getElementById('global-leaderboard-modal').classList.add('hidden')" class="text-white hover:text-red-200 text-2xl font-bold bg-white/20 w-8 h-8 rounded-full flex items-center justify-center transition-colors">✖</button>
             </div>
             
@@ -402,6 +397,7 @@
         </div>
     </div>
 
+    <!-- Social & Contact Modal -->
     <div id="social-modal" class="hidden fixed inset-0 bg-[#0B1437]/80 backdrop-blur-sm z-[500] flex items-center justify-center p-4">
         <div class="bg-white p-7 rounded-[2rem] shadow-2xl w-full max-w-sm text-center border border-slate-100 relative">
             <button onclick="document.getElementById('social-modal').classList.add('hidden')" class="absolute top-4 left-4 text-slate-400 hover:text-red-500 text-xl transition-colors">✖</button>
@@ -429,12 +425,12 @@
                 <div class="grid grid-cols-2 gap-3">
                     <a href="https://wa.me/201090337409" target="_blank" class="block w-full bg-amber-50 hover:bg-amber-100 text-amber-900 p-4 transition-all group relative overflow-hidden text-center" style="border: 3px solid #b45309; border-radius: 12px; box-shadow: inset 0 0 10px rgba(180,83,9,0.2);">
                         <div class="absolute top-0 left-0 w-full h-full border-2 border-dashed border-amber-600/30 rounded-lg pointer-events-none m-1"></div>
-                        <img src="./mr-joe.png" alt="مستر چو" class="w-16 h-16 mx-auto mb-2 drop-shadow-md group-hover:scale-110 transition-transform object-contain">
+                        <img src="./mr-joe.png" loading="lazy" decoding="async" alt="مستر چو" class="w-16 h-16 mx-auto mb-2 drop-shadow-md group-hover:scale-110 transition-transform object-contain">
                         <div class="font-black text-sm relative z-10">مستر چو</div>
                     </a>
                     <a href="https://wa.me/201019517904" target="_blank" class="block w-full bg-amber-50 hover:bg-amber-100 text-amber-900 p-4 transition-all group relative overflow-hidden text-center" style="border: 3px solid #b45309; border-radius: 12px; box-shadow: inset 0 0 10px rgba(180,83,9,0.2);">
                         <div class="absolute top-0 left-0 w-full h-full border-2 border-dashed border-amber-600/30 rounded-lg pointer-events-none m-1"></div>
-                        <img src="./mr-fathy.png" alt="مستر فتحي" class="w-16 h-16 mx-auto mb-2 drop-shadow-md group-hover:scale-110 transition-transform object-contain">
+                        <img src="./mr-fathy.png" loading="lazy" decoding="async" alt="مستر فتحي" class="w-16 h-16 mx-auto mb-2 drop-shadow-md group-hover:scale-110 transition-transform object-contain">
                         <div class="font-black text-sm relative z-10">مستر فتحي</div>
                     </a>
                 </div>
@@ -481,7 +477,13 @@
         database.ref('covers').on('value', s => { coversData = s.val()||{}; const st = JSON.parse(sessionStorage.getItem('geox_current_view')); if (!st || st.view === 'home' || currentGrade==='') renderStagesGrid(); else if (st.view === 'grade' || st.view === 'unit' || st.view === 'lesson') openGrade(st.g, true); });
         database.ref('lessons_data').on('value', s => lessonsDataCache = s.val()||{});
         database.ref('analytics').on('value', s => analyticsDataCache = s.val()||{});
-        database.ref('exam_results').on('value', s => { const val = s.val()||{}; examResultsCache = Object.keys(val).map(k => ({...val[k], key: k})); if(!document.getElementById('teacher-view').classList.contains('hidden')) renderLeaderboard(); });
+        database.ref('exam_results').on('value', s => { 
+            const val = s.val()||{}; examResultsCache = Object.keys(val).map(k => ({...val[k], key: k})); 
+            if(!document.getElementById('teacher-view').classList.contains('hidden')) renderLeaderboard(); 
+            // تحديث الإطارات للمستخدم عند تغير النتائج
+            const st = JSON.parse(localStorage.getItem('geox_student_user'));
+            if(st && document.getElementById('student-view').classList.contains('block')) updateStudentUI(st);
+        });
         database.ref('students').on('value', s => { const val = s.val()||{}; allStudents = Object.keys(val).map(k => ({...val[k], uid: k})); if(!document.getElementById('teacher-view').classList.contains('hidden')) renderStudentsTable(); });
         database.ref('announcement').on('value', s => { const text = s.val() || ''; const bar = document.getElementById('announcement-bar'); if(text) { bar.classList.remove('hidden'); document.getElementById('announcement-text').innerText = text; } else { bar.classList.add('hidden'); } if(document.getElementById('adminAnnouncementInput')) { document.getElementById('adminAnnouncementInput').value = text; } });
 
@@ -513,12 +515,32 @@
             }
         });
 
-        // تم التعديل لعرض الصورة الشخصية في الزرار بدلاً من الإيموجي لو كانت موجودة
+        // دوال الإطارات الذهبية والفضية
+        function getUserRankClass(uid) {
+            let bestRank = 999999;
+            ['prep1', 'prep2', 'prep3'].forEach(grade => {
+                const units = CURRICULUM.filter(u => u.grade === grade); 
+                const validIds = []; units.forEach(u => { u.lessons.forEach(l => validIds.push(l.id)); validIds.push(u.id+'_review'); });
+                let g = {}; examResultsCache.filter(r => validIds.includes(r.lessonId)).forEach(r => { 
+                    const iden = r.uid || r.phone; if(!g[iden]) g[iden] = {uid: r.uid, phone: r.phone, score: 0}; g[iden].score += r.score; 
+                });
+                const sorted = Object.values(g).sort((a,b) => b.score - a.score);
+                const myIndex = sorted.findIndex(r => r.uid === uid);
+                if(myIndex !== -1 && myIndex < bestRank) bestRank = myIndex;
+            });
+            
+            if(bestRank === 0) return 'ring-4 ring-yellow-400 shadow-[0_0_15px_rgba(250,204,21,0.8)]';
+            if(bestRank === 1) return 'ring-4 ring-gray-300 shadow-[0_0_15px_rgba(209,213,219,0.8)]';
+            if(bestRank === 2) return 'ring-4 ring-amber-700 shadow-[0_0_15px_rgba(180,83,9,0.8)]';
+            return 'border-2 border-white/30 shadow-md'; 
+        }
+
         function updateStudentUI(st) { 
             const btn = document.getElementById('student-greeting'); 
             const msg = document.getElementById('main-welcome-msg'); 
             if(st) { 
-                let avatarHtml = st.profilePic ? `<img src="${st.profilePic}" class="w-6 h-6 rounded-full object-cover border border-white/30 shrink-0">` : `👤`;
+                let ringClass = getUserRankClass(st.uid);
+                let avatarHtml = st.profilePic ? `<img src="${st.profilePic}" loading="lazy" decoding="async" class="w-7 h-7 md:w-8 md:h-8 rounded-full object-cover shrink-0 ${ringClass}">` : `<div class="w-7 h-7 md:w-8 md:h-8 rounded-full bg-indigo-50 text-indigo-600 flex items-center justify-center text-xs shrink-0 ${ringClass}">👤</div>`;
                 btn.innerHTML = `${avatarHtml} <span class="max-w-[80px] truncate">${st.name.split(' ')[0]}</span>`; 
                 btn.onclick = openProfileModal; 
                 if(msg) msg.innerHTML = `اهلا ${st.name.split(' ')[0]} 🎓`; 
@@ -533,7 +555,7 @@
         function saveStudentPhone() { const phone = document.getElementById('newStudentPhone').value.trim(); if (phone.length < 10) return alert('برجاء كتابة رقم الموبايل بشكل صحيح!'); const studentData = { uid: pendingGoogleUser.uid, name: pendingGoogleUser.displayName, email: pendingGoogleUser.email, phone: phone, nameEdited: false, profilePic: null, date: new Date().toLocaleString('ar-EG') }; database.ref('students/' + pendingGoogleUser.uid).set(studentData).then(() => { localStorage.setItem('geox_student_user', JSON.stringify(studentData)); document.getElementById('phone-modal').classList.add('hidden'); updateStudentUI(studentData); alert('تم التسجيل بنجاح! أهلاً بك يا بطل 🎓'); if (currentLesson && !document.getElementById('student-content-container').classList.contains('hidden')) { openLessonContent(currentLesson, document.getElementById('content-title').innerText.replace('📄 ',''), true); } }); }
         function logoutUnified() { localStorage.removeItem('geox_student_user'); auth.signOut().then(() => location.reload()); }
 
-        // دالة رفع الصورة الشخصية وتصغيرها لتسريع فايربيز
+        // التخفيف الذكي في رفع الصور
         function handleProfilePicUpload(e) {
             const file = e.target.files[0];
             if(!file) return;
@@ -546,7 +568,7 @@
                     cvs.width = W; cvs.height = H;
                     const ctx = cvs.getContext('2d');
                     ctx.drawImage(img, 0, 0, W, H);
-                    const base64Pic = cvs.toDataURL('image/jpeg', 0.8);
+                    const base64Pic = cvs.toDataURL('image/jpeg', 0.7); // نسبة ضغط أعلى لتخفيف الذاكرة
                     
                     const st = JSON.parse(localStorage.getItem('geox_student_user'));
                     database.ref('students/' + st.uid + '/profilePic').set(base64Pic).then(() => {
@@ -567,8 +589,8 @@
         window.addEventListener('popstate', (e) => { const st = e.state; document.getElementById('profile-modal').classList.add('hidden'); document.getElementById('phone-modal').classList.add('hidden'); document.getElementById('social-modal').classList.add('hidden'); document.getElementById('mistakes-modal').classList.add('hidden'); document.getElementById('flashcards-modal').classList.add('hidden'); document.getElementById('certificate-modal').classList.add('hidden'); document.getElementById('global-leaderboard-modal').classList.add('hidden'); document.getElementById('exam-screen').classList.add('hidden'); document.getElementById('student-stages').classList.add('hidden'); document.getElementById('student-units-container').classList.add('hidden'); document.getElementById('student-lessons-container').classList.add('hidden'); document.getElementById('student-content-container').classList.add('hidden'); if(!st || st.view === 'home') { sessionStorage.setItem('geox_current_view', JSON.stringify({view:'home'})); if(!document.getElementById('teacher-view').classList.contains('hidden')) showAdminTab('tab-covers', true); else document.getElementById('student-stages').classList.remove('hidden'); } else if(st.view === 'grade') { sessionStorage.setItem('geox_current_view', JSON.stringify({view:'grade', g:st.g})); openGrade(st.g, true); } else if(st.view === 'unit') { currentGrade = st.g; sessionStorage.setItem('geox_current_view', JSON.stringify({view:'unit', g:st.g, u:st.u})); openUnit(st.u, true); } else if(st.view === 'lesson') { currentUnit = st.u; currentGrade = st.g; sessionStorage.setItem('geox_current_view', JSON.stringify({view:'lesson', g:st.g, u:st.u, l:st.l, t:st.t})); openLessonContent(st.l, st.t, true); } else if(st.view === 'adminTab') showAdminTab(st.tab, true); else if(st.view === 'exam') document.getElementById('student-content-container').classList.remove('hidden'); });
         function goBackVisually() { history.back(); }
 
-        function renderStagesGrid() { document.getElementById('stages-grid').innerHTML = Object.keys(GRADES).map(g => `<div onclick="openGrade('${g}')" class="ui-card cursor-pointer rounded-[2rem] overflow-hidden aspect-video relative bg-[#0B1437]"><img src="${coversData['STAGE_COVER_'+g]||DEFAULT_COVER}" class="absolute inset-0 w-full h-full object-cover opacity-70 hover:opacity-100 transition-opacity duration-700"><div class="absolute bottom-0 inset-x-0 p-5 bg-gradient-to-t from-[#0B1437] via-[#0B1437]/80 to-transparent z-20 flex items-end"><h3 class="text-2xl md:text-3xl font-black text-white drop-shadow-lg">${GRADES[g]}</h3></div></div>`).join(''); }
-        function openGrade(g, fromHistory=false) { if(!fromHistory) { history.pushState({view: 'grade', g: g}, '', '#grade'); sessionStorage.setItem('geox_current_view', JSON.stringify({view:'grade', g:g})); } currentGrade = g; document.getElementById('student-stages').classList.add('hidden'); document.getElementById('student-units-container').classList.remove('hidden'); document.getElementById('units-title').innerText = '📚 وحدات ' + GRADES[g]; document.getElementById('student-units-grid').innerHTML = CURRICULUM.filter(u=>u.grade===g).map(u => `<div onclick="openUnit('${u.id}')" class="ui-card cursor-pointer bg-white rounded-[2rem] overflow-hidden border border-slate-100 shadow-sm hover:shadow-md"><img src="${coversData[u.id]||DEFAULT_COVER}" class="aspect-video w-full object-cover"><div class="p-5 font-black text-slate-800 text-sm md:text-lg">${u.title.split(':').join(':<br><span class="text-indigo-600 text-sm md:text-base font-bold">')}</span></div></div>`).join(''); }
+        function renderStagesGrid() { document.getElementById('stages-grid').innerHTML = Object.keys(GRADES).map(g => `<div onclick="openGrade('${g}')" class="ui-card cursor-pointer rounded-[2rem] overflow-hidden aspect-video relative bg-[#0B1437]"><img src="${coversData['STAGE_COVER_'+g]||DEFAULT_COVER}" loading="lazy" decoding="async" class="absolute inset-0 w-full h-full object-cover opacity-70 hover:opacity-100 transition-opacity duration-700"><div class="absolute bottom-0 inset-x-0 p-5 bg-gradient-to-t from-[#0B1437] via-[#0B1437]/80 to-transparent z-20 flex items-end"><h3 class="text-2xl md:text-3xl font-black text-white drop-shadow-lg">${GRADES[g]}</h3></div></div>`).join(''); }
+        function openGrade(g, fromHistory=false) { if(!fromHistory) { history.pushState({view: 'grade', g: g}, '', '#grade'); sessionStorage.setItem('geox_current_view', JSON.stringify({view:'grade', g:g})); } currentGrade = g; document.getElementById('student-stages').classList.add('hidden'); document.getElementById('student-units-container').classList.remove('hidden'); document.getElementById('units-title').innerText = '📚 وحدات ' + GRADES[g]; document.getElementById('student-units-grid').innerHTML = CURRICULUM.filter(u=>u.grade===g).map(u => `<div onclick="openUnit('${u.id}')" class="ui-card cursor-pointer bg-white rounded-[2rem] overflow-hidden border border-slate-100 shadow-sm hover:shadow-md"><img src="${coversData[u.id]||DEFAULT_COVER}" loading="lazy" decoding="async" class="aspect-video w-full object-cover"><div class="p-5 font-black text-slate-800 text-sm md:text-lg">${u.title.split(':').join(':<br><span class="text-indigo-600 text-sm md:text-base font-bold">')}</span></div></div>`).join(''); }
         function openUnit(id, fromHistory=false) { if(!fromHistory) { history.pushState({view: 'unit', u: id, g: currentGrade}, '', '#unit'); sessionStorage.setItem('geox_current_view', JSON.stringify({view:'unit', g:currentGrade, u:id})); } currentUnit = id; document.getElementById('student-units-container').classList.add('hidden'); document.getElementById('student-lessons-container').classList.remove('hidden'); const u = CURRICULUM.find(x=>x.id===id); document.getElementById('lesson-unit-badge').innerText = GRADES[u.grade]; document.getElementById('lessons-title').innerText = u.title.split(':')[0]; let html = u.lessons.map((l,i) => `<div onclick="openLessonContent('${l.id}', '${l.t.replace(/'/g, "\\'")}')" class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 cursor-pointer flex items-center gap-4 hover:border-indigo-200 group"><div class="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 font-black flex items-center justify-center group-hover:bg-indigo-600 group-hover:text-white transition-colors">${i+1}</div><h4 class="font-bold text-slate-800 flex-grow">${l.t}</h4></div>`).join(''); html += `<div onclick="openLessonContent('${u.id}_review', 'المراجعة الشاملة')" class="bg-amber-50 p-5 rounded-2xl border border-amber-200 cursor-pointer flex items-center gap-4 group mt-6 md:col-span-2"><div class="w-12 h-12 rounded-xl bg-amber-100 text-amber-600 font-black flex items-center justify-center text-xl">🌟</div><h4 class="font-black text-amber-900 flex-grow text-lg">المراجعة الشاملة للوحدة</h4></div>`; document.getElementById('student-lessons-list').innerHTML = html; }
 
         window.recordAnalytics = function(lessonId, type) { database.ref('analytics/' + lessonId + '/' + type).transaction(val => (val || 0) + 1); };
@@ -625,17 +647,37 @@
             if(st) { 
                 document.getElementById('profile-name').innerText = st.name; document.getElementById('profile-name-display').classList.remove('hidden'); document.getElementById('profile-name-edit').classList.add('hidden');
                 
-                // عرض صورة الطالب في البروفايل
-                let avatarHtml = st.profilePic ? `<img src="${st.profilePic}" class="w-full h-full object-cover">` : `𓂀`;
+                let ringClass = getUserRankClass(st.uid);
+                let avatarHtml = st.profilePic ? `<img src="${st.profilePic}" loading="lazy" class="w-full h-full object-cover">` : `𓂀`;
+                document.getElementById('profile-modal-avatar').className = `w-20 h-20 bg-white/10 rounded-full flex items-center justify-center text-4xl text-emerald-400 overflow-hidden ${ringClass}`;
                 document.getElementById('profile-modal-avatar').innerHTML = avatarHtml;
 
                 const myScores = examResultsCache.filter(r => r.uid === st.uid); myScores.sort((a,b) => new Date(b.date) - new Date(a.date)); 
                 
+                let totalSc = 0, totalMax = 0;
+                myScores.forEach(s => { totalSc += s.score; totalMax += s.total; });
+                let overallPerc = Math.round((totalSc / totalMax) * 100) || 0;
+
+                // نظام الأوسمة الذكي والموزون (Smart Dynamic Badges)
+                let badgesHtml = ''; 
+                if(myScores.length > 0) {
+                    if (myScores.length === 1) {
+                        if (overallPerc >= 50) badgesHtml = '<span class="bg-amber-100 text-amber-700 px-2 py-1 rounded text-xs font-bold shadow-sm border border-amber-200">بداية مبشرة 🚶</span>';
+                        else badgesHtml = '<span class="bg-slate-100 text-slate-700 px-2 py-1 rounded text-xs font-bold shadow-sm border border-slate-200">محاولة أولى 🎯</span>';
+                    } else {
+                        if (overallPerc >= 90) badgesHtml = '<span class="bg-yellow-100 text-yellow-700 px-2 py-1 rounded text-xs font-bold shadow-sm border border-yellow-300">أسطورة الجغرافيا 👑</span>';
+                        else if (overallPerc >= 75) badgesHtml = '<span class="bg-emerald-100 text-emerald-700 px-2 py-1 rounded text-xs font-bold shadow-sm border border-emerald-200">بطل صاعد 🌟</span>';
+                        else badgesHtml = '<span class="bg-blue-100 text-blue-700 px-2 py-1 rounded text-xs font-bold shadow-sm border border-blue-200">طالب مكافح 📚</span>';
+                    }
+                    if(myScores.some(s => s.score === s.total && s.total > 0)) {
+                        badgesHtml += ' <span class="bg-purple-100 text-purple-700 px-2 py-1 rounded text-xs font-bold shadow-sm border border-purple-200">قناص الدرجات 🎯</span>';
+                    }
+                }
+                document.getElementById('student-badges').innerHTML = badgesHtml;
+
                 if(myScores.length > 0) {
                     const uniqueLessons = [...new Set(myScores.map(s => s.lessonId))]; let gCounts = {prep1:0, prep2:0, prep3:0}; uniqueLessons.forEach(lId => { const u = CURRICULUM.find(x => x.lessons.some(l => l.id === lId) || lId === x.id+'_review'); if(u) gCounts[u.grade]++; }); const domGrade = Object.keys(gCounts).reduce((a,b) => gCounts[a] > gCounts[b] ? a : b); const unitsInGrade = CURRICULUM.filter(x => x.grade === domGrade); const totalItems = unitsInGrade.reduce((acc, curr) => acc + curr.lessons.length + 1, 0); const percentage = Math.min(100, Math.round((uniqueLessons.length / totalItems) * 100)); document.getElementById('profile-progress').style.width = percentage + '%'; document.getElementById('profile-progress-text').innerText = `إنجازك في منهج ${GRADES[domGrade]}: ${percentage}%`;
                 } else { document.getElementById('profile-progress').style.width = '0%'; document.getElementById('profile-progress-text').innerText = `إنجازك في المنهج: 0%`; }
-
-                let badgesHtml = ''; if(myScores.length > 0) badgesHtml += '<span class="bg-amber-100 text-amber-700 px-2 py-1 rounded text-xs font-bold shadow-sm border border-amber-200">بداية الرحلة 🚶</span> '; if(myScores.length >= 5) badgesHtml += '<span class="bg-blue-100 text-blue-700 px-2 py-1 rounded text-xs font-bold shadow-sm border border-blue-200">طالب مجتهد 📚</span> '; if(myScores.filter(s => s.score === s.total).length > 0) badgesHtml += '<span class="bg-emerald-100 text-emerald-700 px-2 py-1 rounded text-xs font-bold shadow-sm border border-emerald-200">عبقري 🥇</span> '; document.getElementById('student-badges').innerHTML = badgesHtml;
 
                 let listHtml = myScores.length === 0 ? '<p class="text-slate-400 text-center text-sm py-4">لم تمتحن أي درس بعد.</p>' : '';
                 myScores.forEach(s => { let perc = Math.round((s.score / s.total) * 100) || 0; let color = perc >= 85 ? 'text-emerald-600 bg-emerald-50 border-emerald-100' : (perc >= 50 ? 'text-amber-600 bg-amber-50 border-amber-100' : 'text-red-600 bg-red-50 border-red-100'); listHtml += `<div class="bg-white p-4 rounded-xl border border-slate-100 shadow-sm flex flex-col gap-2"><div class="flex justify-between items-center gap-3"><div class="text-right"><div class="font-bold text-slate-800 text-sm mb-1">${getLessonNameById(s.lessonId)}</div><div class="text-[10px] text-slate-400">${s.date}</div></div><div class="px-3 py-2 rounded-lg border font-black text-sm shrink-0 ${color}">${s.score} / ${s.total}</div></div>`; if(perc >= 90 || s.lessonId.includes('_review')) { listHtml += `<button onclick="generateCertificate('${st.name}', '${getLessonNameById(s.lessonId)}')" class="bg-gradient-to-r from-amber-100 to-orange-50 hover:from-amber-200 hover:to-orange-100 text-amber-700 px-3 py-1.5 rounded-lg text-xs font-black border border-amber-200 w-full transition-colors shadow-sm text-center">استلم شهادة التقدير 🎁</button>`; } listHtml += `</div>`; }); document.getElementById('student-scores-list').innerHTML = listHtml; document.getElementById('profile-modal').classList.remove('hidden'); 
@@ -659,22 +701,41 @@
         function prevFlashcard() { if(currentFlashcardIndex > 0) { currentFlashcardIndex--; renderFlashcard(); } }
         function openSocialModal() { document.getElementById('social-modal').classList.remove('hidden'); }
 
-        // تم التعديل لعرض صورة الطالب في لوحة الشرف
+        // أبطال المنصة وإبراز ترتيب الطالب الحالي والألوان
         function openGlobalLeaderboard(grade = 'prep3') {
             document.getElementById('gl-prep1-btn').className = `flex-1 py-2 text-sm md:text-base font-bold rounded-lg transition-colors ${grade==='prep1'?'bg-indigo-600 text-white shadow-sm':'bg-slate-200 text-slate-600 hover:bg-slate-300'}`; document.getElementById('gl-prep2-btn').className = `flex-1 py-2 text-sm md:text-base font-bold rounded-lg transition-colors ${grade==='prep2'?'bg-indigo-600 text-white shadow-sm':'bg-slate-200 text-slate-600 hover:bg-slate-300'}`; document.getElementById('gl-prep3-btn').className = `flex-1 py-2 text-sm md:text-base font-bold rounded-lg transition-colors ${grade==='prep3'?'bg-indigo-600 text-white shadow-sm':'bg-slate-200 text-slate-600 hover:bg-slate-300'}`;
             const units = CURRICULUM.filter(u => u.grade === grade); const validIds = []; units.forEach(u => { u.lessons.forEach(l => validIds.push(l.id)); validIds.push(u.id+'_review'); });
             let g = {}; examResultsCache.filter(r => validIds.includes(r.lessonId)).forEach(r => { const iden = r.uid || r.phone; if(!g[iden]) g[iden] = {name: r.name, score: 0, uid: r.uid, phone: r.phone}; g[iden].score += r.score; });
-            const sorted = Object.values(g).sort((a,b) => b.score - a.score).slice(0,10);
+            const sorted = Object.values(g).sort((a,b) => b.score - a.score);
+            const top10 = sorted.slice(0,10);
             
-            let html = sorted.map((r, i) => { 
+            const currentSt = JSON.parse(localStorage.getItem('geox_student_user'));
+            
+            let html = top10.map((r, i) => { 
                 let medal = i===0?'🥇':i===1?'🥈':i===2?'🥉':`<span class="text-slate-400 font-black text-lg w-6 text-center">#${i+1}</span>`; 
                 let st = allStudents.find(s => s.uid === r.uid || (r.phone && s.phone === r.phone));
-                let avatar = (st && st.profilePic) ? `<img src="${st.profilePic}" class="w-10 h-10 rounded-full object-cover border-2 border-white shadow-sm shrink-0">` : `<div class="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center text-lg shrink-0 border-2 border-white shadow-sm">👤</div>`;
                 
-                return `<div class="flex justify-between items-center bg-white p-3 rounded-xl border ${i<3?'border-amber-300 shadow-md bg-amber-50':'border-slate-100'}"><div class="flex items-center gap-3 w-3/4"><div class="shrink-0 flex items-center justify-center">${medal}</div>${avatar}<span class="font-black text-slate-800 truncate">${r.name}</span></div><span class="font-black text-indigo-600 bg-indigo-50 px-3 py-1 rounded-lg text-sm shrink-0 shadow-inner">${r.score} نقطة</span></div>`; 
+                let ringClass = i===0 ? 'ring-4 ring-yellow-400 shadow-[0_0_15px_rgba(250,204,21,0.6)]' : i===1 ? 'ring-4 ring-gray-300 shadow-[0_0_15px_rgba(209,213,219,0.6)]' : i===2 ? 'ring-4 ring-amber-700 shadow-[0_0_15px_rgba(180,83,9,0.6)]' : 'border-2 border-white shadow-sm';
+                let avatar = (st && st.profilePic) ? `<img src="${st.profilePic}" loading="lazy" class="w-10 h-10 rounded-full object-cover shrink-0 ${ringClass}">` : `<div class="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center text-lg shrink-0 ${ringClass}">👤</div>`;
+                
+                let isCurrentUser = (currentSt && (r.uid === currentSt.uid || r.phone === currentSt.phone));
+                let rowBg = isCurrentUser ? 'bg-indigo-50 border-indigo-300 shadow-md' : (i<3?'border-amber-300 shadow-md bg-amber-50':'border-slate-100');
+                
+                return `<div class="flex justify-between items-center bg-white p-3 rounded-xl border ${rowBg}"><div class="flex items-center gap-3 w-3/4"><div class="shrink-0 flex items-center justify-center">${medal}</div>${avatar}<span class="font-black ${isCurrentUser?'text-indigo-700':'text-slate-800'} truncate">${r.name} ${isCurrentUser?'(أنت)':''}</span></div><span class="font-black text-indigo-600 bg-indigo-50 px-3 py-1 rounded-lg text-sm shrink-0 shadow-inner">${r.score} نقطة</span></div>`; 
             }).join('');
             
-            if(!html) html = '<p class="text-center text-slate-500 font-bold py-8">لا يوجد بيانات لهذه المرحلة بعد.</p>'; document.getElementById('global-leaderboard-list').innerHTML = html; document.getElementById('global-leaderboard-modal').classList.remove('hidden');
+            if(!html) html = '<p class="text-center text-slate-500 font-bold py-8">لا توجد بيانات لهذه المرحلة بعد.</p>'; 
+            
+            if(currentSt) {
+                const myRankIndex = sorted.findIndex(r => r.uid === currentSt.uid || r.phone === currentSt.phone);
+                if(myRankIndex !== -1) {
+                    html += `<div class="mt-4 p-4 bg-indigo-600 rounded-xl text-center text-white font-black shadow-lg border-2 border-indigo-300">ترتيبك الحالي في هذه المرحلة: المركز الـ ${myRankIndex + 1} 🚀</div>`;
+                } else {
+                    html += `<div class="mt-4 p-3 bg-slate-200 rounded-xl text-center text-slate-600 font-bold text-sm border border-slate-300">لم تمتحن في هذه المرحلة بعد لتحديد ترتيبك.</div>`;
+                }
+            }
+
+            document.getElementById('global-leaderboard-list').innerHTML = html; document.getElementById('global-leaderboard-modal').classList.remove('hidden');
         }
 
         let examTimer = null, timeLeft = 600, currentQuestions = [];
@@ -791,7 +852,6 @@
         function updateLbUnitDropdown() { const g = document.getElementById('lbGrade').value; const sel = document.getElementById('lbUnitId'); sel.innerHTML = '<option value="">-- الوحدة --</option>'; CURRICULUM.filter(u=>u.grade===g).forEach(u => sel.innerHTML+=`<option value="${u.id}">${u.title.split(':')[0]}</option>`); }
         function updateLbLessonDropdown() { const uId = document.getElementById('lbUnitId').value; const sel = document.getElementById('lbLessonId'); sel.innerHTML = '<option value="">-- الدرس أو المجموع --</option>'; const u = CURRICULUM.find(x=>x.id===uId); if(u) { sel.innerHTML+=`<option value="ALL_${u.id}">📊 مجموع الوحدة</option>`; u.lessons.forEach(l => sel.innerHTML+=`<option value="${l.id}">${l.t}</option>`); } }
         
-        // عرض الصور في لوحة الدرجات العادية للمدرس
         function renderLeaderboard() { 
             const id = document.getElementById('lbLessonId').value; if(!id) return; let res = []; 
             if(id.startsWith('ALL_')) { const uId = id.replace('ALL_',''); const u = CURRICULUM.find(x=>x.id===uId); const validIds = u ? u.lessons.map(l=>l.id).concat([u.id+'_review']) : []; let g = {}; examResultsCache.filter(r=>validIds.includes(r.lessonId)).forEach(r => { const iden = r.uid || r.phone; if(!g[iden]) g[iden] = {name:r.name, phone:r.phone, score:0, total:0, time:0, keys:[], uid: r.uid}; g[iden].score+=r.score; g[iden].total+=r.total; g[iden].time+=r.time; g[iden].keys.push(r.key); }); res = Object.values(g); } else { res = examResultsCache.filter(r=>r.lessonId===id); } 
@@ -801,7 +861,7 @@
                 const waText = encodeURIComponent(`أهلاً ولي أمر البطل ${r.name} 🎓\nنحيطكم علماً بأن الطالب أتم اختبار [${getLessonNameById(id.replace('ALL_',''))}] وحصل على درجة (${r.score} من ${r.total}).\nمع تحيات منصة Geo X 🌍`); 
                 const waLink = `https://wa.me/20${r.phone}?text=${waText}`; 
                 let st = allStudents.find(s => s.uid === r.uid || (r.phone && s.phone === r.phone));
-                let pPic = (st && st.profilePic) ? `<img src="${st.profilePic}" class="w-8 h-8 rounded-full object-cover border border-slate-200 shrink-0">` : `<div class="w-8 h-8 rounded-full bg-indigo-50 text-indigo-500 flex items-center justify-center text-sm shrink-0">👤</div>`;
+                let pPic = (st && st.profilePic) ? `<img src="${st.profilePic}" loading="lazy" class="w-8 h-8 rounded-full object-cover border border-slate-200 shrink-0">` : `<div class="w-8 h-8 rounded-full bg-indigo-50 text-indigo-500 flex items-center justify-center text-sm shrink-0">👤</div>`;
                 
                 return `<tr class="hover:bg-slate-50"><td class="p-4 font-black text-slate-500">#${i+1}</td><td class="p-4 font-bold text-slate-800"><div class="flex items-center gap-2">${pPic}<span class="truncate">${r.name}</span></div></td><td class="p-4 font-black text-indigo-700">${r.score} / ${r.total}</td><td class="p-4 text-slate-600 text-xs">${r.time} ثانية</td><td class="p-4 text-center space-x-2 space-x-reverse"><a href="${waLink}" target="_blank" class="bg-green-50 hover:bg-green-500 text-green-600 hover:text-white px-3 py-1.5 rounded-lg text-xs font-bold transition-colors inline-block shadow-sm">تقرير 📱</a> ${id.startsWith('ALL_') ? '' : `<button onclick="deleteExamResult('${r.key}')" class="bg-red-50 hover:bg-red-500 text-red-600 hover:text-white px-3 py-1.5 rounded-lg text-xs font-bold transition-colors inline-block mt-2 md:mt-0 shadow-sm">إلغاء ❌</button>`}</td></tr>`; 
             }).join(''); 
@@ -812,29 +872,9 @@
         function saveAnnouncementText() { const txt = document.getElementById('adminAnnouncementInput').value.trim(); database.ref('announcement').set(txt).then(() => alert('تم النشر!')); }
         function clearAnnouncementText() { database.ref('announcement').set('').then(() => { document.getElementById('adminAnnouncementInput').value = ''; alert('تم إيقاف الإعلان!'); }); }
 
-        // نظام تحميل التطبيق PWA
         let deferredPrompt;
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-            const installBtn = document.getElementById('install-app-btn');
-            if (installBtn) installBtn.classList.remove('hidden');
-        });
-
-        function installPWA() {
-            if (deferredPrompt) {
-                deferredPrompt.prompt();
-                deferredPrompt.userChoice.then((choiceResult) => {
-                    if (choiceResult.outcome === 'accepted') {
-                        document.getElementById('install-app-btn').classList.add('hidden');
-                    }
-                    deferredPrompt = null;
-                });
-            } else {
-                alert('لتثبيت التطبيق على الآيفون: اضغط على زر المشاركة (Share) ثم "Add to Home Screen".');
-            }
-        }
-
+        window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredPrompt = e; const installBtn = document.getElementById('install-app-btn'); if (installBtn) installBtn.classList.remove('hidden'); });
+        function installPWA() { if (deferredPrompt) { deferredPrompt.prompt(); deferredPrompt.userChoice.then((choiceResult) => { if (choiceResult.outcome === 'accepted') { document.getElementById('install-app-btn').classList.add('hidden'); } deferredPrompt = null; }); } else { alert('لتثبيت التطبيق على الآيفون: اضغط على زر المشاركة (Share) ثم "Add to Home Screen".'); } }
         if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js').then(reg => { console.log('PWA Service Worker Registered', reg); }).catch(err => console.log('Service Worker Error', err)); }); }
     </script>
 </body>
