@@ -5,14 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Geo X Platform</title>
     
+    <!-- إعدادات تطبيق الموبايل (PWA) -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#0B1437">
     <link rel="icon" href="./logo-transparent.png" type="image/png">
     <link rel="apple-touch-icon" href="./logo-transparent.png">
 
+    <!-- مكاتب التصميم وتصدير الإكسيل -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
+    <!-- مكاتب Firebase متضمنة Auth لـ Google -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
@@ -65,7 +68,6 @@
                 </div>
             </div>
 
-            <!-- الكلمة اللي في النص + زرار التثبيت -->
             <div class="absolute left-1/2 transform -translate-x-1/2 flex flex-col items-center justify-center z-10">
                 <span class="text-white font-black text-[12px] md:text-sm uppercase tracking-[0.2em] opacity-90 pointer-events-none">Platform</span>
                 <span class="text-emerald-400 font-bold text-[8px] md:text-[10px] uppercase tracking-[0.3em] pointer-events-none mb-1">For Gen Z</span>
@@ -146,6 +148,7 @@
                 </div>
             </div>
 
+            <!-- Exam Screen -->
             <div id="exam-screen" class="hidden fixed inset-0 bg-[#F4F7FE] z-[100] overflow-y-auto no-select" oncontextmenu="return false;">
                 <div class="container mx-auto max-w-3xl py-8 px-4 relative">
                     <div id="exam-active-header" class="sticky top-4 bg-white/95 backdrop-blur-lg p-4 rounded-2xl shadow-sm border border-slate-200 flex justify-between items-center z-50 mb-8 gap-3">
@@ -397,13 +400,18 @@
         </div>
     </div>
 
-    <!-- Social & Contact Modal -->
+    <!-- Social & Contact Modal (مع زر التنزيل الدائم) -->
     <div id="social-modal" class="hidden fixed inset-0 bg-[#0B1437]/80 backdrop-blur-sm z-[500] flex items-center justify-center p-4">
         <div class="bg-white p-7 rounded-[2rem] shadow-2xl w-full max-w-sm text-center border border-slate-100 relative">
             <button onclick="document.getElementById('social-modal').classList.add('hidden')" class="absolute top-4 left-4 text-slate-400 hover:text-red-500 text-xl transition-colors">✖</button>
             <div class="w-16 h-16 bg-indigo-50 text-indigo-500 rounded-2xl mx-auto flex items-center justify-center text-4xl mb-4">🌍</div>
             <h3 class="text-xl font-black text-slate-800 mb-1">تابعنا وتواصل معنا</h3>
-            <p class="text-xs text-slate-500 font-semibold mb-6">منصة Geo X للدراسات الاجتماعية</p>
+            <p class="text-xs text-slate-500 font-semibold mb-5">منصة Geo X للدراسات الاجتماعية</p>
+
+            <!-- زر التنزيل الدائم للمنصة -->
+            <button onclick="installPWA()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-black py-3 rounded-xl shadow-md transition-all mb-5 flex items-center justify-center gap-2 border border-indigo-500">
+                تنزيل المنصة على الموبايل 📲
+            </button>
             
             <div class="space-y-4">
                 <div class="grid grid-cols-2 gap-3">
@@ -480,7 +488,6 @@
         database.ref('exam_results').on('value', s => { 
             const val = s.val()||{}; examResultsCache = Object.keys(val).map(k => ({...val[k], key: k})); 
             if(!document.getElementById('teacher-view').classList.contains('hidden')) renderLeaderboard(); 
-            // تحديث الإطارات للمستخدم عند تغير النتائج
             const st = JSON.parse(localStorage.getItem('geox_student_user'));
             if(st && document.getElementById('student-view').classList.contains('block')) updateStudentUI(st);
         });
@@ -515,16 +522,17 @@
             }
         });
 
-        // دوال الإطارات الذهبية والفضية
+        // دوال الإطارات الذهبية والفضية تعتمد الآن على النقاط والوقت معاً
         function getUserRankClass(uid) {
             let bestRank = 999999;
             ['prep1', 'prep2', 'prep3'].forEach(grade => {
                 const units = CURRICULUM.filter(u => u.grade === grade); 
                 const validIds = []; units.forEach(u => { u.lessons.forEach(l => validIds.push(l.id)); validIds.push(u.id+'_review'); });
                 let g = {}; examResultsCache.filter(r => validIds.includes(r.lessonId)).forEach(r => { 
-                    const iden = r.uid || r.phone; if(!g[iden]) g[iden] = {uid: r.uid, phone: r.phone, score: 0}; g[iden].score += r.score; 
+                    const iden = r.uid || r.phone; if(!g[iden]) g[iden] = {uid: r.uid, phone: r.phone, score: 0, time: 0}; 
+                    g[iden].score += r.score; g[iden].time += r.time; 
                 });
-                const sorted = Object.values(g).sort((a,b) => b.score - a.score);
+                const sorted = Object.values(g).sort((a,b) => b.score !== a.score ? b.score - a.score : a.time - b.time);
                 const myIndex = sorted.findIndex(r => r.uid === uid);
                 if(myIndex !== -1 && myIndex < bestRank) bestRank = myIndex;
             });
@@ -555,7 +563,6 @@
         function saveStudentPhone() { const phone = document.getElementById('newStudentPhone').value.trim(); if (phone.length < 10) return alert('برجاء كتابة رقم الموبايل بشكل صحيح!'); const studentData = { uid: pendingGoogleUser.uid, name: pendingGoogleUser.displayName, email: pendingGoogleUser.email, phone: phone, nameEdited: false, profilePic: null, date: new Date().toLocaleString('ar-EG') }; database.ref('students/' + pendingGoogleUser.uid).set(studentData).then(() => { localStorage.setItem('geox_student_user', JSON.stringify(studentData)); document.getElementById('phone-modal').classList.add('hidden'); updateStudentUI(studentData); alert('تم التسجيل بنجاح! أهلاً بك يا بطل 🎓'); if (currentLesson && !document.getElementById('student-content-container').classList.contains('hidden')) { openLessonContent(currentLesson, document.getElementById('content-title').innerText.replace('📄 ',''), true); } }); }
         function logoutUnified() { localStorage.removeItem('geox_student_user'); auth.signOut().then(() => location.reload()); }
 
-        // التخفيف الذكي في رفع الصور
         function handleProfilePicUpload(e) {
             const file = e.target.files[0];
             if(!file) return;
@@ -568,7 +575,7 @@
                     cvs.width = W; cvs.height = H;
                     const ctx = cvs.getContext('2d');
                     ctx.drawImage(img, 0, 0, W, H);
-                    const base64Pic = cvs.toDataURL('image/jpeg', 0.7); // نسبة ضغط أعلى لتخفيف الذاكرة
+                    const base64Pic = cvs.toDataURL('image/jpeg', 0.7); 
                     
                     const st = JSON.parse(localStorage.getItem('geox_student_user'));
                     database.ref('students/' + st.uid + '/profilePic').set(base64Pic).then(() => {
@@ -649,7 +656,7 @@
                 
                 let ringClass = getUserRankClass(st.uid);
                 let avatarHtml = st.profilePic ? `<img src="${st.profilePic}" loading="lazy" class="w-full h-full object-cover">` : `𓂀`;
-                document.getElementById('profile-modal-avatar').className = `w-20 h-20 bg-white/10 rounded-full flex items-center justify-center text-4xl text-emerald-400 overflow-hidden ${ringClass}`;
+                document.getElementById('profile-modal-avatar').className = `w-20 h-20 bg-white/10 rounded-full flex items-center justify-center text-4xl text-emerald-400 overflow-hidden shadow-lg ${ringClass}`;
                 document.getElementById('profile-modal-avatar').innerHTML = avatarHtml;
 
                 const myScores = examResultsCache.filter(r => r.uid === st.uid); myScores.sort((a,b) => new Date(b.date) - new Date(a.date)); 
@@ -658,7 +665,6 @@
                 myScores.forEach(s => { totalSc += s.score; totalMax += s.total; });
                 let overallPerc = Math.round((totalSc / totalMax) * 100) || 0;
 
-                // نظام الأوسمة الذكي والموزون (Smart Dynamic Badges)
                 let badgesHtml = ''; 
                 if(myScores.length > 0) {
                     if (myScores.length === 1) {
@@ -701,12 +707,21 @@
         function prevFlashcard() { if(currentFlashcardIndex > 0) { currentFlashcardIndex--; renderFlashcard(); } }
         function openSocialModal() { document.getElementById('social-modal').classList.remove('hidden'); }
 
-        // أبطال المنصة وإبراز ترتيب الطالب الحالي والألوان
+        // التعديل: الترتيب يحسب بالنقاط أولاً، ثم بالوقت الأقل عند التساوي
         function openGlobalLeaderboard(grade = 'prep3') {
             document.getElementById('gl-prep1-btn').className = `flex-1 py-2 text-sm md:text-base font-bold rounded-lg transition-colors ${grade==='prep1'?'bg-indigo-600 text-white shadow-sm':'bg-slate-200 text-slate-600 hover:bg-slate-300'}`; document.getElementById('gl-prep2-btn').className = `flex-1 py-2 text-sm md:text-base font-bold rounded-lg transition-colors ${grade==='prep2'?'bg-indigo-600 text-white shadow-sm':'bg-slate-200 text-slate-600 hover:bg-slate-300'}`; document.getElementById('gl-prep3-btn').className = `flex-1 py-2 text-sm md:text-base font-bold rounded-lg transition-colors ${grade==='prep3'?'bg-indigo-600 text-white shadow-sm':'bg-slate-200 text-slate-600 hover:bg-slate-300'}`;
             const units = CURRICULUM.filter(u => u.grade === grade); const validIds = []; units.forEach(u => { u.lessons.forEach(l => validIds.push(l.id)); validIds.push(u.id+'_review'); });
-            let g = {}; examResultsCache.filter(r => validIds.includes(r.lessonId)).forEach(r => { const iden = r.uid || r.phone; if(!g[iden]) g[iden] = {name: r.name, score: 0, uid: r.uid, phone: r.phone}; g[iden].score += r.score; });
-            const sorted = Object.values(g).sort((a,b) => b.score - a.score);
+            
+            let g = {}; 
+            examResultsCache.filter(r => validIds.includes(r.lessonId)).forEach(r => { 
+                const iden = r.uid || r.phone; 
+                if(!g[iden]) g[iden] = {name: r.name, score: 0, time: 0, uid: r.uid, phone: r.phone}; 
+                g[iden].score += r.score; 
+                g[iden].time += r.time; // تجميع الوقت
+            });
+            
+            // ترتيب بالنقاط أولاً، ثم الوقت الأقل
+            const sorted = Object.values(g).sort((a,b) => b.score !== a.score ? b.score - a.score : a.time - b.time);
             const top10 = sorted.slice(0,10);
             
             const currentSt = JSON.parse(localStorage.getItem('geox_student_user'));
@@ -721,7 +736,7 @@
                 let isCurrentUser = (currentSt && (r.uid === currentSt.uid || r.phone === currentSt.phone));
                 let rowBg = isCurrentUser ? 'bg-indigo-50 border-indigo-300 shadow-md' : (i<3?'border-amber-300 shadow-md bg-amber-50':'border-slate-100');
                 
-                return `<div class="flex justify-between items-center bg-white p-3 rounded-xl border ${rowBg}"><div class="flex items-center gap-3 w-3/4"><div class="shrink-0 flex items-center justify-center">${medal}</div>${avatar}<span class="font-black ${isCurrentUser?'text-indigo-700':'text-slate-800'} truncate">${r.name} ${isCurrentUser?'(أنت)':''}</span></div><span class="font-black text-indigo-600 bg-indigo-50 px-3 py-1 rounded-lg text-sm shrink-0 shadow-inner">${r.score} نقطة</span></div>`; 
+                return `<div class="flex justify-between items-center bg-white p-3 rounded-xl border ${rowBg}"><div class="flex items-center gap-3 w-3/4"><div class="shrink-0 flex items-center justify-center">${medal}</div>${avatar}<span class="font-black ${isCurrentUser?'text-indigo-700':'text-slate-800'} truncate">${r.name} ${isCurrentUser?'(أنت)':''}</span></div><span class="font-black text-indigo-600 bg-indigo-50 px-3 py-1 rounded-lg text-sm shrink-0 shadow-inner text-center leading-tight">${r.score} نقطة<br><span class="text-[10px] text-slate-500">${r.time} ث</span></span></div>`; 
             }).join('');
             
             if(!html) html = '<p class="text-center text-slate-500 font-bold py-8">لا توجد بيانات لهذه المرحلة بعد.</p>'; 
@@ -861,7 +876,7 @@
                 const waText = encodeURIComponent(`أهلاً ولي أمر البطل ${r.name} 🎓\nنحيطكم علماً بأن الطالب أتم اختبار [${getLessonNameById(id.replace('ALL_',''))}] وحصل على درجة (${r.score} من ${r.total}).\nمع تحيات منصة Geo X 🌍`); 
                 const waLink = `https://wa.me/20${r.phone}?text=${waText}`; 
                 let st = allStudents.find(s => s.uid === r.uid || (r.phone && s.phone === r.phone));
-                let pPic = (st && st.profilePic) ? `<img src="${st.profilePic}" loading="lazy" class="w-8 h-8 rounded-full object-cover border border-slate-200 shrink-0">` : `<div class="w-8 h-8 rounded-full bg-indigo-50 text-indigo-500 flex items-center justify-center text-sm shrink-0">👤</div>`;
+                let pPic = (st && st.profilePic) ? `<img src="${st.profilePic}" loading="lazy" decoding="async" class="w-8 h-8 rounded-full object-cover border border-slate-200 shrink-0">` : `<div class="w-8 h-8 rounded-full bg-indigo-50 text-indigo-500 flex items-center justify-center text-sm shrink-0">👤</div>`;
                 
                 return `<tr class="hover:bg-slate-50"><td class="p-4 font-black text-slate-500">#${i+1}</td><td class="p-4 font-bold text-slate-800"><div class="flex items-center gap-2">${pPic}<span class="truncate">${r.name}</span></div></td><td class="p-4 font-black text-indigo-700">${r.score} / ${r.total}</td><td class="p-4 text-slate-600 text-xs">${r.time} ثانية</td><td class="p-4 text-center space-x-2 space-x-reverse"><a href="${waLink}" target="_blank" class="bg-green-50 hover:bg-green-500 text-green-600 hover:text-white px-3 py-1.5 rounded-lg text-xs font-bold transition-colors inline-block shadow-sm">تقرير 📱</a> ${id.startsWith('ALL_') ? '' : `<button onclick="deleteExamResult('${r.key}')" class="bg-red-50 hover:bg-red-500 text-red-600 hover:text-white px-3 py-1.5 rounded-lg text-xs font-bold transition-colors inline-block mt-2 md:mt-0 shadow-sm">إلغاء ❌</button>`}</td></tr>`; 
             }).join(''); 
@@ -874,8 +889,22 @@
 
         let deferredPrompt;
         window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredPrompt = e; const installBtn = document.getElementById('install-app-btn'); if (installBtn) installBtn.classList.remove('hidden'); });
-        function installPWA() { if (deferredPrompt) { deferredPrompt.prompt(); deferredPrompt.userChoice.then((choiceResult) => { if (choiceResult.outcome === 'accepted') { document.getElementById('install-app-btn').classList.add('hidden'); } deferredPrompt = null; }); } else { alert('لتثبيت التطبيق على الآيفون: اضغط على زر المشاركة (Share) ثم "Add to Home Screen".'); } }
+        function installPWA() { 
+            if (deferredPrompt) { 
+                deferredPrompt.prompt(); 
+                deferredPrompt.userChoice.then((choiceResult) => { 
+                    if (choiceResult.outcome === 'accepted') { 
+                        const installBtn = document.getElementById('install-app-btn');
+                        if(installBtn) installBtn.classList.add('hidden'); 
+                    } 
+                    deferredPrompt = null; 
+                }); 
+            } else { 
+                alert('لتنزيل التطبيق:\n- للآيفون: اضغط زر المشاركة (Share) ثم "Add to Home Screen".\n- للأندرويد: من قائمة المتصفح (⋮) اختر "Install app" أو "Add to Home Screen".'); 
+            } 
+        }
         if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js').then(reg => { console.log('PWA Service Worker Registered', reg); }).catch(err => console.log('Service Worker Error', err)); }); }
     </script>
 </body>
 </html>
+
