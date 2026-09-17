@@ -1,6 +1,6 @@
 {
   "name": "Geo X Platform",
-  "short_name": "Geo X",
+  "short_name": "Geo X Platform",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#0B1437",
