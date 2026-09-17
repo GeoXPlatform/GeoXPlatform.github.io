@@ -5,17 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Geo X Platform</title>
     
-    <!-- إعدادات تطبيق الموبايل (PWA) -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#0B1437">
     <link rel="icon" href="./logo-transparent.png" type="image/png">
     <link rel="apple-touch-icon" href="./logo-transparent.png">
 
-    <!-- مكاتب التصميم وتصدير الإكسيل -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
-    <!-- مكاتب Firebase متضمنة Auth لـ Google -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
@@ -31,7 +28,12 @@
         .btn-premium:hover { background: linear-gradient(135deg, #4338CA 0%, #2563EB 100%); transform: translateY(-1px); box-shadow: 0 10px 25px -5px rgba(79, 70, 229, 0.4); }
         @keyframes popIn { 0% { transform: scale(0.5); opacity: 0; } 50% { transform: scale(1.2); opacity: 1; } 100% { transform: scale(1); opacity: 0; } }
         .countdown-text { animation: popIn 1s ease-in-out infinite; }
-        .admin-tab-btn.active { background-color: #4F46E5; color: white; border-color: transparent; }
+        
+        /* ألوان أزرار الإدارة المحسنة */
+        .admin-tab-btn { background-color: #f1f5f9; color: #64748b; border: 1px solid #e2e8f0; transition: all 0.3s ease; }
+        .admin-tab-btn:hover { background-color: #e2e8f0; color: #0f172a; }
+        .admin-tab-btn.active { background-color: #4F46E5 !important; color: white !important; border-color: transparent !important; transform: scale(1.05); box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.3); z-index: 10; }
+        
         input, select, textarea { transition: all 0.3s ease; }
         input:focus, select:focus, textarea:focus { box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1); outline: none; border-color: #4F46E5; }
         input[type="radio"]:checked + span { color: #4F46E5; }
@@ -182,23 +184,33 @@
             </div>
             
             <div class="grid grid-cols-2 md:grid-cols-5 gap-3">
-                <button onclick="showAdminTab('tab-covers')" id="btn-tab-covers" class="admin-tab-btn active bg-indigo-600 text-white font-extrabold py-3.5 rounded-2xl shadow-md text-sm transition-all border border-transparent">🖼️ الصور</button>
-                <button onclick="showAdminTab('tab-content')" id="btn-tab-content" class="admin-tab-btn bg-white text-slate-600 hover:bg-slate-50 font-bold py-3.5 rounded-2xl border border-slate-200 text-sm transition-all">📝 الدروس</button>
-                <button onclick="showAdminTab('tab-students')" id="btn-tab-students" class="admin-tab-btn bg-white text-slate-600 hover:bg-slate-50 font-bold py-3.5 rounded-2xl border border-slate-200 text-sm transition-all">👥 الطلاب</button>
-                <button onclick="showAdminTab('tab-exams')" id="btn-tab-exams" class="admin-tab-btn bg-white text-slate-600 hover:bg-slate-50 font-bold py-3.5 rounded-2xl border border-slate-200 text-sm transition-all">🏆 الامتحانات</button>
-                <button onclick="showAdminTab('tab-announcements')" id="btn-tab-announcements" class="admin-tab-btn bg-white text-slate-600 hover:bg-slate-50 font-bold py-3.5 rounded-2xl border border-slate-200 text-sm transition-all md:col-span-1 col-span-2">📣 الإعلانات</button>
+                <button onclick="showAdminTab('tab-covers')" id="btn-tab-covers" class="admin-tab-btn font-extrabold py-3.5 rounded-2xl text-sm">🖼️ الصور</button>
+                <button onclick="showAdminTab('tab-content')" id="btn-tab-content" class="admin-tab-btn font-bold py-3.5 rounded-2xl text-sm">📝 الدروس</button>
+                <button onclick="showAdminTab('tab-students')" id="btn-tab-students" class="admin-tab-btn font-bold py-3.5 rounded-2xl text-sm">👥 الطلاب</button>
+                <button onclick="showAdminTab('tab-exams')" id="btn-tab-exams" class="admin-tab-btn font-bold py-3.5 rounded-2xl text-sm">🏆 الامتحانات</button>
+                <button onclick="showAdminTab('tab-announcements')" id="btn-tab-announcements" class="admin-tab-btn font-bold py-3.5 rounded-2xl text-sm md:col-span-1 col-span-2">📣 الإعلانات</button>
             </div>
 
-            <div id="tab-covers" class="admin-tab block bg-white p-6 md:p-8 rounded-[2rem] shadow-sm border border-slate-100">
-                <h3 class="text-lg font-black text-slate-800 mb-5 border-b border-slate-100 pb-4">إدارة صور الغلاف (للسنين والوحدات فقط)</h3>
+            <!-- إدارة الغلاف -->
+            <div id="tab-covers" class="admin-tab hidden bg-white p-6 md:p-8 rounded-[2rem] shadow-sm border border-slate-100">
+                <h3 class="text-lg font-black text-slate-800 mb-5 border-b border-slate-100 pb-4">إدارة صور الغلاف (للسنين والوحدات)</h3>
+                
+                <!-- عرض الصورة الحالية -->
+                <div id="admin-current-cover" class="hidden mb-6 bg-slate-50 p-4 rounded-xl border border-slate-200 text-center">
+                    <h4 class="font-black text-slate-700 mb-3 text-sm">الصورة المرفوعة حالياً:</h4>
+                    <img id="admin-cover-preview-img" src="" class="w-full max-w-sm mx-auto rounded-lg shadow-sm border border-slate-300 aspect-video object-cover mb-3">
+                    <button onclick="deleteCurrentCover()" class="bg-red-50 hover:bg-red-500 text-red-600 hover:text-white font-bold py-2 px-4 rounded-lg text-sm transition-colors border border-red-200">مسح الصورة 🗑️</button>
+                </div>
+
                 <form onsubmit="handleCoverUpload(event)" class="grid grid-cols-1 md:grid-cols-2 gap-5">
                     <div><select id="coverGrade" onchange="updateCoverUnitDropdown()" required class="w-full p-3.5 border border-slate-200 rounded-xl bg-slate-50 text-sm font-bold"><option value="" disabled selected>-- السنة الدراسية --</option><option value="prep1">أولى إعدادي</option><option value="prep2">تانية إعدادي</option><option value="prep3">تالتة إعدادي</option></select></div>
-                    <div><select id="coverUnitId" class="w-full p-3.5 border border-slate-200 rounded-xl bg-slate-50 text-sm font-bold"><option value="">-- اختار الوحدة (أو سيبها للسنة كاملة) --</option></select></div>
+                    <div><select id="coverUnitId" onchange="updateCoverUnitDropdown()" class="w-full p-3.5 border border-slate-200 rounded-xl bg-slate-50 text-sm font-bold"><option value="">-- اختار الوحدة (أو سيبها للسنة كاملة) --</option></select></div>
                     <div class="md:col-span-2"><input type="file" id="coverImage" accept="image/*" required class="w-full p-3 border border-slate-200 rounded-xl bg-slate-50 text-sm font-bold"></div>
                     <div class="md:col-span-2 mt-2"><button type="submit" class="w-full btn-premium text-white font-bold py-3.5 rounded-xl shadow-md">احفظ وحدث الكوڤر 📤</button></div>
                 </form>
             </div>
 
+            <!-- إدارة المحتوى -->
             <div id="tab-content" class="admin-tab hidden bg-white p-6 md:p-8 rounded-[2rem] shadow-sm border border-slate-100">
                 <h3 class="text-lg font-black text-slate-800 mb-5 border-b border-slate-100 pb-4">محتوى الدروس</h3>
                 <form onsubmit="handleContentUpload(event)" class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-5">
@@ -206,6 +218,12 @@
                     <div><select id="contentUnitId" onchange="updateContentLessonDropdown()" required class="w-full p-3.5 border rounded-xl bg-slate-50 text-sm font-bold"><option value="" disabled selected>-- الوحدة --</option></select></div>
                     <div><select id="contentLessonId" onchange="loadLessonData()" required class="w-full p-3.5 border border-indigo-200 rounded-xl bg-indigo-50 text-sm font-bold text-indigo-700"><option value="" disabled selected>-- الدرس --</option></select></div>
                     
+                    <!-- كاشف المحتوى المرفوع (X-Ray) -->
+                    <div id="admin-current-content" class="md:col-span-3 bg-blue-50 p-4 rounded-xl border border-blue-200 hidden">
+                        <h4 class="font-black text-blue-800 mb-3 text-sm">المرفوع حالياً في هذا الدرس:</h4>
+                        <div class="flex flex-wrap gap-3" id="admin-content-badges"></div>
+                    </div>
+
                     <div class="md:col-span-3 grid grid-cols-1 md:grid-cols-2 gap-5 bg-slate-50 p-5 rounded-2xl border border-slate-200 mt-2">
                         <div>
                             <label class="block font-bold mb-2 text-sm">📺 لينك يوتيوب:</label>
@@ -215,7 +233,7 @@
                             <span id="pdfStatus" class="text-xs font-bold text-emerald-600 mt-2 block"></span>
                         </div>
                         <div>
-                            <label class="block font-bold mb-2 text-sm flex justify-between"><span>⏱️ كود الامتحان (JSON):</span><span class="text-xs font-normal text-slate-500">ادعم المقالي بـ "type": "essay"</span></label>
+                            <label class="block font-bold mb-2 text-sm flex justify-between"><span>⏱️ كود الامتحان (JSON):</span><span class="text-xs font-normal text-slate-500">الصق الأسئلة هنا</span></label>
                             <textarea id="lessonExamText" rows="6" dir="ltr" class="w-full p-4 border rounded-xl bg-[#0F172A] text-emerald-400 font-mono text-xs leading-relaxed"></textarea>
                         </div>
                         <div class="md:col-span-2 mt-1 bg-indigo-50/70 p-4 rounded-xl flex justify-around border border-indigo-100">
@@ -277,24 +295,40 @@
         </div>
     </div>
 
-    <!-- تحديث البروفايل (إضافة رفع الصورة والإطارات الذكية) -->
+    <!-- نافذة معاينة وقص الصورة الشخصية -->
+    <div id="crop-modal" class="hidden fixed inset-0 bg-[#0B1437]/95 backdrop-blur-md z-[600] flex items-center justify-center p-4">
+        <div class="bg-white p-6 rounded-[2rem] w-full max-w-sm text-center shadow-2xl border border-slate-100">
+            <h3 class="text-xl font-black text-slate-800 mb-2">تظبيط الصورة 🖼️</h3>
+            <p class="text-xs font-bold text-slate-500 mb-6">سيتم ضبط صورتك تلقائياً لتناسب الإطار الدائري</p>
+            
+            <div class="relative w-48 h-48 mx-auto mb-6 rounded-full overflow-hidden border-4 border-emerald-400 shadow-inner bg-slate-100">
+                <img id="crop-preview-img" class="w-full h-full object-cover">
+            </div>
+            
+            <div class="flex gap-3">
+                <button onclick="confirmCropAndUpload()" class="flex-1 bg-emerald-500 hover:bg-emerald-600 text-white font-black py-3.5 rounded-xl transition-colors shadow-md">حفظ صورتي ✅</button>
+                <button onclick="closeCropModal()" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-600 font-black py-3.5 rounded-xl transition-colors">إلغاء ❌</button>
+            </div>
+        </div>
+    </div>
+
     <div id="profile-modal" class="hidden fixed inset-0 bg-[#0B1437]/80 backdrop-blur-sm z-[300] flex items-center justify-center p-4">
         <div class="bg-white rounded-[2rem] w-full max-w-lg overflow-hidden shadow-2xl border border-slate-100 flex flex-col max-h-[90vh]">
             <div class="bg-gradient-to-br from-[#0F172A] to-[#1E293B] p-6 text-center relative shrink-0">
                 <button onclick="document.getElementById('profile-modal').classList.add('hidden')" class="absolute top-4 left-4 text-slate-400 text-2xl hover:text-white transition-colors">✖</button>
                 
-                <div class="relative w-20 h-20 mx-auto mb-3">
-                    <div id="profile-modal-avatar" class="w-20 h-20 bg-white/10 rounded-full flex items-center justify-center text-4xl border border-white/20 text-emerald-400 overflow-hidden shadow-lg">𓂀</div>
-                    <label for="profile-pic-upload" class="absolute -bottom-2 -left-2 bg-emerald-500 hover:bg-emerald-600 text-white w-8 h-8 rounded-xl flex items-center justify-center cursor-pointer shadow-lg border-2 border-[#1E293B] transition-all hover:scale-110 text-xs">
+                <div class="relative w-24 h-24 mx-auto mb-3">
+                    <div id="profile-modal-avatar" class="w-24 h-24 bg-white/10 rounded-full flex items-center justify-center text-5xl border border-white/20 text-emerald-400 overflow-hidden shadow-lg">𓂀</div>
+                    <label for="profile-pic-upload" class="absolute -bottom-1 -left-1 bg-emerald-500 hover:bg-emerald-600 text-white w-9 h-9 rounded-xl flex items-center justify-center cursor-pointer shadow-lg border-2 border-[#1E293B] transition-all hover:scale-110 text-sm">
                         📷
                     </label>
-                    <input type="file" id="profile-pic-upload" accept="image/*" class="hidden" onchange="handleProfilePicUpload(event)">
+                    <input type="file" id="profile-pic-upload" accept="image/*" class="hidden" onchange="triggerCropModal(event)">
                 </div>
                 
                 <div id="profile-name-display">
-                    <h3 id="profile-name" class="text-lg font-black text-white mb-2"></h3>
+                    <h3 id="profile-name" class="text-xl font-black text-white mb-2"></h3>
                     <div id="student-badges" class="flex gap-2 justify-center mb-3 flex-wrap"></div>
-                    <button onclick="showEditNameForm()" class="text-xs bg-white/10 hover:bg-white/20 text-white px-3 py-1.5 rounded-lg border border-white/20 transition-colors">تعديل الاسم ✏️</button>
+                    <button onclick="showEditNameForm()" class="text-xs bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-lg border border-white/20 transition-colors font-bold">تعديل الاسم ✏️</button>
                     
                     <div class="mt-4 text-right">
                         <p class="text-[11px] text-indigo-200 font-bold mb-1" id="profile-progress-text">إنجازك في المنهج:</p>
@@ -308,9 +342,9 @@
 
                 <div id="profile-name-edit" class="hidden mt-2 space-y-2 max-w-xs mx-auto">
                     <p class="text-[10px] text-red-400 font-bold mb-2 text-center bg-red-900/30 py-1 rounded">⚠️ تنبيه: يمكنك تعديل اسمك مرة واحدة فقط!</p>
-                    <input type="text" id="edit-fname" placeholder="الاسم الأول" class="w-full p-2 text-sm rounded-lg text-right text-slate-800 outline-none border border-indigo-200">
-                    <input type="text" id="edit-mname" placeholder="الاسم الثاني" class="w-full p-2 text-sm rounded-lg text-right text-slate-800 outline-none border border-indigo-200">
-                    <input type="text" id="edit-lname" placeholder="الاسم الثالث" class="w-full p-2 text-sm rounded-lg text-right text-slate-800 outline-none border border-indigo-200">
+                    <input type="text" id="edit-fname" placeholder="الاسم الأول" class="w-full p-2 text-sm rounded-lg text-right text-slate-800 outline-none border border-indigo-200 font-bold">
+                    <input type="text" id="edit-mname" placeholder="الاسم الثاني" class="w-full p-2 text-sm rounded-lg text-right text-slate-800 outline-none border border-indigo-200 font-bold">
+                    <input type="text" id="edit-lname" placeholder="الاسم الثالث" class="w-full p-2 text-sm rounded-lg text-right text-slate-800 outline-none border border-indigo-200 font-bold">
                     <div class="flex gap-2 pt-1">
                         <button onclick="saveEditedName()" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-2 rounded-lg text-sm transition-colors">حفظ</button>
                         <button onclick="cancelEditName()" class="w-full bg-slate-600 hover:bg-slate-700 text-white font-bold py-2 rounded-lg text-sm transition-colors">إلغاء</button>
@@ -400,7 +434,7 @@
         </div>
     </div>
 
-    <!-- Social & Contact Modal (مع زر التنزيل الدائم) -->
+    <!-- Social & Contact Modal -->
     <div id="social-modal" class="hidden fixed inset-0 bg-[#0B1437]/80 backdrop-blur-sm z-[500] flex items-center justify-center p-4">
         <div class="bg-white p-7 rounded-[2rem] shadow-2xl w-full max-w-sm text-center border border-slate-100 relative">
             <button onclick="document.getElementById('social-modal').classList.add('hidden')" class="absolute top-4 left-4 text-slate-400 hover:text-red-500 text-xl transition-colors">✖</button>
@@ -408,8 +442,7 @@
             <h3 class="text-xl font-black text-slate-800 mb-1">تابعنا وتواصل معنا</h3>
             <p class="text-xs text-slate-500 font-semibold mb-5">منصة Geo X للدراسات الاجتماعية</p>
 
-            <!-- زر التنزيل الدائم للمنصة -->
-            <button onclick="installPWA()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-black py-3 rounded-xl shadow-md transition-all mb-5 flex items-center justify-center gap-2 border border-indigo-500">
+            <button onclick="installPWA()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-black py-3.5 rounded-xl shadow-md transition-all mb-5 flex items-center justify-center gap-2 border border-indigo-500">
                 تنزيل المنصة على الموبايل 📲
             </button>
             
@@ -475,6 +508,7 @@
         let pendingGoogleUser = null;
         let cheatWarnings = 0; 
         let currentFlashcardIndex = 0, flashcardsList = []; 
+        let isViewRestored = false;
 
         const cachedStudent = JSON.parse(localStorage.getItem('geox_student_user'));
         const isAdminCached = localStorage.getItem('geox_admin_logged');
@@ -482,7 +516,15 @@
         else if (isAdminCached) { const btn = document.getElementById('student-greeting'); btn.innerHTML = `لوحة الإدارة ⚙️`; btn.onclick = null; } 
         else { updateStudentUI(null); }
 
-        database.ref('covers').on('value', s => { coversData = s.val()||{}; const st = JSON.parse(sessionStorage.getItem('geox_current_view')); if (!st || st.view === 'home' || currentGrade==='') renderStagesGrid(); else if (st.view === 'grade' || st.view === 'unit' || st.view === 'lesson') openGrade(st.g, true); });
+        database.ref('covers').on('value', s => { 
+            coversData = s.val()||{}; 
+            // تحديث الوحدات صامتاً بدون الرجوع للبداية
+            if (currentGrade !== '' && !document.getElementById('student-units-container').classList.contains('hidden')) {
+                openGrade(currentGrade, true);
+            } else if (currentGrade === '' && !document.getElementById('student-stages').classList.contains('hidden')) {
+                renderStagesGrid();
+            }
+        });
         database.ref('lessons_data').on('value', s => lessonsDataCache = s.val()||{});
         database.ref('analytics').on('value', s => analyticsDataCache = s.val()||{});
         database.ref('exam_results').on('value', s => { 
@@ -490,8 +532,17 @@
             if(!document.getElementById('teacher-view').classList.contains('hidden')) renderLeaderboard(); 
             const st = JSON.parse(localStorage.getItem('geox_student_user'));
             if(st && document.getElementById('student-view').classList.contains('block')) updateStudentUI(st);
+            if(st && !document.getElementById('profile-modal').classList.contains('hidden')) openProfileModal();
         });
-        database.ref('students').on('value', s => { const val = s.val()||{}; allStudents = Object.keys(val).map(k => ({...val[k], uid: k})); if(!document.getElementById('teacher-view').classList.contains('hidden')) renderStudentsTable(); });
+        database.ref('students').on('value', s => { 
+            const val = s.val()||{}; 
+            allStudents = Object.keys(val).map(k => ({...val[k], uid: k})); 
+            if(!document.getElementById('teacher-view').classList.contains('hidden')) renderStudentsTable(); 
+            if(!document.getElementById('global-leaderboard-modal').classList.contains('hidden')) {
+                const activeBtn = document.querySelector('#global-leaderboard-modal button.bg-indigo-600');
+                if(activeBtn) openGlobalLeaderboard(activeBtn.id.replace('gl-', '').replace('-btn', ''));
+            }
+        });
         database.ref('announcement').on('value', s => { const text = s.val() || ''; const bar = document.getElementById('announcement-bar'); if(text) { bar.classList.remove('hidden'); document.getElementById('announcement-text').innerText = text; } else { bar.classList.add('hidden'); } if(document.getElementById('adminAnnouncementInput')) { document.getElementById('adminAnnouncementInput').value = text; } });
 
         auth.onAuthStateChanged(user => {
@@ -510,7 +561,8 @@
                     document.getElementById('student-view').classList.remove('hidden');
                     database.ref('students/' + user.uid).once('value', snap => {
                         if (snap.exists()) {
-                            localStorage.setItem('geox_student_user', JSON.stringify(snap.val())); updateStudentUI(snap.val()); restoreLastView(); 
+                            localStorage.setItem('geox_student_user', JSON.stringify(snap.val())); updateStudentUI(snap.val()); 
+                            if (!isViewRestored) { restoreLastView(); isViewRestored = true; }
                             if (currentLesson && !document.getElementById('student-content-container').classList.contains('hidden')) { openLessonContent(currentLesson, document.getElementById('content-title').innerText.replace('📄 ',''), true); }
                         } else { pendingGoogleUser = user; document.getElementById('phone-modal').classList.remove('hidden'); }
                     });
@@ -518,11 +570,11 @@
             } else { 
                 localStorage.removeItem('geox_admin_logged');
                 localStorage.removeItem('geox_student_user');
-                updateStudentUI(null); restoreLastView(); 
+                updateStudentUI(null); 
+                if (!isViewRestored) { restoreLastView(); isViewRestored = true; }
             }
         });
 
-        // دوال الإطارات الذهبية والفضية تعتمد الآن على النقاط والوقت معاً
         function getUserRankClass(uid) {
             let bestRank = 999999;
             ['prep1', 'prep2', 'prep3'].forEach(grade => {
@@ -536,22 +588,27 @@
                 const myIndex = sorted.findIndex(r => r.uid === uid);
                 if(myIndex !== -1 && myIndex < bestRank) bestRank = myIndex;
             });
-            
             if(bestRank === 0) return 'ring-4 ring-yellow-400 shadow-[0_0_15px_rgba(250,204,21,0.8)]';
             if(bestRank === 1) return 'ring-4 ring-gray-300 shadow-[0_0_15px_rgba(209,213,219,0.8)]';
             if(bestRank === 2) return 'ring-4 ring-amber-700 shadow-[0_0_15px_rgba(180,83,9,0.8)]';
             return 'border-2 border-white/30 shadow-md'; 
         }
 
+        function getStudentRealName(uid, fallbackName) {
+            let st = allStudents.find(s => s.uid === uid);
+            return st ? st.name : fallbackName;
+        }
+
         function updateStudentUI(st) { 
             const btn = document.getElementById('student-greeting'); 
             const msg = document.getElementById('main-welcome-msg'); 
             if(st) { 
+                let realName = getStudentRealName(st.uid, st.name);
                 let ringClass = getUserRankClass(st.uid);
                 let avatarHtml = st.profilePic ? `<img src="${st.profilePic}" loading="lazy" decoding="async" class="w-7 h-7 md:w-8 md:h-8 rounded-full object-cover shrink-0 ${ringClass}">` : `<div class="w-7 h-7 md:w-8 md:h-8 rounded-full bg-indigo-50 text-indigo-600 flex items-center justify-center text-xs shrink-0 ${ringClass}">👤</div>`;
-                btn.innerHTML = `${avatarHtml} <span class="max-w-[80px] truncate">${st.name.split(' ')[0]}</span>`; 
+                btn.innerHTML = `${avatarHtml} <span class="max-w-[80px] truncate">${realName.split(' ')[0]}</span>`; 
                 btn.onclick = openProfileModal; 
-                if(msg) msg.innerHTML = `اهلا ${st.name.split(' ')[0]} 🎓`; 
+                if(msg) msg.innerHTML = `اهلا ${realName.split(' ')[0]} 🎓`; 
             } else { 
                 btn.innerHTML = `تسجيل الدخول`; 
                 btn.onclick = handleUnifiedLogin; 
@@ -563,37 +620,45 @@
         function saveStudentPhone() { const phone = document.getElementById('newStudentPhone').value.trim(); if (phone.length < 10) return alert('برجاء كتابة رقم الموبايل بشكل صحيح!'); const studentData = { uid: pendingGoogleUser.uid, name: pendingGoogleUser.displayName, email: pendingGoogleUser.email, phone: phone, nameEdited: false, profilePic: null, date: new Date().toLocaleString('ar-EG') }; database.ref('students/' + pendingGoogleUser.uid).set(studentData).then(() => { localStorage.setItem('geox_student_user', JSON.stringify(studentData)); document.getElementById('phone-modal').classList.add('hidden'); updateStudentUI(studentData); alert('تم التسجيل بنجاح! أهلاً بك يا بطل 🎓'); if (currentLesson && !document.getElementById('student-content-container').classList.contains('hidden')) { openLessonContent(currentLesson, document.getElementById('content-title').innerText.replace('📄 ',''), true); } }); }
         function logoutUnified() { localStorage.removeItem('geox_student_user'); auth.signOut().then(() => location.reload()); }
 
-        function handleProfilePicUpload(e) {
+        let currentUploadedImageBase64 = null;
+        function triggerCropModal(e) {
             const file = e.target.files[0];
             if(!file) return;
             const reader = new FileReader();
             reader.onload = (event) => {
-                const img = new Image();
-                img.onload = () => {
-                    const cvs = document.createElement('canvas');
-                    const W = 200, H = 200; 
-                    cvs.width = W; cvs.height = H;
-                    const ctx = cvs.getContext('2d');
-                    ctx.drawImage(img, 0, 0, W, H);
-                    const base64Pic = cvs.toDataURL('image/jpeg', 0.7); 
-                    
-                    const st = JSON.parse(localStorage.getItem('geox_student_user'));
-                    database.ref('students/' + st.uid + '/profilePic').set(base64Pic).then(() => {
-                        st.profilePic = base64Pic;
-                        localStorage.setItem('geox_student_user', JSON.stringify(st));
-                        updateStudentUI(st);
-                        document.getElementById('profile-modal-avatar').innerHTML = `<img src="${base64Pic}" class="w-full h-full object-cover">`;
-                        alert('تم تحديث صورتك بنجاح! 🖼️');
-                    });
-                };
-                img.src = event.target.result;
+                currentUploadedImageBase64 = event.target.result;
+                document.getElementById('crop-preview-img').src = currentUploadedImageBase64;
+                document.getElementById('crop-modal').classList.remove('hidden');
             };
             reader.readAsDataURL(file);
+        }
+        function closeCropModal() { document.getElementById('crop-modal').classList.add('hidden'); document.getElementById('profile-pic-upload').value = ''; }
+        function confirmCropAndUpload() {
+            const img = new Image();
+            img.onload = () => {
+                const cvs = document.createElement('canvas');
+                const W = 150, H = 150; 
+                cvs.width = W; cvs.height = H;
+                const ctx = cvs.getContext('2d');
+                ctx.drawImage(img, 0, 0, W, H);
+                const compressedPic = cvs.toDataURL('image/jpeg', 0.6); 
+                
+                const st = JSON.parse(localStorage.getItem('geox_student_user'));
+                database.ref('students/' + st.uid + '/profilePic').set(compressedPic).then(() => {
+                    st.profilePic = compressedPic;
+                    localStorage.setItem('geox_student_user', JSON.stringify(st));
+                    updateStudentUI(st);
+                    document.getElementById('profile-modal-avatar').innerHTML = `<img src="${compressedPic}" class="w-full h-full object-cover">`;
+                    closeCropModal();
+                    alert('تم تحديث صورتك بنجاح! 🖼️');
+                });
+            };
+            img.src = currentUploadedImageBase64;
         }
 
         window.addEventListener('DOMContentLoaded', () => { history.replaceState({view: 'home'}, '', window.location.pathname); });
         function restoreLastView() { const state = JSON.parse(sessionStorage.getItem('geox_current_view')); if (state) { if (state.view === 'grade') openGrade(state.g, true); else if (state.view === 'unit') { currentGrade = state.g; openUnit(state.u, true); } else if (state.view === 'lesson' || state.view === 'exam') { currentGrade = state.g; currentUnit = state.u; openLessonContent(state.l, state.t, true); } } else renderStagesGrid(); }
-        window.addEventListener('popstate', (e) => { const st = e.state; document.getElementById('profile-modal').classList.add('hidden'); document.getElementById('phone-modal').classList.add('hidden'); document.getElementById('social-modal').classList.add('hidden'); document.getElementById('mistakes-modal').classList.add('hidden'); document.getElementById('flashcards-modal').classList.add('hidden'); document.getElementById('certificate-modal').classList.add('hidden'); document.getElementById('global-leaderboard-modal').classList.add('hidden'); document.getElementById('exam-screen').classList.add('hidden'); document.getElementById('student-stages').classList.add('hidden'); document.getElementById('student-units-container').classList.add('hidden'); document.getElementById('student-lessons-container').classList.add('hidden'); document.getElementById('student-content-container').classList.add('hidden'); if(!st || st.view === 'home') { sessionStorage.setItem('geox_current_view', JSON.stringify({view:'home'})); if(!document.getElementById('teacher-view').classList.contains('hidden')) showAdminTab('tab-covers', true); else document.getElementById('student-stages').classList.remove('hidden'); } else if(st.view === 'grade') { sessionStorage.setItem('geox_current_view', JSON.stringify({view:'grade', g:st.g})); openGrade(st.g, true); } else if(st.view === 'unit') { currentGrade = st.g; sessionStorage.setItem('geox_current_view', JSON.stringify({view:'unit', g:st.g, u:st.u})); openUnit(st.u, true); } else if(st.view === 'lesson') { currentUnit = st.u; currentGrade = st.g; sessionStorage.setItem('geox_current_view', JSON.stringify({view:'lesson', g:st.g, u:st.u, l:st.l, t:st.t})); openLessonContent(st.l, st.t, true); } else if(st.view === 'adminTab') showAdminTab(st.tab, true); else if(st.view === 'exam') document.getElementById('student-content-container').classList.remove('hidden'); });
+        window.addEventListener('popstate', (e) => { const st = e.state; document.getElementById('profile-modal').classList.add('hidden'); document.getElementById('crop-modal').classList.add('hidden'); document.getElementById('phone-modal').classList.add('hidden'); document.getElementById('social-modal').classList.add('hidden'); document.getElementById('mistakes-modal').classList.add('hidden'); document.getElementById('flashcards-modal').classList.add('hidden'); document.getElementById('certificate-modal').classList.add('hidden'); document.getElementById('global-leaderboard-modal').classList.add('hidden'); document.getElementById('exam-screen').classList.add('hidden'); document.getElementById('student-stages').classList.add('hidden'); document.getElementById('student-units-container').classList.add('hidden'); document.getElementById('student-lessons-container').classList.add('hidden'); document.getElementById('student-content-container').classList.add('hidden'); if(!st || st.view === 'home') { sessionStorage.setItem('geox_current_view', JSON.stringify({view:'home'})); if(!document.getElementById('teacher-view').classList.contains('hidden')) showAdminTab('tab-covers', true); else document.getElementById('student-stages').classList.remove('hidden'); } else if(st.view === 'grade') { sessionStorage.setItem('geox_current_view', JSON.stringify({view:'grade', g:st.g})); openGrade(st.g, true); } else if(st.view === 'unit') { currentGrade = st.g; sessionStorage.setItem('geox_current_view', JSON.stringify({view:'unit', g:st.g, u:st.u})); openUnit(st.u, true); } else if(st.view === 'lesson') { currentUnit = st.u; currentGrade = st.g; sessionStorage.setItem('geox_current_view', JSON.stringify({view:'lesson', g:st.g, u:st.u, l:st.l, t:st.t})); openLessonContent(st.l, st.t, true); } else if(st.view === 'adminTab') showAdminTab(st.tab, true); else if(st.view === 'exam') document.getElementById('student-content-container').classList.remove('hidden'); });
         function goBackVisually() { history.back(); }
 
         function renderStagesGrid() { document.getElementById('stages-grid').innerHTML = Object.keys(GRADES).map(g => `<div onclick="openGrade('${g}')" class="ui-card cursor-pointer rounded-[2rem] overflow-hidden aspect-video relative bg-[#0B1437]"><img src="${coversData['STAGE_COVER_'+g]||DEFAULT_COVER}" loading="lazy" decoding="async" class="absolute inset-0 w-full h-full object-cover opacity-70 hover:opacity-100 transition-opacity duration-700"><div class="absolute bottom-0 inset-x-0 p-5 bg-gradient-to-t from-[#0B1437] via-[#0B1437]/80 to-transparent z-20 flex items-end"><h3 class="text-2xl md:text-3xl font-black text-white drop-shadow-lg">${GRADES[g]}</h3></div></div>`).join(''); }
@@ -606,17 +671,9 @@
             if (!url) return;
             recordAnalytics(currentLesson, 'yt');
             let isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-            if (isMobile && url.includes('youtube.com/watch?v=')) {
-                let vid = url.split('v=')[1].split('&')[0];
-                window.location.href = 'vnd.youtube://' + vid;
-                setTimeout(() => { window.open(url, '_blank'); }, 1500);
-            } else if (isMobile && url.includes('youtu.be/')) {
-                let vid = url.split('youtu.be/')[1].split('?')[0];
-                window.location.href = 'vnd.youtube://' + vid;
-                setTimeout(() => { window.open(url, '_blank'); }, 1500);
-            } else {
-                window.open(url, '_blank');
-            }
+            if (isMobile && url.includes('youtube.com/watch?v=')) { let vid = url.split('v=')[1].split('&')[0]; window.location.href = 'vnd.youtube://' + vid; setTimeout(() => { window.open(url, '_blank'); }, 1500);
+            } else if (isMobile && url.includes('youtu.be/')) { let vid = url.split('youtu.be/')[1].split('?')[0]; window.location.href = 'vnd.youtube://' + vid; setTimeout(() => { window.open(url, '_blank'); }, 1500);
+            } else { window.open(url, '_blank'); }
         }
 
         function getSafeExamData(examData) {
@@ -652,11 +709,13 @@
         function openProfileModal() {
             const st = JSON.parse(localStorage.getItem('geox_student_user'));
             if(st) { 
-                document.getElementById('profile-name').innerText = st.name; document.getElementById('profile-name-display').classList.remove('hidden'); document.getElementById('profile-name-edit').classList.add('hidden');
+                let realName = getStudentRealName(st.uid, st.name);
+                document.getElementById('profile-name').innerText = realName; 
+                document.getElementById('profile-name-display').classList.remove('hidden'); document.getElementById('profile-name-edit').classList.add('hidden');
                 
                 let ringClass = getUserRankClass(st.uid);
                 let avatarHtml = st.profilePic ? `<img src="${st.profilePic}" loading="lazy" class="w-full h-full object-cover">` : `𓂀`;
-                document.getElementById('profile-modal-avatar').className = `w-20 h-20 bg-white/10 rounded-full flex items-center justify-center text-4xl text-emerald-400 overflow-hidden shadow-lg ${ringClass}`;
+                document.getElementById('profile-modal-avatar').className = `w-24 h-24 bg-white/10 rounded-full flex items-center justify-center text-5xl text-emerald-400 overflow-hidden shadow-lg ${ringClass}`;
                 document.getElementById('profile-modal-avatar').innerHTML = avatarHtml;
 
                 const myScores = examResultsCache.filter(r => r.uid === st.uid); myScores.sort((a,b) => new Date(b.date) - new Date(a.date)); 
@@ -686,7 +745,7 @@
                 } else { document.getElementById('profile-progress').style.width = '0%'; document.getElementById('profile-progress-text').innerText = `إنجازك في المنهج: 0%`; }
 
                 let listHtml = myScores.length === 0 ? '<p class="text-slate-400 text-center text-sm py-4">لم تمتحن أي درس بعد.</p>' : '';
-                myScores.forEach(s => { let perc = Math.round((s.score / s.total) * 100) || 0; let color = perc >= 85 ? 'text-emerald-600 bg-emerald-50 border-emerald-100' : (perc >= 50 ? 'text-amber-600 bg-amber-50 border-amber-100' : 'text-red-600 bg-red-50 border-red-100'); listHtml += `<div class="bg-white p-4 rounded-xl border border-slate-100 shadow-sm flex flex-col gap-2"><div class="flex justify-between items-center gap-3"><div class="text-right"><div class="font-bold text-slate-800 text-sm mb-1">${getLessonNameById(s.lessonId)}</div><div class="text-[10px] text-slate-400">${s.date}</div></div><div class="px-3 py-2 rounded-lg border font-black text-sm shrink-0 ${color}">${s.score} / ${s.total}</div></div>`; if(perc >= 90 || s.lessonId.includes('_review')) { listHtml += `<button onclick="generateCertificate('${st.name}', '${getLessonNameById(s.lessonId)}')" class="bg-gradient-to-r from-amber-100 to-orange-50 hover:from-amber-200 hover:to-orange-100 text-amber-700 px-3 py-1.5 rounded-lg text-xs font-black border border-amber-200 w-full transition-colors shadow-sm text-center">استلم شهادة التقدير 🎁</button>`; } listHtml += `</div>`; }); document.getElementById('student-scores-list').innerHTML = listHtml; document.getElementById('profile-modal').classList.remove('hidden'); 
+                myScores.forEach(s => { let perc = Math.round((s.score / s.total) * 100) || 0; let color = perc >= 85 ? 'text-emerald-600 bg-emerald-50 border-emerald-100' : (perc >= 50 ? 'text-amber-600 bg-amber-50 border-amber-100' : 'text-red-600 bg-red-50 border-red-100'); listHtml += `<div class="bg-white p-4 rounded-xl border border-slate-100 shadow-sm flex flex-col gap-2"><div class="flex justify-between items-center gap-3"><div class="text-right"><div class="font-bold text-slate-800 text-sm mb-1">${getLessonNameById(s.lessonId)}</div><div class="text-[10px] text-slate-400">${s.date}</div></div><div class="px-3 py-2 rounded-lg border font-black text-sm shrink-0 ${color}">${s.score} / ${s.total}</div></div>`; if(perc >= 90 || s.lessonId.includes('_review')) { listHtml += `<button onclick="generateCertificate('${realName}', '${getLessonNameById(s.lessonId)}')" class="bg-gradient-to-r from-amber-100 to-orange-50 hover:from-amber-200 hover:to-orange-100 text-amber-700 px-3 py-1.5 rounded-lg text-xs font-black border border-amber-200 w-full transition-colors shadow-sm text-center">استلم شهادة التقدير 🎁</button>`; } listHtml += `</div>`; }); document.getElementById('student-scores-list').innerHTML = listHtml; document.getElementById('profile-modal').classList.remove('hidden'); 
             } else handleUnifiedLogin();
         }
 
@@ -707,7 +766,6 @@
         function prevFlashcard() { if(currentFlashcardIndex > 0) { currentFlashcardIndex--; renderFlashcard(); } }
         function openSocialModal() { document.getElementById('social-modal').classList.remove('hidden'); }
 
-        // التعديل: الترتيب يحسب بالنقاط أولاً، ثم بالوقت الأقل عند التساوي
         function openGlobalLeaderboard(grade = 'prep3') {
             document.getElementById('gl-prep1-btn').className = `flex-1 py-2 text-sm md:text-base font-bold rounded-lg transition-colors ${grade==='prep1'?'bg-indigo-600 text-white shadow-sm':'bg-slate-200 text-slate-600 hover:bg-slate-300'}`; document.getElementById('gl-prep2-btn').className = `flex-1 py-2 text-sm md:text-base font-bold rounded-lg transition-colors ${grade==='prep2'?'bg-indigo-600 text-white shadow-sm':'bg-slate-200 text-slate-600 hover:bg-slate-300'}`; document.getElementById('gl-prep3-btn').className = `flex-1 py-2 text-sm md:text-base font-bold rounded-lg transition-colors ${grade==='prep3'?'bg-indigo-600 text-white shadow-sm':'bg-slate-200 text-slate-600 hover:bg-slate-300'}`;
             const units = CURRICULUM.filter(u => u.grade === grade); const validIds = []; units.forEach(u => { u.lessons.forEach(l => validIds.push(l.id)); validIds.push(u.id+'_review'); });
@@ -717,10 +775,9 @@
                 const iden = r.uid || r.phone; 
                 if(!g[iden]) g[iden] = {name: r.name, score: 0, time: 0, uid: r.uid, phone: r.phone}; 
                 g[iden].score += r.score; 
-                g[iden].time += r.time; // تجميع الوقت
+                g[iden].time += r.time; 
             });
             
-            // ترتيب بالنقاط أولاً، ثم الوقت الأقل
             const sorted = Object.values(g).sort((a,b) => b.score !== a.score ? b.score - a.score : a.time - b.time);
             const top10 = sorted.slice(0,10);
             
@@ -729,14 +786,15 @@
             let html = top10.map((r, i) => { 
                 let medal = i===0?'🥇':i===1?'🥈':i===2?'🥉':`<span class="text-slate-400 font-black text-lg w-6 text-center">#${i+1}</span>`; 
                 let st = allStudents.find(s => s.uid === r.uid || (r.phone && s.phone === r.phone));
+                let realName = st ? st.name : r.name;
                 
                 let ringClass = i===0 ? 'ring-4 ring-yellow-400 shadow-[0_0_15px_rgba(250,204,21,0.6)]' : i===1 ? 'ring-4 ring-gray-300 shadow-[0_0_15px_rgba(209,213,219,0.6)]' : i===2 ? 'ring-4 ring-amber-700 shadow-[0_0_15px_rgba(180,83,9,0.6)]' : 'border-2 border-white shadow-sm';
-                let avatar = (st && st.profilePic) ? `<img src="${st.profilePic}" loading="lazy" class="w-10 h-10 rounded-full object-cover shrink-0 ${ringClass}">` : `<div class="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center text-lg shrink-0 ${ringClass}">👤</div>`;
+                let avatar = (st && st.profilePic) ? `<img src="${st.profilePic}" loading="lazy" decoding="async" class="w-10 h-10 rounded-full object-cover shrink-0 ${ringClass}">` : `<div class="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center text-lg shrink-0 ${ringClass}">👤</div>`;
                 
                 let isCurrentUser = (currentSt && (r.uid === currentSt.uid || r.phone === currentSt.phone));
                 let rowBg = isCurrentUser ? 'bg-indigo-50 border-indigo-300 shadow-md' : (i<3?'border-amber-300 shadow-md bg-amber-50':'border-slate-100');
                 
-                return `<div class="flex justify-between items-center bg-white p-3 rounded-xl border ${rowBg}"><div class="flex items-center gap-3 w-3/4"><div class="shrink-0 flex items-center justify-center">${medal}</div>${avatar}<span class="font-black ${isCurrentUser?'text-indigo-700':'text-slate-800'} truncate">${r.name} ${isCurrentUser?'(أنت)':''}</span></div><span class="font-black text-indigo-600 bg-indigo-50 px-3 py-1 rounded-lg text-sm shrink-0 shadow-inner text-center leading-tight">${r.score} نقطة<br><span class="text-[10px] text-slate-500">${r.time} ث</span></span></div>`; 
+                return `<div class="flex justify-between items-center bg-white p-3 rounded-xl border ${rowBg}"><div class="flex items-center gap-3 w-3/4"><div class="shrink-0 flex items-center justify-center">${medal}</div>${avatar}<span class="font-black ${isCurrentUser?'text-indigo-700':'text-slate-800'} truncate">${realName} ${isCurrentUser?'(أنت)':''}</span></div><span class="font-black text-indigo-600 bg-indigo-50 px-3 py-1 rounded-lg text-sm shrink-0 shadow-inner text-center leading-tight">${r.score} نقطة<br><span class="text-[10px] text-slate-500">${r.time} ث</span></span></div>`; 
             }).join('');
             
             if(!html) html = '<p class="text-center text-slate-500 font-bold py-8">لا توجد بيانات لهذه المرحلة بعد.</p>'; 
@@ -758,50 +816,27 @@
 
         function startExam(title, fromHistory=false) { 
             if(!fromHistory) history.pushState({view: 'exam'}, '', '#exam'); 
-            
             document.getElementById('exam-header-title').innerText = title; 
             document.getElementById('exam-actions').classList.remove('hidden'); 
             document.getElementById('exam-results-actions').classList.add('hidden'); 
             document.getElementById('exam-questions').innerHTML = '';
             
             const timerDisplay = document.getElementById('timer-display');
-            if(timerDisplay) {
-                timerDisplay.innerText = '10:00';
-                timerDisplay.parentElement.classList.remove('bg-red-100','text-red-600','animate-pulse');
-            }
+            if(timerDisplay) { timerDisplay.innerText = '10:00'; timerDisplay.parentElement.classList.remove('bg-red-100','text-red-600','animate-pulse'); }
             
             document.getElementById('exam-screen').classList.remove('hidden'); 
-            cheatWarnings = 0; 
-            
-            let c = 3; 
-            document.getElementById('countdown-number').innerText = c; 
-            document.getElementById('exam-countdown').classList.remove('hidden'); 
+            cheatWarnings = 0; let c = 3; document.getElementById('countdown-number').innerText = c; document.getElementById('exam-countdown').classList.remove('hidden'); 
             
             const iv = setInterval(()=>{ 
-                c--; 
-                if(c>0) { 
-                    document.getElementById('countdown-number').innerText=c; 
-                } else { 
-                    clearInterval(iv); 
-                    document.getElementById('exam-countdown').classList.add('hidden'); 
+                c--; if(c>0) { document.getElementById('countdown-number').innerText=c; } else { 
+                    clearInterval(iv); document.getElementById('exam-countdown').classList.add('hidden'); 
                     try {
                         let safeData = getSafeExamData(currentExamData);
                         let shuff = [...safeData];
-                        for(let i = shuff.length - 1; i > 0; i--){
-                            const j = Math.floor(Math.random() * (i + 1));
-                            const temp = shuff[i];
-                            shuff[i] = shuff[j];
-                            shuff[j] = temp;
-                        }
+                        for(let i = shuff.length - 1; i > 0; i--){ const j = Math.floor(Math.random() * (i + 1)); const temp = shuff[i]; shuff[i] = shuff[j]; shuff[j] = temp; }
                         currentQuestions = shuff.slice(0, 20); 
-                        
-                        renderQuestionsSafe(); 
-                        startTimer(); 
-                    } catch(err) {
-                        alert('حدث خطأ أثناء تحميل الأسئلة. حاول مرة أخرى.');
-                        console.error(err);
-                        closeExam();
-                    }
+                        renderQuestionsSafe(); startTimer(); 
+                    } catch(err) { alert('حدث خطأ أثناء تحميل الأسئلة. حاول مرة أخرى.'); console.error(err); closeExam(); }
                 } 
             }, 1000); 
         }
@@ -810,20 +845,12 @@
             let html = '';
             currentQuestions.forEach((q, i) => { 
                 let inputsHtml = ''; 
-                if (q.type === 'essay') { 
-                    inputsHtml = `<textarea id="essay_q_${i}" rows="3" class="w-full p-3 border border-slate-300 rounded-xl bg-slate-50 focus:bg-white" placeholder="اكتب إجابتك هنا..."></textarea>`; 
-                } else if (q.type === 'tf') { 
-                    let opts = ['صح', 'خطأ']; 
-                    inputsHtml = `<div class="space-y-3">` + opts.map(o=>`<label class="flex items-center gap-3 p-4 bg-slate-50 border border-slate-200 rounded-xl cursor-pointer hover:bg-indigo-50 transition-colors"><input type="radio" name="q_${i}" value="${o}" class="w-5 h-5 accent-indigo-600"><span class="font-bold text-slate-700">${o}</span></label>`).join('') + `</div>`; 
+                if (q.type === 'essay') { inputsHtml = `<textarea id="essay_q_${i}" rows="3" class="w-full p-3 border border-slate-300 rounded-xl bg-slate-50 focus:bg-white" placeholder="اكتب إجابتك هنا..."></textarea>`; 
+                } else if (q.type === 'tf') { let opts = ['صح', 'خطأ']; inputsHtml = `<div class="space-y-3">` + opts.map(o=>`<label class="flex items-center gap-3 p-4 bg-slate-50 border border-slate-200 rounded-xl cursor-pointer hover:bg-indigo-50 transition-colors"><input type="radio" name="q_${i}" value="${o}" class="w-5 h-5 accent-indigo-600"><span class="font-bold text-slate-700">${o}</span></label>`).join('') + `</div>`; 
                 } else {
                     let opts = [];
-                    if (Array.isArray(q.options)) { opts = [...q.options]; } 
-                    else if (q.options && typeof q.options === 'object') { opts = Object.values(q.options); }
-                    
-                    for (let k = opts.length - 1; k > 0; k--) {
-                        const j = Math.floor(Math.random() * (k + 1));
-                        const temp = opts[k]; opts[k] = opts[j]; opts[j] = temp;
-                    }
+                    if (Array.isArray(q.options)) { opts = [...q.options]; } else if (q.options && typeof q.options === 'object') { opts = Object.values(q.options); }
+                    for (let k = opts.length - 1; k > 0; k--) { const j = Math.floor(Math.random() * (k + 1)); const temp = opts[k]; opts[k] = opts[j]; opts[j] = temp; }
                     inputsHtml = `<div class="space-y-3">` + opts.map(o=>`<label class="flex items-center gap-3 p-4 bg-slate-50 border border-slate-200 rounded-xl cursor-pointer hover:bg-indigo-50 transition-colors"><input type="radio" name="q_${i}" value="${o}" class="w-5 h-5 accent-indigo-600"><span class="font-bold text-slate-700">${o}</span></label>`).join('') + `</div>`; 
                 } 
                 html += `<div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 question-block" data-index="${i}" data-ans="${q.answer || ''}"><h3 class="font-black mb-4 flex gap-2 text-lg leading-relaxed text-slate-800"><span class="bg-indigo-100 text-indigo-700 px-3 py-1 rounded-xl text-sm h-fit shrink-0">${i+1}</span> ${q.q}</h3>${inputsHtml}<div class="result-feedback hidden mt-4 p-3 rounded-xl text-sm font-bold"></div></div>`; 
@@ -832,16 +859,11 @@
         }
 
         function startTimer() { 
-            timeLeft = 600; 
-            const d = document.getElementById('timer-display'); 
-            if(d) {
-                d.parentElement.classList.remove('bg-red-100','text-red-600','animate-pulse'); 
-                d.innerText = '10:00';
-            }
+            timeLeft = 600; const d = document.getElementById('timer-display'); 
+            if(d) { d.parentElement.classList.remove('bg-red-100','text-red-600','animate-pulse'); d.innerText = '10:00'; }
             clearInterval(examTimer); 
             examTimer = setInterval(()=>{ 
-                timeLeft--; 
-                let m=Math.floor(timeLeft/60), s=timeLeft%60; 
+                timeLeft--; let m=Math.floor(timeLeft/60), s=timeLeft%60; 
                 if(d) d.innerText=`${m<10?'0'+m:m}:${s<10?'0'+s:s}`; 
                 if(timeLeft<=60 && d) d.parentElement.classList.add('bg-red-100','text-red-600','animate-pulse'); 
                 if(timeLeft<=0){ clearInterval(examTimer); alert('انتهى الوقت! ⏳'); submitExam(); } 
@@ -851,17 +873,67 @@
         function submitExam() { clearInterval(examTimer); const blocks = document.querySelectorAll('.question-block'); let sc = 0, autoGradedTotal = 0, essayCount = 0; let mistakesBank = []; blocks.forEach((block) => { const i = block.getAttribute('data-index'); const q = currentQuestions[i]; const feedbackDiv = block.querySelector('.result-feedback'); feedbackDiv.classList.remove('hidden'); if (q.type === 'essay') { essayCount++; const textVal = document.getElementById(`essay_q_${i}`).value.trim(); feedbackDiv.classList.add('bg-blue-50', 'text-blue-700', 'border', 'border-blue-200'); feedbackDiv.innerHTML = textVal ? '📝 سيتم مراجعة الإجابة المقالية من قبل المدرس.' : '⚠️ لم تقم بكتابة إجابة.'; } else { autoGradedTotal++; const sel = block.querySelector(`input[name="q_${i}"]:checked`); const correctAns = block.getAttribute('data-ans'); block.querySelectorAll('label').forEach(lbl => { lbl.classList.add('opacity-50', 'pointer-events-none'); const inp = lbl.querySelector('input'); if(inp.value === correctAns) { lbl.classList.remove('opacity-50', 'bg-slate-50', 'border-slate-200'); lbl.classList.add('correct-answer'); } }); if (sel && sel.value === correctAns) { sc++; feedbackDiv.classList.add('bg-emerald-100', 'text-emerald-700'); feedbackDiv.innerText = '✅ إجابة صحيحة!'; } else { let studentAns = sel ? sel.value : "لم يجب"; mistakesBank.push({ q: q.q, ans: studentAns, corr: correctAns }); if(sel) { sel.parentElement.classList.remove('opacity-50', 'bg-slate-50'); sel.parentElement.classList.add('wrong-answer'); } feedbackDiv.classList.add('bg-red-100', 'text-red-700'); feedbackDiv.innerText = `❌ إجابة خاطئة! الإجابة الصحيحة هي: ${correctAns}`; } } }); const timeTaken = 600 - timeLeft; const st = JSON.parse(localStorage.getItem('geox_student_user')); document.getElementById('exam-actions').classList.add('hidden'); const resBox = document.getElementById('exam-score-display'); let resText = `<h3 class="text-2xl font-black mb-2 ${sc >= autoGradedTotal/2 ? 'text-emerald-600' : 'text-red-600'}">نتيجتك: ${sc} / ${autoGradedTotal}</h3>`; if(essayCount > 0) resText += `<p class="text-sm font-bold text-slate-500 mt-2">يوجد ${essayCount} سؤال مقالي بانتظار التقييم.</p>`; resBox.innerHTML = resText; document.getElementById('exam-results-actions').classList.remove('hidden'); window.scrollTo(0,0); database.ref('exam_results').push({ lessonId: currentLesson, uid: st.uid, name: st.name, phone: st.phone || st.email, score: sc, total: autoGradedTotal, time: timeTaken, date: new Date().toLocaleString('ar-EG'), mistakes: mistakesBank }); }
         function closeExam() { history.back(); }
 
-        function showAdminTab(id, fromHistory=false) { if(!fromHistory) history.pushState({view: 'adminTab', tab: id}, '', '#admin'); document.querySelectorAll('.admin-tab').forEach(e => e.classList.add('hidden')); document.querySelectorAll('.admin-tab-btn').forEach(e => { e.classList.remove('active','bg-indigo-600','text-white'); e.classList.add('bg-white','text-slate-600'); }); document.getElementById(id).classList.remove('hidden'); const btn = document.getElementById('btn-'+id); if(btn) { btn.classList.remove('bg-white','text-slate-600'); btn.classList.add('active','bg-indigo-600','text-white'); } }
-        function updateCoverUnitDropdown() { const g = document.getElementById('coverGrade').value; const sel = document.getElementById('coverUnitId'); sel.innerHTML = `<option value="">-- اختار الوحدة (أو سيبها للسنة) --</option>`; CURRICULUM.filter(u=>u.grade===g).forEach(u => sel.innerHTML+=`<option value="${u.id}">📖 ${u.title.split(':')[0]}</option>`); }
-        function handleCoverUpload(e) { e.preventDefault(); const g = document.getElementById('coverGrade').value; const uId = document.getElementById('coverUnitId').value; let targetId = 'STAGE_COVER_' + g; if (uId && uId !== '') targetId = uId; const file = document.getElementById('coverImage').files[0]; const reader = new FileReader(); reader.onload = e => { const img = new Image(); img.onload = () => { const cvs = document.createElement('canvas'); const W=1280, H=720; let w=img.width, h=img.height; if(w>h){h*=W/w;w=W;}else{w*=H/h;h=H;} cvs.width=w; cvs.height=h; cvs.getContext('2d').drawImage(img,0,0,w,h); database.ref('covers/'+targetId).set(cvs.toDataURL('image/jpeg', 0.6)).then(()=>alert('✅ تم الرفع والتحديث بنجاح!')); }; img.src = e.target.result; }; reader.readAsDataURL(file); }
-        function updateContentUnitDropdown() { const g = document.getElementById('contentGrade').value; const sel = document.getElementById('contentUnitId'); sel.innerHTML = '<option value="" disabled selected>-- الوحدة --</option>'; CURRICULUM.filter(u=>u.grade===g).forEach(u => sel.innerHTML+=`<option value="${u.id}">${u.title.split(':')[0]}</option>`); document.getElementById('contentLessonId').innerHTML = '<option value="" disabled selected>-- الدرس --</option>'; document.getElementById('lessonYoutube').value=''; document.getElementById('lessonExamText').value=''; document.getElementById('pdfStatus').innerText=''; document.getElementById('stat-yt').innerText = `👁️ مشاهدات الفيديو: 0`; document.getElementById('stat-pdf').innerText = `📥 تحميل الملزمة: 0`;}
-        function updateContentLessonDropdown() { const uId = document.getElementById('contentUnitId').value; const sel = document.getElementById('contentLessonId'); sel.innerHTML = '<option value="" disabled selected>-- الدرس --</option>'; const u = CURRICULUM.find(x=>x.id===uId); if(u) { u.lessons.forEach(l => sel.innerHTML+=`<option value="${l.id}">${l.t}</option>`); sel.innerHTML+=`<option value="${u.id}_review">🌟 المراجعة الشاملة</option>`; } document.getElementById('lessonYoutube').value=''; document.getElementById('lessonExamText').value=''; document.getElementById('pdfStatus').innerText=''; document.getElementById('stat-yt').innerText = `👁️ مشاهدات الفيديو: 0`; document.getElementById('stat-pdf').innerText = `📥 تحميل الملزمة: 0`;}
-        function loadLessonData() { const id = document.getElementById('contentLessonId').value; const data = lessonsDataCache[id]||{}; document.getElementById('lessonYoutube').value = data.yt||''; document.getElementById('lessonExamText').value = data.exam ? JSON.stringify(data.exam,null,2) : ''; document.getElementById('pdfStatus').innerText = data.pdf ? '✅ ملزمة مرفوعة مسبقاً' : ''; const stats = analyticsDataCache[id]||{yt:0, pdf:0}; document.getElementById('stat-yt').innerText = `👁️ مشاهدات الفيديو: ${stats.yt||0}`; document.getElementById('stat-pdf').innerText = `📥 تحميل الملزمة: ${stats.pdf||0}`; }
-        function handleContentUpload(e) { e.preventDefault(); const id = document.getElementById('contentLessonId').value; if(!id) return alert('برجاء اختيار الدرس'); let data = lessonsDataCache[id]||{yt:'', pdf:null, exam:null}; data.yt = document.getElementById('lessonYoutube').value; try { const json = document.getElementById('lessonExamText').value.trim(); data.exam = json ? JSON.parse(json) : null; } catch(err) { return alert('❌ كود JSON غير صحيح'); } const file = document.getElementById('lessonPdf').files[0]; const save = () => database.ref('lessons_data/'+id).set(data).then(()=>alert('✅ تم حفظ بيانات الدرس')); if(file) { const r = new FileReader(); r.onload = e=>{ data.pdf = e.target.result; save(); }; r.readAsDataURL(file); } else save(); }
+        function showAdminTab(id, fromHistory=false) { if(!fromHistory) history.pushState({view: 'adminTab', tab: id}, '', '#admin'); document.querySelectorAll('.admin-tab').forEach(e => e.classList.add('hidden')); document.querySelectorAll('.admin-tab-btn').forEach(e => { e.classList.remove('active'); }); document.getElementById(id).classList.remove('hidden'); const btn = document.getElementById('btn-'+id); if(btn) { btn.classList.add('active'); } }
+        
+        function updateCoverUnitDropdown() { 
+            const g = document.getElementById('coverGrade').value; const sel = document.getElementById('coverUnitId'); 
+            sel.innerHTML = `<option value="">-- اختار الوحدة (أو سيبها للسنة) --</option>`; 
+            CURRICULUM.filter(u=>u.grade===g).forEach(u => sel.innerHTML+=`<option value="${u.id}">📖 ${u.title.split(':')[0]}</option>`); 
+            
+            let targetId = 'STAGE_COVER_' + g; if (sel.value && sel.value !== '') targetId = sel.value;
+            if(coversData[targetId]) {
+                document.getElementById('admin-cover-preview-img').src = coversData[targetId];
+                document.getElementById('admin-current-cover').classList.remove('hidden');
+            } else {
+                document.getElementById('admin-current-cover').classList.add('hidden');
+            }
+        }
+        function deleteCurrentCover() {
+            const g = document.getElementById('coverGrade').value; const uId = document.getElementById('coverUnitId').value;
+            let targetId = 'STAGE_COVER_' + g; if (uId && uId !== '') targetId = uId;
+            database.ref('covers/'+targetId).remove().then(() => { alert('تم مسح الصورة القديمة بنجاح!'); document.getElementById('admin-current-cover').classList.add('hidden'); });
+        }
+        function handleCoverUpload(e) { e.preventDefault(); const g = document.getElementById('coverGrade').value; const uId = document.getElementById('coverUnitId').value; let targetId = 'STAGE_COVER_' + g; if (uId && uId !== '') targetId = uId; const file = document.getElementById('coverImage').files[0]; const reader = new FileReader(); reader.onload = e => { const img = new Image(); img.onload = () => { const cvs = document.createElement('canvas'); const W=800, H=450; let w=img.width, h=img.height; if(w>h){h*=W/w;w=W;}else{w*=H/h;h=H;} cvs.width=w; cvs.height=h; cvs.getContext('2d').drawImage(img,0,0,w,h); database.ref('covers/'+targetId).set(cvs.toDataURL('image/jpeg', 0.6)).then(()=>{ alert('✅ تم الرفع والتحديث بنجاح!'); updateCoverUnitDropdown(); }); }; img.src = e.target.result; }; reader.readAsDataURL(file); }
+        
+        function updateContentUnitDropdown() { const g = document.getElementById('contentGrade').value; const sel = document.getElementById('contentUnitId'); sel.innerHTML = '<option value="" disabled selected>-- الوحدة --</option>'; CURRICULUM.filter(u=>u.grade===g).forEach(u => sel.innerHTML+=`<option value="${u.id}">${u.title.split(':')[0]}</option>`); document.getElementById('contentLessonId').innerHTML = '<option value="" disabled selected>-- الدرس --</option>'; document.getElementById('lessonYoutube').value=''; document.getElementById('lessonExamText').value=''; document.getElementById('pdfStatus').innerText=''; document.getElementById('admin-current-content').classList.add('hidden'); }
+        function updateContentLessonDropdown() { const uId = document.getElementById('contentUnitId').value; const sel = document.getElementById('contentLessonId'); sel.innerHTML = '<option value="" disabled selected>-- الدرس --</option>'; const u = CURRICULUM.find(x=>x.id===uId); if(u) { u.lessons.forEach(l => sel.innerHTML+=`<option value="${l.id}">${l.t}</option>`); sel.innerHTML+=`<option value="${u.id}_review">🌟 المراجعة الشاملة</option>`; } document.getElementById('lessonYoutube').value=''; document.getElementById('lessonExamText').value=''; document.getElementById('pdfStatus').innerText=''; document.getElementById('admin-current-content').classList.add('hidden'); }
+        function loadLessonData() { 
+            const id = document.getElementById('contentLessonId').value; const data = lessonsDataCache[id]||{}; 
+            document.getElementById('lessonYoutube').value = data.yt||''; document.getElementById('lessonExamText').value = data.exam ? JSON.stringify(data.exam,null,2) : ''; document.getElementById('pdfStatus').innerText = data.pdf ? '✅ ملزمة مرفوعة مسبقاً' : ''; 
+            const stats = analyticsDataCache[id]||{yt:0, pdf:0}; document.getElementById('stat-yt').innerText = `👁️ مشاهدات الفيديو: ${stats.yt||0}`; document.getElementById('stat-pdf').innerText = `📥 تحميل الملزمة: ${stats.pdf||0}`; 
+            
+            const badges = document.getElementById('admin-content-badges'); badges.innerHTML = '';
+            if(data.yt) badges.innerHTML += `<div class="bg-white px-3 py-1.5 rounded-lg shadow-sm flex items-center gap-2 text-sm font-black text-red-600 border border-red-100">📺 فيديو الشرح <button onclick="deleteLessonContent('yt')" class="bg-red-50 hover:bg-red-500 hover:text-white text-red-600 p-1.5 rounded-md transition-colors border border-red-200">مسح 🗑️</button></div>`;
+            if(data.pdf) badges.innerHTML += `<div class="bg-white px-3 py-1.5 rounded-lg shadow-sm flex items-center gap-2 text-sm font-black text-blue-600 border border-blue-100">📄 الملزمة <button onclick="deleteLessonContent('pdf')" class="bg-blue-50 hover:bg-blue-500 hover:text-white text-blue-600 p-1.5 rounded-md transition-colors border border-blue-200">مسح 🗑️</button></div>`;
+            if(data.exam) badges.innerHTML += `<div class="bg-white px-3 py-1.5 rounded-lg shadow-sm flex items-center gap-2 text-sm font-black text-emerald-600 border border-emerald-100">⏱️ الامتحان <button onclick="deleteLessonContent('exam')" class="bg-emerald-50 hover:bg-emerald-500 hover:text-white text-emerald-600 p-1.5 rounded-md transition-colors border border-emerald-200">مسح 🗑️</button></div>`;
+            if(data.yt || data.pdf || data.exam) document.getElementById('admin-current-content').classList.remove('hidden'); else document.getElementById('admin-current-content').classList.add('hidden');
+        }
+        function deleteLessonContent(type) {
+            const id = document.getElementById('contentLessonId').value; if(!id) return;
+            if(confirm('هل أنت متأكد من مسح هذا المحتوى؟')) {
+                database.ref('lessons_data/' + id + '/' + type).remove().then(() => {
+                    alert('تم المسح بنجاح! 🗑️');
+                    if(type === 'yt') document.getElementById('lessonYoutube').value = '';
+                    if(type === 'exam') document.getElementById('lessonExamText').value = '';
+                    if(type === 'pdf') document.getElementById('pdfStatus').innerText = '';
+                    loadLessonData();
+                });
+            }
+        }
+        function handleContentUpload(e) { e.preventDefault(); const id = document.getElementById('contentLessonId').value; if(!id) return alert('برجاء اختيار الدرس'); let data = lessonsDataCache[id]||{yt:'', pdf:null, exam:null}; data.yt = document.getElementById('lessonYoutube').value; try { const json = document.getElementById('lessonExamText').value.trim(); data.exam = json ? JSON.parse(json) : null; } catch(err) { return alert('❌ كود JSON غير صحيح'); } const file = document.getElementById('lessonPdf').files[0]; const save = () => database.ref('lessons_data/'+id).set(data).then(()=>{ alert('✅ تم حفظ بيانات الدرس'); loadLessonData(); document.getElementById('lessonPdf').value = ''; }); if(file) { const r = new FileReader(); r.onload = e=>{ data.pdf = e.target.result; save(); }; r.readAsDataURL(file); } else save(); }
 
         function renderStudentsTable() { document.getElementById('studentsListTbody').innerHTML = allStudents.map(s=>`<tr class="hover:bg-slate-50"><td class="p-4 font-bold text-slate-800">${s.name}</td><td class="p-4 font-bold text-indigo-600" dir="ltr">${s.phone||s.email}</td><td class="p-4 text-slate-500 text-xs">${s.date||'غير محدد'}</td><td class="p-4 text-center space-x-2 space-x-reverse"><button onclick="editStudentData('${s.uid}', '${s.name}', '${s.phone||''}')" class="bg-blue-50 hover:bg-blue-500 text-blue-600 hover:text-white px-3 py-1.5 rounded-lg text-xs font-bold transition-colors">تعديل ✏️</button><button onclick="deleteStudent('${s.uid}')" class="bg-red-50 hover:bg-red-500 text-red-600 hover:text-white px-3 py-1.5 rounded-lg text-xs font-bold transition-colors mt-2 md:mt-0">حذف 🗑️</button></td></tr>`).join(''); }
         function editStudentData(uid, oldName, oldPhone) { const newName = prompt("أدخل الاسم الجديد للطالب:", oldName); const newPhone = prompt("أدخل رقم موبايل ولي الأمر الجديد:", oldPhone); let updates = {}; if(newName && newName !== oldName) updates['name'] = newName; if(newPhone && newPhone !== oldPhone && newPhone.length >= 10) updates['phone'] = newPhone; if(Object.keys(updates).length > 0) { database.ref('students/' + uid).update(updates).then(() => alert('تم تحديث بيانات الطالب بنجاح.')); } }
-        function deleteStudent(uid) { if(confirm("هل أنت متأكد من حذف هذا الطالب نهائياً؟")) { database.ref('students/' + uid).remove().then(() => alert('تم الحذف بنجاح.')); } }
+        
+        // مسح الطالب بالكامل + مسح امتحاناته
+        function deleteStudent(uid) { 
+            if(confirm("تحذير: هل أنت متأكد من مسح هذا الطالب وكل امتحاناته نهائياً؟ سيتم تصفير حسابه بالكامل!")) { 
+                database.ref('students/' + uid).remove();
+                const examsToDelete = examResultsCache.filter(e => e.uid === uid);
+                examsToDelete.forEach(e => database.ref('exam_results/' + e.key).remove());
+                alert('تم مسح الطالب وتصفير حسابه بنجاح!'); 
+            } 
+        }
         function filterStudents() { const v = document.getElementById('searchStudent').value.toLowerCase(); Array.from(document.getElementById('studentsListTbody').rows).forEach(r => r.style.display = r.cells[0].innerText.includes(v)?'':'none'); }
 
         function updateLbUnitDropdown() { const g = document.getElementById('lbGrade').value; const sel = document.getElementById('lbUnitId'); sel.innerHTML = '<option value="">-- الوحدة --</option>'; CURRICULUM.filter(u=>u.grade===g).forEach(u => sel.innerHTML+=`<option value="${u.id}">${u.title.split(':')[0]}</option>`); }
@@ -873,16 +945,17 @@
             res.sort((a,b) => b.score!==a.score ? b.score-a.score : a.time-b.time); 
             
             document.getElementById('leaderboardTbody').innerHTML = res.map((r,i)=>{ 
-                const waText = encodeURIComponent(`أهلاً ولي أمر البطل ${r.name} 🎓\nنحيطكم علماً بأن الطالب أتم اختبار [${getLessonNameById(id.replace('ALL_',''))}] وحصل على درجة (${r.score} من ${r.total}).\nمع تحيات منصة Geo X 🌍`); 
+                let realName = getStudentRealName(r.uid, r.name);
+                const waText = encodeURIComponent(`أهلاً ولي أمر البطل ${realName} 🎓\nنحيطكم علماً بأن الطالب أتم اختبار [${getLessonNameById(id.replace('ALL_',''))}] وحصل على درجة (${r.score} من ${r.total}).\nمع تحيات منصة Geo X 🌍`); 
                 const waLink = `https://wa.me/20${r.phone}?text=${waText}`; 
                 let st = allStudents.find(s => s.uid === r.uid || (r.phone && s.phone === r.phone));
                 let pPic = (st && st.profilePic) ? `<img src="${st.profilePic}" loading="lazy" decoding="async" class="w-8 h-8 rounded-full object-cover border border-slate-200 shrink-0">` : `<div class="w-8 h-8 rounded-full bg-indigo-50 text-indigo-500 flex items-center justify-center text-sm shrink-0">👤</div>`;
                 
-                return `<tr class="hover:bg-slate-50"><td class="p-4 font-black text-slate-500">#${i+1}</td><td class="p-4 font-bold text-slate-800"><div class="flex items-center gap-2">${pPic}<span class="truncate">${r.name}</span></div></td><td class="p-4 font-black text-indigo-700">${r.score} / ${r.total}</td><td class="p-4 text-slate-600 text-xs">${r.time} ثانية</td><td class="p-4 text-center space-x-2 space-x-reverse"><a href="${waLink}" target="_blank" class="bg-green-50 hover:bg-green-500 text-green-600 hover:text-white px-3 py-1.5 rounded-lg text-xs font-bold transition-colors inline-block shadow-sm">تقرير 📱</a> ${id.startsWith('ALL_') ? '' : `<button onclick="deleteExamResult('${r.key}')" class="bg-red-50 hover:bg-red-500 text-red-600 hover:text-white px-3 py-1.5 rounded-lg text-xs font-bold transition-colors inline-block mt-2 md:mt-0 shadow-sm">إلغاء ❌</button>`}</td></tr>`; 
+                return `<tr class="hover:bg-slate-50"><td class="p-4 font-black text-slate-500">#${i+1}</td><td class="p-4 font-bold text-slate-800"><div class="flex items-center gap-2">${pPic}<span class="truncate">${realName}</span></div></td><td class="p-4 font-black text-indigo-700">${r.score} / ${r.total}</td><td class="p-4 text-slate-600 text-xs">${r.time} ثانية</td><td class="p-4 text-center space-x-2 space-x-reverse"><a href="${waLink}" target="_blank" class="bg-green-50 hover:bg-green-500 text-green-600 hover:text-white px-3 py-1.5 rounded-lg text-xs font-bold transition-colors inline-block shadow-sm">تقرير 📱</a> ${id.startsWith('ALL_') ? '' : `<button onclick="deleteExamResult('${r.key}')" class="bg-red-50 hover:bg-red-500 text-red-600 hover:text-white px-3 py-1.5 rounded-lg text-xs font-bold transition-colors inline-block mt-2 md:mt-0 shadow-sm">إلغاء ❌</button>`}</td></tr>`; 
             }).join(''); 
         }
         
-        function deleteExamResult(key) { if(confirm("مسح نتيجة هذا الامتحان فعلاً؟ (سيتمكن الطالب من إعادته)")) { database.ref('exam_results/' + key).remove().then(() => { alert('تم مسح النتيجة!'); renderLeaderboard(); }); } }
+        function deleteExamResult(key) { if(confirm("مسح نتيجة هذا الامتحان فعلاً؟ (سيتمكن الطالب من إعادته وسيتم مسح أخطائه من بنك الأخطاء تلقائياً)")) { database.ref('exam_results/' + key).remove().then(() => { alert('تم مسح النتيجة!'); renderLeaderboard(); }); } }
         function exportExcel(id, name) { const wb = XLSX.utils.table_to_book(document.getElementById(id)); XLSX.writeFile(wb, name+'.xlsx'); }
         function saveAnnouncementText() { const txt = document.getElementById('adminAnnouncementInput').value.trim(); database.ref('announcement').set(txt).then(() => alert('تم النشر!')); }
         function clearAnnouncementText() { database.ref('announcement').set('').then(() => { document.getElementById('adminAnnouncementInput').value = ''; alert('تم إيقاف الإعلان!'); }); }
@@ -907,4 +980,3 @@
     </script>
 </body>
 </html>
-
