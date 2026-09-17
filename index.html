@@ -153,7 +153,7 @@
                 </div>
             </div>
 
-            <!-- Exam Screen -->
+            <!-- Exam Screen (With Anti-Copy Class) -->
             <div id="exam-screen" class="hidden fixed inset-0 bg-[#F4F7FE] z-[100] overflow-y-auto no-select" oncontextmenu="return false;">
                 <div class="container mx-auto max-w-3xl py-8 px-4 relative">
                     <div id="exam-active-header" class="sticky top-4 bg-white/95 backdrop-blur-lg p-4 rounded-2xl shadow-sm border border-slate-200 flex justify-between items-center z-50 mb-8 gap-3">
@@ -396,6 +396,7 @@
         </div>
     </div>
 
+    <!-- Social & Contact Modal -->
     <div id="social-modal" class="hidden fixed inset-0 bg-[#0B1437]/80 backdrop-blur-sm z-[500] flex items-center justify-center p-4">
         <div class="bg-white p-7 rounded-[2rem] shadow-2xl w-full max-w-sm text-center border border-slate-100 relative">
             <button onclick="document.getElementById('social-modal').classList.add('hidden')" class="absolute top-4 left-4 text-slate-400 hover:text-red-500 text-xl transition-colors">✖</button>
@@ -578,6 +579,7 @@
 
         function generateCertificate(name, lesson) { document.getElementById('cert-name').innerText = name; document.getElementById('cert-lesson').innerText = lesson; document.getElementById('certificate-modal').classList.remove('hidden'); }
         function openMistakesBank() { const st = JSON.parse(localStorage.getItem('geox_student_user')); const myScores = examResultsCache.filter(r => r.uid === st.uid && r.mistakes && r.mistakes.length > 0); let html = ''; if(myScores.length === 0) { html = '<p class="text-slate-400 text-center text-sm py-10 font-bold">ممتاز! ليس لديك أي أخطاء مسجلة حتى الآن 🎉</p>'; } else { myScores.forEach(s => { html += `<h4 class="font-black text-slate-700 bg-slate-200 p-2 rounded-lg mt-4 mb-2 text-sm">${getLessonNameById(s.lessonId)}</h4><div class="space-y-3">`; s.mistakes.forEach(m => { html += `<div class="bg-white p-4 rounded-xl border border-red-100 shadow-sm"><p class="font-bold text-slate-800 text-sm mb-2">س: ${m.q}</p><p class="text-xs text-red-600 font-bold mb-1">إجابتك: <span class="line-through text-slate-500">${m.ans}</span></p><p class="text-xs text-emerald-600 font-bold">الصحيحة: ${m.corr}</p></div>`; }); html += `</div>`; }); } document.getElementById('mistakes-list').innerHTML = html; document.getElementById('mistakes-modal').classList.remove('hidden'); }
+        
         function openFlashcards() { 
             let safeData = Array.isArray(currentExamData) ? currentExamData : Object.values(currentExamData||{});
             safeData = safeData.filter(i => i && i.q);
@@ -625,7 +627,7 @@
                     document.getElementById('exam-countdown').classList.add('hidden'); 
                     try {
                         let safeData = Array.isArray(currentExamData) ? currentExamData : Object.values(currentExamData || {});
-                        safeData = safeData.filter(i => i && i.q); // تصفية أي أخطاء في الـ JSON
+                        safeData = safeData.filter(i => i && i.q); 
                         currentQuestions = shuffle([...safeData]).slice(0, 20); 
                         renderQuestions(); 
                         startTimer(); 
@@ -638,7 +640,20 @@
             }, 1000); 
         }
 
-        function renderQuestions() { document.getElementById('exam-questions').innerHTML = currentQuestions.map((q, i) => { let inputsHtml = ''; if (q.type === 'essay') { inputsHtml = `<textarea id="essay_q_${i}" rows="3" class="w-full p-3 border border-slate-300 rounded-xl bg-slate-50 focus:bg-white" placeholder="اكتب إجابتك هنا..."></textarea>`; } else { const opts = q.type==='tf'?['صح','خطأ']:shuffle([...q.options||[]]); inputsHtml = `<div class="space-y-3">` + opts.map(o=>`<label class="flex items-center gap-3 p-4 bg-slate-50 border border-slate-200 rounded-xl cursor-pointer hover:bg-indigo-50 transition-colors"><input type="radio" name="q_${i}" value="${o}" class="w-5 h-5 accent-indigo-600"><span class="font-bold text-slate-700">${o}</span></label>`).join('') + `</div>`; } return `<div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 question-block" data-index="${i}" data-ans="${q.answer || ''}"><h3 class="font-black mb-4 flex gap-2 text-lg leading-relaxed text-slate-800"><span class="bg-indigo-100 text-indigo-700 px-3 py-1 rounded-xl text-sm h-fit shrink-0">${i+1}</span> ${q.q}</h3>${inputsHtml}<div class="result-feedback hidden mt-4 p-3 rounded-xl text-sm font-bold"></div></div>`; }).join(''); }
+        function renderQuestions() { 
+            document.getElementById('exam-questions').innerHTML = currentQuestions.map((q, i) => { 
+                let inputsHtml = ''; 
+                if (q.type === 'essay') { 
+                    inputsHtml = `<textarea id="essay_q_${i}" rows="3" class="w-full p-3 border border-slate-300 rounded-xl bg-slate-50 focus:bg-white" placeholder="اكتب إجابتك هنا..."></textarea>`; 
+                } else { 
+                    const optsArray = Object.values(q.options || {});
+                    const opts = q.type==='tf' ? ['صح','خطأ'] : shuffle(optsArray); 
+                    inputsHtml = `<div class="space-y-3">` + opts.map(o=>`<label class="flex items-center gap-3 p-4 bg-slate-50 border border-slate-200 rounded-xl cursor-pointer hover:bg-indigo-50 transition-colors"><input type="radio" name="q_${i}" value="${o}" class="w-5 h-5 accent-indigo-600"><span class="font-bold text-slate-700">${o}</span></label>`).join('') + `</div>`; 
+                } 
+                return `<div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 question-block" data-index="${i}" data-ans="${q.answer || ''}"><h3 class="font-black mb-4 flex gap-2 text-lg leading-relaxed text-slate-800"><span class="bg-indigo-100 text-indigo-700 px-3 py-1 rounded-xl text-sm h-fit shrink-0">${i+1}</span> ${q.q}</h3>${inputsHtml}<div class="result-feedback hidden mt-4 p-3 rounded-xl text-sm font-bold"></div></div>`; 
+            }).join(''); 
+        }
+
         function startTimer() { timeLeft = 600; const d = document.getElementById('timer-display'); clearInterval(examTimer); d.parentElement.classList.remove('bg-red-100','text-red-600','animate-pulse'); examTimer = setInterval(()=>{ timeLeft--; let m=Math.floor(timeLeft/60), s=timeLeft%60; d.innerText=`${m<10?'0'+m:m}:${s<10?'0'+s:s}`; if(timeLeft<=60) d.parentElement.classList.add('bg-red-100','text-red-600','animate-pulse'); if(timeLeft<=0){ clearInterval(examTimer); alert('انتهى الوقت! ⏳'); submitExam(); } }, 1000); }
         function submitExam() { clearInterval(examTimer); const blocks = document.querySelectorAll('.question-block'); let sc = 0, autoGradedTotal = 0, essayCount = 0; let mistakesBank = []; blocks.forEach((block) => { const i = block.getAttribute('data-index'); const q = currentQuestions[i]; const feedbackDiv = block.querySelector('.result-feedback'); feedbackDiv.classList.remove('hidden'); if (q.type === 'essay') { essayCount++; const textVal = document.getElementById(`essay_q_${i}`).value.trim(); feedbackDiv.classList.add('bg-blue-50', 'text-blue-700', 'border', 'border-blue-200'); feedbackDiv.innerHTML = textVal ? '📝 سيتم مراجعة الإجابة المقالية من قبل المدرس.' : '⚠️ لم تقم بكتابة إجابة.'; } else { autoGradedTotal++; const sel = block.querySelector(`input[name="q_${i}"]:checked`); const correctAns = block.getAttribute('data-ans'); block.querySelectorAll('label').forEach(lbl => { lbl.classList.add('opacity-50', 'pointer-events-none'); const inp = lbl.querySelector('input'); if(inp.value === correctAns) { lbl.classList.remove('opacity-50', 'bg-slate-50', 'border-slate-200'); lbl.classList.add('correct-answer'); } }); if (sel && sel.value === correctAns) { sc++; feedbackDiv.classList.add('bg-emerald-100', 'text-emerald-700'); feedbackDiv.innerText = '✅ إجابة صحيحة!'; } else { let studentAns = sel ? sel.value : "لم يجب"; mistakesBank.push({ q: q.q, ans: studentAns, corr: correctAns }); if(sel) { sel.parentElement.classList.remove('opacity-50', 'bg-slate-50'); sel.parentElement.classList.add('wrong-answer'); } feedbackDiv.classList.add('bg-red-100', 'text-red-700'); feedbackDiv.innerText = `❌ إجابة خاطئة! الإجابة الصحيحة هي: ${correctAns}`; } } }); const timeTaken = 600 - timeLeft; const st = JSON.parse(localStorage.getItem('geox_student_user')); document.getElementById('exam-actions').classList.add('hidden'); const resBox = document.getElementById('exam-score-display'); let resText = `<h3 class="text-2xl font-black mb-2 ${sc >= autoGradedTotal/2 ? 'text-emerald-600' : 'text-red-600'}">نتيجتك: ${sc} / ${autoGradedTotal}</h3>`; if(essayCount > 0) resText += `<p class="text-sm font-bold text-slate-500 mt-2">يوجد ${essayCount} سؤال مقالي بانتظار التقييم.</p>`; resBox.innerHTML = resText; document.getElementById('exam-results-actions').classList.remove('hidden'); window.scrollTo(0,0); database.ref('exam_results').push({ lessonId: currentLesson, uid: st.uid, name: st.name, phone: st.phone || st.email, score: sc, total: autoGradedTotal, time: timeTaken, date: new Date().toLocaleString('ar-EG'), mistakes: mistakesBank }); }
         function closeExam() { history.back(); }
