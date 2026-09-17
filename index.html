@@ -75,9 +75,10 @@
                 <button id="install-app-btn" onclick="installPWA()" class="hidden bg-indigo-600 px-3 py-1 md:py-1.5 rounded-lg text-white text-[10px] md:text-xs font-bold border border-indigo-400 hover:bg-indigo-500 transition-colors shadow-lg animate-pulse mt-1">تثبيت التطبيق 📲</button>
             </div>
 
+            <!-- زر الدخول -->
             <div id="nav-actions" class="flex items-center gap-3 z-10">
                 <button id="student-greeting" class="px-4 py-2 rounded-xl font-bold bg-white/10 hover:bg-white/20 text-white border border-white/10 transition-all text-xs md:text-sm flex items-center gap-2 shadow-sm">
-                    جاري التحميل...
+                    تسجيل الدخول
                 </button>
             </div>
         </div>
@@ -216,7 +217,7 @@
                             <span id="pdfStatus" class="text-xs font-bold text-emerald-600 mt-2 block"></span>
                         </div>
                         <div>
-                            <label class="block font-bold mb-2 text-sm flex justify-between"><span>⏱️ كود الامتحان (JSON):</span><span class="text-xs font-normal text-slate-500">الصق الأسئلة هنا</span></label>
+                            <label class="block font-bold mb-2 text-sm flex justify-between"><span>⏱️ كود الامتحان (JSON):</span><span class="text-xs font-normal text-slate-500">ادعم المقالي بـ "type": "essay"</span></label>
                             <textarea id="lessonExamText" rows="6" dir="ltr" class="w-full p-4 border rounded-xl bg-[#0F172A] text-emerald-400 font-mono text-xs leading-relaxed"></textarea>
                         </div>
                         <div class="md:col-span-2 mt-1 bg-indigo-50/70 p-4 rounded-xl flex justify-around border border-indigo-100">
@@ -463,6 +464,13 @@
         let cheatWarnings = 0; 
         let currentFlashcardIndex = 0, flashcardsList = []; 
 
+        // التحميل الاستباقي (Optimistic UI) لمنع التعليق في البداية
+        const cachedStudent = JSON.parse(localStorage.getItem('geox_student_user'));
+        const isAdminCached = localStorage.getItem('geox_admin_logged');
+        if (cachedStudent) { updateStudentUI(cachedStudent); } 
+        else if (isAdminCached) { const btn = document.getElementById('student-greeting'); btn.innerHTML = `لوحة الإدارة ⚙️`; btn.onclick = null; } 
+        else { updateStudentUI(null); }
+
         database.ref('covers').on('value', s => { coversData = s.val()||{}; const st = JSON.parse(sessionStorage.getItem('geox_current_view')); if (!st || st.view === 'home' || currentGrade==='') renderStagesGrid(); else if (st.view === 'grade' || st.view === 'unit' || st.view === 'lesson') openGrade(st.g, true); });
         database.ref('lessons_data').on('value', s => lessonsDataCache = s.val()||{});
         database.ref('analytics').on('value', s => analyticsDataCache = s.val()||{});
@@ -474,12 +482,14 @@
             if (user) {
                 const adminEmails = ['yousef74joe74@gmail.com', 'm.fathy9875@gmail.com'];
                 if (adminEmails.includes(user.email)) {
+                    localStorage.setItem('geox_admin_logged', 'true');
                     document.getElementById('student-view').classList.add('hidden');
                     document.getElementById('teacher-view').classList.remove('hidden');
                     const btn = document.getElementById('student-greeting'); btn.innerHTML = `لوحة الإدارة ⚙️`; btn.onclick = null;
                     renderStudentsTable(); renderLeaderboard();
                     if(!history.state) history.replaceState({view: 'adminTab', tab: 'tab-covers'}, '', '#admin');
                 } else {
+                    localStorage.removeItem('geox_admin_logged');
                     document.getElementById('teacher-view').classList.add('hidden');
                     document.getElementById('student-view').classList.remove('hidden');
                     database.ref('students/' + user.uid).once('value', snap => {
@@ -489,7 +499,11 @@
                         } else { pendingGoogleUser = user; document.getElementById('phone-modal').classList.remove('hidden'); }
                     });
                 }
-            } else { updateStudentUI(null); restoreLastView(); }
+            } else { 
+                localStorage.removeItem('geox_admin_logged');
+                localStorage.removeItem('geox_student_user');
+                updateStudentUI(null); restoreLastView(); 
+            }
         });
 
         function updateStudentUI(st) { const btn = document.getElementById('student-greeting'); const msg = document.getElementById('main-welcome-msg'); if(st) { btn.innerHTML = `${st.name.split(' ')[0]} 👤`; btn.onclick = openProfileModal; if(msg) msg.innerHTML = `اهلا ${st.name.split(' ')[0]} 🎓`; } else { btn.innerHTML = `تسجيل الدخول`; btn.onclick = handleUnifiedLogin; if(msg) msg.innerHTML = `اهلا بالبطل 🎓`; } }
@@ -525,15 +539,11 @@
             }
         }
 
-        // --- الممتص الذكي للأخطاء (Safe Parser) لحل مشكلة JSON في Firebase ---
         function getSafeExamData(examData) {
             if (!examData) return [];
             let arr = [];
-            if (Array.isArray(examData)) {
-                arr = [...examData];
-            } else if (typeof examData === 'object') {
-                arr = Object.values(examData);
-            }
+            if (Array.isArray(examData)) { arr = [...examData]; } 
+            else if (typeof examData === 'object') { arr = Object.values(examData); }
             return arr.filter(item => item && typeof item === 'object' && item.q);
         }
 
@@ -605,7 +615,6 @@
         let examTimer = null, timeLeft = 600, currentQuestions = [];
         document.addEventListener("visibilitychange", () => { const examScreen = document.getElementById('exam-screen'); const examActions = document.getElementById('exam-actions'); if (document.visibilityState === 'hidden' && !examScreen.classList.contains('hidden') && !examActions.classList.contains('hidden')) { cheatWarnings++; if (cheatWarnings >= 2) { alert('🚨 تم سحب الامتحان وتسليمه تلقائياً بسبب محاولة الخروج من الصفحة للغش!'); submitExam(); } else { alert('⚠️ تحذير شديد: يمنع الخروج من صفحة الامتحان أو فتح تطبيقات أخرى. المرة القادمة سيتم سحب الامتحان فوراً!'); } } });
 
-        // إعادة برمجة بدء الامتحان بشكل آمن 100%
         function startExam(title, fromHistory=false) { 
             if(!fromHistory) history.pushState({view: 'exam'}, '', '#exam'); 
             
@@ -636,8 +645,6 @@
                     document.getElementById('exam-countdown').classList.add('hidden'); 
                     try {
                         let safeData = getSafeExamData(currentExamData);
-                        
-                        // خلط الأسئلة بشكل آمن (Safe Shuffle)
                         let shuff = [...safeData];
                         for(let i = shuff.length - 1; i > 0; i--){
                             const j = Math.floor(Math.random() * (i + 1));
@@ -658,7 +665,6 @@
             }, 1000); 
         }
 
-        // عرض الأسئلة بشكل آمن
         function renderQuestionsSafe() { 
             let html = '';
             currentQuestions.forEach((q, i) => { 
@@ -673,7 +679,6 @@
                     if (Array.isArray(q.options)) { opts = [...q.options]; } 
                     else if (q.options && typeof q.options === 'object') { opts = Object.values(q.options); }
                     
-                    // خلط الاختيارات
                     for (let k = opts.length - 1; k > 0; k--) {
                         const j = Math.floor(Math.random() * (k + 1));
                         const temp = opts[k]; opts[k] = opts[j]; opts[j] = temp;
@@ -686,7 +691,7 @@
         }
 
         function startTimer() { 
-            timeLeft = 600; // 10 دقائق
+            timeLeft = 600; 
             const d = document.getElementById('timer-display'); 
             if(d) {
                 d.parentElement.classList.remove('bg-red-100','text-red-600','animate-pulse'); 
@@ -753,4 +758,3 @@
     </script>
 </body>
 </html>
-
