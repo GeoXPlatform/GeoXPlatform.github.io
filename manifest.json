@@ -1,0 +1,16 @@
+{
+  "name": "Geo X Platform",
+  "short_name": "Geo X",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#0B1437",
+  "theme_color": "#0B1437",
+  "icons": [
+    {
+      "src": "./logo.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg"
+    }
+  ]
+}
+
