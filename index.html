@@ -8,7 +8,9 @@
     <!-- إعدادات تطبيق الموبايل (PWA) -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#0B1437">
-    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3588/3588145.png">
+    <!-- أيقونة الموقع بجوار العنوان في المتصفح -->
+    <link rel="icon" href="./logo-transparent.png" type="image/png">
+    <link rel="apple-touch-icon" href="./logo-transparent.png">
 
     <!-- مكاتب التصميم وتصدير الإكسيل -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -56,14 +58,26 @@
         <div class="marquee-rtl font-black tracking-wide" id="announcement-text" dir="rtl"></div>
     </div>
 
+    <!-- ================= NAVBAR ================= -->
     <nav class="bg-[#0B1437] text-white sticky top-0 z-40 border-b border-indigo-900/50 shadow-lg backdrop-blur-md bg-opacity-95">
-        <div class="container mx-auto px-4 py-3.5 flex justify-between items-center">
-            <div class="flex items-center gap-3 cursor-pointer group" onclick="openSocialModal()">
-<img src="./logo.jpg" alt="Geo X Logo" class="h-10 md:h-12 w-10 md:w-12 rounded-full object-cover border-2 border-white/20 group-hover:scale-105 transition-transform">
-<h1 class="text-xl md:text-2xl font-black tracking-tight text-white group-hover:text-emerald-400 transition-colors hidden sm:block">Geo X Platform</h1>
-                <span class="text-[10px] bg-white/10 px-2 py-1 rounded-lg text-indigo-100 border border-white/20 hidden md:block group-hover:bg-white/20 transition-colors">تواصل معنا 📞</span>
+        <div class="container mx-auto px-4 py-2 md:py-3 flex justify-between items-center relative">
+            
+            <!-- الشعار -->
+            <div class="flex items-center gap-3 cursor-pointer group z-10" onclick="openSocialModal()">
+                <img src="./logo-transparent.png" alt="Geo X Logo" class="h-12 md:h-14 w-auto object-contain drop-shadow-[0_0_8px_rgba(255,255,255,0.2)] group-hover:scale-110 transition-transform">
+                <div class="hidden sm:block">
+                    <h1 class="text-xl font-black tracking-tight text-white group-hover:text-emerald-400 transition-colors">Geo X</h1>
+                </div>
             </div>
-            <div id="nav-actions" class="flex items-center gap-3">
+
+            <!-- الكلمة اللي في النص -->
+            <div class="absolute left-1/2 transform -translate-x-1/2 flex flex-col items-center justify-center pointer-events-none z-0">
+                <span class="text-white font-black text-[12px] md:text-sm uppercase tracking-[0.2em] opacity-90">Platform</span>
+                <span class="text-emerald-400 font-bold text-[8px] md:text-[10px] uppercase tracking-[0.3em]">For Gen Z</span>
+            </div>
+
+            <!-- زر الدخول -->
+            <div id="nav-actions" class="flex items-center gap-3 z-10">
                 <button id="student-greeting" class="px-4 py-2 rounded-xl font-bold bg-white/10 hover:bg-white/20 text-white border border-white/10 transition-all text-xs md:text-sm flex items-center gap-2 shadow-sm">
                     جاري التحميل...
                 </button>
@@ -75,14 +89,17 @@
 
         <div id="student-view" class="block">
             <div id="student-stages" class="block animate-[fadeIn_0.5s_ease-out]">
-                <div class="text-center mb-10 md:mb-14">
+                <div class="text-center mb-8 md:mb-10">
                     <h2 id="main-welcome-msg" class="text-3xl md:text-4xl font-black text-slate-800 mb-3 tracking-tight"> اهلا بالبطل 🎓</h2>
                     <p class="text-slate-500 text-sm md:text-base font-semibold">اختار سنتك الدراسية عشان تشوف المنهج بتاعك</p>
                 </div>
-                <div id="stages-grid" class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto"></div>
-                <div class="mt-14 text-center">
-                    <button onclick="openGlobalLeaderboard('prep3')" class="bg-gradient-to-r from-amber-400 to-orange-500 text-white font-black py-4 px-8 md:px-12 rounded-full shadow-lg shadow-orange-500/30 hover:scale-105 transition-all text-lg md:text-xl border-4 border-white">🏆 لوحة الشرف لأوائل المنصة 🏆</button>
+                
+                <!-- لوحة الشرف بقت فوق هنا -->
+                <div class="mb-10 md:mb-14 text-center">
+                    <button onclick="openGlobalLeaderboard('prep3')" class="w-full md:w-auto bg-gradient-to-r from-amber-400 to-orange-500 text-white font-black py-4 px-8 md:px-12 rounded-[2rem] shadow-[0_10px_30px_rgba(245,158,11,0.3)] hover:scale-[1.02] transition-all text-lg md:text-xl border-4 border-white">🏆 لوحة الشرف لأوائل المنصة 🏆</button>
                 </div>
+
+                <div id="stages-grid" class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto"></div>
             </div>
 
             <div id="student-units-container" class="hidden animate-[fadeIn_0.4s_ease-out]">
@@ -375,6 +392,7 @@
         </div>
     </div>
 
+    <!-- Social & Contact Modal -->
     <div id="social-modal" class="hidden fixed inset-0 bg-[#0B1437]/80 backdrop-blur-sm z-[500] flex items-center justify-center p-4">
         <div class="bg-white p-7 rounded-[2rem] shadow-2xl w-full max-w-sm text-center border border-slate-100 relative">
             <button onclick="document.getElementById('social-modal').classList.add('hidden')" class="absolute top-4 left-4 text-slate-400 hover:text-red-500 text-xl transition-colors">✖</button>
@@ -402,12 +420,12 @@
                 <div class="grid grid-cols-2 gap-3">
                     <a href="https://wa.me/201090337409" target="_blank" class="block w-full bg-amber-50 hover:bg-amber-100 text-amber-900 p-4 transition-all group relative overflow-hidden text-center" style="border: 3px solid #b45309; border-radius: 12px; box-shadow: inset 0 0 10px rgba(180,83,9,0.2);">
                         <div class="absolute top-0 left-0 w-full h-full border-2 border-dashed border-amber-600/30 rounded-lg pointer-events-none m-1"></div>
-                        <div class="text-3xl mb-2 group-hover:scale-110 transition-transform relative z-10">👨‍🏫</div>
+                        <img src="./mr-joe.png" alt="مستر چو" class="w-16 h-16 mx-auto mb-2 drop-shadow-md group-hover:scale-110 transition-transform object-contain">
                         <div class="font-black text-sm relative z-10">مستر چو</div>
                     </a>
                     <a href="https://wa.me/201019517904" target="_blank" class="block w-full bg-amber-50 hover:bg-amber-100 text-amber-900 p-4 transition-all group relative overflow-hidden text-center" style="border: 3px solid #b45309; border-radius: 12px; box-shadow: inset 0 0 10px rgba(180,83,9,0.2);">
                         <div class="absolute top-0 left-0 w-full h-full border-2 border-dashed border-amber-600/30 rounded-lg pointer-events-none m-1"></div>
-                        <div class="text-3xl mb-2 group-hover:scale-110 transition-transform relative z-10">👨‍🏫</div>
+                        <img src="./mr-fathy.png" alt="مستر فتحي" class="w-16 h-16 mx-auto mb-2 drop-shadow-md group-hover:scale-110 transition-transform object-contain">
                         <div class="font-black text-sm relative z-10">مستر فتحي</div>
                     </a>
                 </div>
@@ -580,18 +598,8 @@
         function loadLessonData() { const id = document.getElementById('contentLessonId').value; const data = lessonsDataCache[id]||{}; document.getElementById('lessonYoutube').value = data.yt||''; document.getElementById('lessonExamText').value = data.exam ? JSON.stringify(data.exam,null,2) : ''; document.getElementById('pdfStatus').innerText = data.pdf ? '✅ ملزمة مرفوعة مسبقاً' : ''; const stats = analyticsDataCache[id]||{yt:0, pdf:0}; document.getElementById('stat-yt').innerText = `👁️ مشاهدات الفيديو: ${stats.yt||0}`; document.getElementById('stat-pdf').innerText = `📥 تحميل الملزمة: ${stats.pdf||0}`; }
         function handleContentUpload(e) { e.preventDefault(); const id = document.getElementById('contentLessonId').value; if(!id) return alert('برجاء اختيار الدرس'); let data = lessonsDataCache[id]||{yt:'', pdf:null, exam:null}; data.yt = document.getElementById('lessonYoutube').value; try { const json = document.getElementById('lessonExamText').value.trim(); data.exam = json ? JSON.parse(json) : null; } catch(err) { return alert('❌ كود JSON غير صحيح'); } const file = document.getElementById('lessonPdf').files[0]; const save = () => database.ref('lessons_data/'+id).set(data).then(()=>alert('✅ تم حفظ بيانات الدرس')); if(file) { const r = new FileReader(); r.onload = e=>{ data.pdf = e.target.result; save(); }; r.readAsDataURL(file); } else save(); }
 
-        // التعديل الشامل لبيانات الطالب في لوحة الإدارة
         function renderStudentsTable() { document.getElementById('studentsListTbody').innerHTML = allStudents.map(s=>`<tr class="hover:bg-slate-50"><td class="p-4 font-bold text-slate-800">${s.name}</td><td class="p-4 font-bold text-indigo-600" dir="ltr">${s.phone||s.email}</td><td class="p-4 text-slate-500 text-xs">${s.date||'غير محدد'}</td><td class="p-4 text-center space-x-2 space-x-reverse"><button onclick="editStudentData('${s.uid}', '${s.name}', '${s.phone||''}')" class="bg-blue-50 hover:bg-blue-500 text-blue-600 hover:text-white px-3 py-1.5 rounded-lg text-xs font-bold transition-colors">تعديل ✏️</button><button onclick="deleteStudent('${s.uid}')" class="bg-red-50 hover:bg-red-500 text-red-600 hover:text-white px-3 py-1.5 rounded-lg text-xs font-bold transition-colors mt-2 md:mt-0">حذف 🗑️</button></td></tr>`).join(''); }
-        function editStudentData(uid, oldName, oldPhone) {
-            const newName = prompt("أدخل الاسم الجديد للطالب:", oldName);
-            const newPhone = prompt("أدخل رقم موبايل ولي الأمر الجديد:", oldPhone);
-            let updates = {};
-            if(newName && newName !== oldName) updates['name'] = newName;
-            if(newPhone && newPhone !== oldPhone && newPhone.length >= 10) updates['phone'] = newPhone;
-            if(Object.keys(updates).length > 0) {
-                database.ref('students/' + uid).update(updates).then(() => alert('تم تحديث بيانات الطالب بنجاح.'));
-            }
-        }
+        function editStudentData(uid, oldName, oldPhone) { const newName = prompt("أدخل الاسم الجديد للطالب:", oldName); const newPhone = prompt("أدخل رقم موبايل ولي الأمر الجديد:", oldPhone); let updates = {}; if(newName && newName !== oldName) updates['name'] = newName; if(newPhone && newPhone !== oldPhone && newPhone.length >= 10) updates['phone'] = newPhone; if(Object.keys(updates).length > 0) { database.ref('students/' + uid).update(updates).then(() => alert('تم تحديث بيانات الطالب بنجاح.')); } }
         function deleteStudent(uid) { if(confirm("هل أنت متأكد من حذف هذا الطالب نهائياً؟")) { database.ref('students/' + uid).remove().then(() => alert('تم الحذف بنجاح.')); } }
         function filterStudents() { const v = document.getElementById('searchStudent').value.toLowerCase(); Array.from(document.getElementById('studentsListTbody').rows).forEach(r => r.style.display = r.cells[0].innerText.includes(v)?'':'none'); }
 
@@ -603,14 +611,7 @@
         function saveAnnouncementText() { const txt = document.getElementById('adminAnnouncementInput').value.trim(); database.ref('announcement').set(txt).then(() => alert('تم النشر!')); }
         function clearAnnouncementText() { database.ref('announcement').set('').then(() => { document.getElementById('adminAnnouncementInput').value = ''; alert('تم إيقاف الإعلان!'); }); }
 
-        // تسجيل السيرفيس وركر لعمل التطبيق
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('sw.js').then(reg => {
-                    console.log('PWA Service Worker Registered', reg);
-                }).catch(err => console.log('Service Worker Error', err));
-            });
-        }
+        if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js').then(reg => { console.log('PWA Service Worker Registered', reg); }).catch(err => console.log('Service Worker Error', err)); }); }
     </script>
 </body>
 </html>
