@@ -63,17 +63,19 @@
         <div class="container mx-auto px-4 py-2 md:py-3 flex justify-between items-center relative">
             
             <!-- الشعار -->
-            <div class="flex items-center gap-3 cursor-pointer group z-10" onclick="openSocialModal()">
+            <div class="flex items-center gap-2 md:gap-3 cursor-pointer group z-10" onclick="openSocialModal()">
                 <img src="./logo-transparent.png" alt="Geo X Logo" class="h-12 md:h-14 w-auto object-contain drop-shadow-[0_0_8px_rgba(255,255,255,0.2)] group-hover:scale-110 transition-transform">
                 <div class="hidden sm:block">
                     <h1 class="text-xl font-black tracking-tight text-white group-hover:text-emerald-400 transition-colors">Geo X</h1>
                 </div>
             </div>
 
-            <!-- الكلمة اللي في النص -->
-            <div class="absolute left-1/2 transform -translate-x-1/2 flex flex-col items-center justify-center pointer-events-none z-0">
-                <span class="text-white font-black text-[12px] md:text-sm uppercase tracking-[0.2em] opacity-90">Platform</span>
-                <span class="text-emerald-400 font-bold text-[8px] md:text-[10px] uppercase tracking-[0.3em]">For Gen Z</span>
+            <!-- الكلمة اللي في النص + زرار التثبيت -->
+            <div class="absolute left-1/2 transform -translate-x-1/2 flex flex-col items-center justify-center z-10">
+                <span class="text-white font-black text-[12px] md:text-sm uppercase tracking-[0.2em] opacity-90 pointer-events-none">Platform</span>
+                <span class="text-emerald-400 font-bold text-[8px] md:text-[10px] uppercase tracking-[0.3em] pointer-events-none mb-1">For Gen Z</span>
+                <!-- زر تثبيت التطبيق -->
+                <button id="install-app-btn" onclick="installPWA()" class="hidden bg-indigo-600 px-3 py-1 md:py-1.5 rounded-lg text-white text-[10px] md:text-xs font-bold border border-indigo-400 hover:bg-indigo-500 transition-colors shadow-lg animate-pulse mt-1">تثبيت التطبيق 📲</button>
             </div>
 
             <!-- زر الدخول -->
@@ -87,6 +89,7 @@
 
     <main class="container mx-auto px-4 py-8 md:py-12 flex-grow max-w-5xl relative">
 
+        <!-- STUDENT VIEW -->
         <div id="student-view" class="block">
             <div id="student-stages" class="block animate-[fadeIn_0.5s_ease-out]">
                 <div class="text-center mb-8 md:mb-10">
@@ -94,7 +97,6 @@
                     <p class="text-slate-500 text-sm md:text-base font-semibold">اختار سنتك الدراسية عشان تشوف المنهج بتاعك</p>
                 </div>
                 
-                <!-- لوحة الشرف بقت فوق هنا -->
                 <div class="mb-10 md:mb-14 text-center">
                     <button onclick="openGlobalLeaderboard('prep3')" class="w-full md:w-auto bg-gradient-to-r from-amber-400 to-orange-500 text-white font-black py-4 px-8 md:px-12 rounded-[2rem] shadow-[0_10px_30px_rgba(245,158,11,0.3)] hover:scale-[1.02] transition-all text-lg md:text-xl border-4 border-white">🏆 لوحة الشرف لأوائل المنصة 🏆</button>
                 </div>
@@ -151,12 +153,13 @@
                 </div>
             </div>
 
+            <!-- Exam Screen -->
             <div id="exam-screen" class="hidden fixed inset-0 bg-[#F4F7FE] z-[100] overflow-y-auto no-select" oncontextmenu="return false;">
                 <div class="container mx-auto max-w-3xl py-8 px-4 relative">
                     <div id="exam-active-header" class="sticky top-4 bg-white/95 backdrop-blur-lg p-4 rounded-2xl shadow-sm border border-slate-200 flex justify-between items-center z-50 mb-8 gap-3">
                         <h2 id="exam-header-title" class="text-sm md:text-base font-black text-indigo-900 truncate pr-2 border-r-4 border-indigo-500"></h2>
                         <div class="bg-red-50 border border-red-200 px-4 py-2 rounded-xl font-black text-sm md:text-base text-red-600 flex items-center gap-2 shrink-0 shadow-inner">
-                            ⏳ <span id="timer-display">05:00</span>
+                            ⏳ <span id="timer-display">10:00</span>
                         </div>
                     </div>
                     <div id="exam-questions" class="space-y-5 mb-8"></div>
@@ -174,6 +177,7 @@
             </div>
         </div>
 
+        <!-- TEACHER VIEW -->
         <div id="teacher-view" class="hidden space-y-6">
             <div class="flex justify-between items-center bg-white p-5 md:p-6 rounded-[2rem] shadow-sm border border-slate-100">
                 <h2 class="text-xl md:text-2xl font-black text-slate-800 flex items-center gap-3">
@@ -392,7 +396,6 @@
         </div>
     </div>
 
-    <!-- Social & Contact Modal -->
     <div id="social-modal" class="hidden fixed inset-0 bg-[#0B1437]/80 backdrop-blur-sm z-[500] flex items-center justify-center p-4">
         <div class="bg-white p-7 rounded-[2rem] shadow-2xl w-full max-w-sm text-center border border-slate-100 relative">
             <button onclick="document.getElementById('social-modal').classList.add('hidden')" class="absolute top-4 left-4 text-slate-400 hover:text-red-500 text-xl transition-colors">✖</button>
@@ -533,11 +536,20 @@
             
             if(data.yt) { bYt.removeAttribute('href'); bYt.setAttribute('onclick', `openYouTubeNative('${data.yt}')`); bYt.className="block w-full bg-red-500 hover:bg-red-600 text-white font-bold py-3 rounded-xl text-sm transition-colors mt-4 shadow-md shadow-red-500/20 cursor-pointer"; bYt.innerText="اتفرج دلوقتي ▶️"; } else { bYt.removeAttribute('href'); bYt.removeAttribute('onclick'); bYt.className="block w-full bg-slate-200 text-slate-400 font-bold py-3 rounded-xl text-sm pointer-events-none mt-4"; bYt.innerText="مش متاح ❌"; }
             if(data.pdf) { bPdf.className="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 rounded-xl text-sm transition-colors mt-4 shadow-md shadow-blue-500/20"; bPdf.innerText="حملها من هنا 📥"; bPdf.onclick=()=>{ recordAnalytics(id, 'pdf'); const a=document.createElement('a');a.href=data.pdf;a.download=title+'.pdf';a.click();}; } else { bPdf.className="w-full bg-slate-200 text-slate-400 font-bold py-3 rounded-xl text-sm pointer-events-none mt-4"; bPdf.innerText="مش متاح ❌"; bPdf.onclick=null; }
-            if(currentExamData && currentExamData.length > 0) { bFc.className="w-full bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 rounded-xl text-sm transition-colors mt-4 shadow-md shadow-amber-500/20"; bFc.innerText="راجع معلوماتك 🔄"; bFc.onclick = openFlashcards; } else { bFc.className="w-full bg-slate-200 text-slate-400 font-bold py-3 rounded-xl text-sm pointer-events-none mt-4"; bFc.innerText="مش متاح ❌"; bFc.onclick=null; }
+            
+            // Safe JSON parse check
+            let hasValidExam = false;
+            if(currentExamData) {
+                let safeData = Array.isArray(currentExamData) ? currentExamData : Object.values(currentExamData);
+                safeData = safeData.filter(i => i && i.q);
+                if(safeData.length > 0) hasValidExam = true;
+            }
+
+            if(hasValidExam) { bFc.className="w-full bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 rounded-xl text-sm transition-colors mt-4 shadow-md shadow-amber-500/20"; bFc.innerText="راجع معلوماتك 🔄"; bFc.onclick = openFlashcards; } else { bFc.className="w-full bg-slate-200 text-slate-400 font-bold py-3 rounded-xl text-sm pointer-events-none mt-4"; bFc.innerText="مش متاح ❌"; bFc.onclick=null; }
             
             const st = JSON.parse(localStorage.getItem('geox_student_user'));
             if(st && examResultsCache.find(r=>r.uid===st.uid && r.lessonId===id)) { bEx.className="w-full bg-slate-700 text-slate-400 font-black py-3 rounded-xl text-sm mt-4 border border-slate-600 pointer-events-none cursor-not-allowed"; bEx.innerText="امتحنته خلاص 🔒"; bEx.onclick = null; } 
-            else if(currentExamData && currentExamData.length>0) { bEx.className="w-full bg-emerald-500 hover:bg-emerald-400 text-white font-black py-3 rounded-xl text-sm transition-colors mt-4 shadow-lg shadow-emerald-500/30"; bEx.innerText=st ? "ابتدى الامتحان 🚀" : "تسجيل الدخول للامتحان 🚀"; bEx.onclick = st ? ()=>startExam(title) : handleUnifiedLogin; } 
+            else if(hasValidExam) { bEx.className="w-full bg-emerald-500 hover:bg-emerald-400 text-white font-black py-3 rounded-xl text-sm transition-colors mt-4 shadow-lg shadow-emerald-500/30"; bEx.innerText=st ? "ابتدى الامتحان 🚀" : "تسجيل الدخول للامتحان 🚀"; bEx.onclick = st ? ()=>startExam(title) : handleUnifiedLogin; } 
             else { bEx.className="w-full bg-slate-700 text-slate-400 font-black py-3 rounded-xl text-sm pointer-events-none mt-4 border border-slate-600"; bEx.innerText="مفيش امتحان ❌"; bEx.onclick=null; }
         }
 
@@ -566,7 +578,12 @@
 
         function generateCertificate(name, lesson) { document.getElementById('cert-name').innerText = name; document.getElementById('cert-lesson').innerText = lesson; document.getElementById('certificate-modal').classList.remove('hidden'); }
         function openMistakesBank() { const st = JSON.parse(localStorage.getItem('geox_student_user')); const myScores = examResultsCache.filter(r => r.uid === st.uid && r.mistakes && r.mistakes.length > 0); let html = ''; if(myScores.length === 0) { html = '<p class="text-slate-400 text-center text-sm py-10 font-bold">ممتاز! ليس لديك أي أخطاء مسجلة حتى الآن 🎉</p>'; } else { myScores.forEach(s => { html += `<h4 class="font-black text-slate-700 bg-slate-200 p-2 rounded-lg mt-4 mb-2 text-sm">${getLessonNameById(s.lessonId)}</h4><div class="space-y-3">`; s.mistakes.forEach(m => { html += `<div class="bg-white p-4 rounded-xl border border-red-100 shadow-sm"><p class="font-bold text-slate-800 text-sm mb-2">س: ${m.q}</p><p class="text-xs text-red-600 font-bold mb-1">إجابتك: <span class="line-through text-slate-500">${m.ans}</span></p><p class="text-xs text-emerald-600 font-bold">الصحيحة: ${m.corr}</p></div>`; }); html += `</div>`; }); } document.getElementById('mistakes-list').innerHTML = html; document.getElementById('mistakes-modal').classList.remove('hidden'); }
-        function openFlashcards() { flashcardsList = currentExamData.filter(q => q.type !== 'essay' && q.answer); if(flashcardsList.length === 0) return alert('لا يوجد كروت مراجعة لهذا الدرس.'); currentFlashcardIndex = 0; renderFlashcard(); document.getElementById('flashcards-modal').classList.remove('hidden'); }
+        function openFlashcards() { 
+            let safeData = Array.isArray(currentExamData) ? currentExamData : Object.values(currentExamData||{});
+            safeData = safeData.filter(i => i && i.q);
+            flashcardsList = safeData.filter(q => q.type !== 'essay' && q.answer); 
+            if(flashcardsList.length === 0) return alert('لا يوجد كروت مراجعة لهذا الدرس.'); currentFlashcardIndex = 0; renderFlashcard(); document.getElementById('flashcards-modal').classList.remove('hidden'); 
+        }
         function renderFlashcard() { const q = flashcardsList[currentFlashcardIndex]; document.getElementById('flashcard-counter').innerText = `${currentFlashcardIndex + 1} / ${flashcardsList.length}`; document.getElementById('flashcard-container').innerHTML = `<div class="flip-card" onclick="this.classList.toggle('flipped')"><div class="flip-card-inner"><div class="flip-card-front"><p>${q.q}</p></div><div class="flip-card-back"><p>${q.answer}</p></div></div></div>`; }
         function nextFlashcard() { if(currentFlashcardIndex < flashcardsList.length - 1) { currentFlashcardIndex++; renderFlashcard(); } }
         function prevFlashcard() { if(currentFlashcardIndex > 0) { currentFlashcardIndex--; renderFlashcard(); } }
@@ -581,10 +598,46 @@
             if(!html) html = '<p class="text-center text-slate-500 font-bold py-8">لا يوجد بيانات لهذه المرحلة بعد.</p>'; document.getElementById('global-leaderboard-list').innerHTML = html; document.getElementById('global-leaderboard-modal').classList.remove('hidden');
         }
 
-        let examTimer = null, timeLeft = 300, currentQuestions = [];
+        let examTimer = null, timeLeft = 600, currentQuestions = [];
         document.addEventListener("visibilitychange", () => { const examScreen = document.getElementById('exam-screen'); const examActions = document.getElementById('exam-actions'); if (document.visibilityState === 'hidden' && !examScreen.classList.contains('hidden') && !examActions.classList.contains('hidden')) { cheatWarnings++; if (cheatWarnings >= 2) { alert('🚨 تم سحب الامتحان وتسليمه تلقائياً بسبب محاولة الخروج من الصفحة للغش!'); submitExam(); } else { alert('⚠️ تحذير شديد: يمنع الخروج من صفحة الامتحان أو فتح تطبيقات أخرى. المرة القادمة سيتم سحب الامتحان فوراً!'); } } });
 
-        function startExam(title, fromHistory=false) { if(!fromHistory) history.pushState({view: 'exam'}, '', '#exam'); document.getElementById('exam-header-title').innerText = title; document.getElementById('exam-actions').classList.remove('hidden'); document.getElementById('exam-results-actions').classList.add('hidden'); document.getElementById('exam-screen').classList.remove('hidden'); cheatWarnings = 0; let c = 3; document.getElementById('countdown-number').innerText = c; document.getElementById('exam-countdown').classList.remove('hidden'); const iv = setInterval(()=>{ c--; if(c>0) { document.getElementById('countdown-number').innerText=c; } else { clearInterval(iv); document.getElementById('exam-countdown').classList.add('hidden'); currentQuestions = shuffle([...currentExamData]).slice(0, 20); renderQuestions(); startTimer(); } }, 1000); }
+        function startExam(title, fromHistory=false) { 
+            if(!fromHistory) history.pushState({view: 'exam'}, '', '#exam'); 
+            document.getElementById('exam-header-title').innerText = title; 
+            document.getElementById('exam-actions').classList.remove('hidden'); 
+            document.getElementById('exam-results-actions').classList.add('hidden'); 
+            document.getElementById('exam-questions').innerHTML = '';
+            document.getElementById('timer-display').innerText = '10:00';
+            document.getElementById('timer-display').parentElement.classList.remove('bg-red-100','text-red-600','animate-pulse');
+            document.getElementById('exam-screen').classList.remove('hidden'); 
+            cheatWarnings = 0; 
+            
+            let c = 3; 
+            document.getElementById('countdown-number').innerText = c; 
+            document.getElementById('exam-countdown').classList.remove('hidden'); 
+            
+            const iv = setInterval(()=>{ 
+                c--; 
+                if(c>0) { 
+                    document.getElementById('countdown-number').innerText=c; 
+                } else { 
+                    clearInterval(iv); 
+                    document.getElementById('exam-countdown').classList.add('hidden'); 
+                    try {
+                        let safeData = Array.isArray(currentExamData) ? currentExamData : Object.values(currentExamData || {});
+                        safeData = safeData.filter(i => i && i.q); // تصفية أي أخطاء في الـ JSON
+                        currentQuestions = shuffle([...safeData]).slice(0, 20); 
+                        renderQuestions(); 
+                        startTimer(); 
+                    } catch(err) {
+                        alert('حدث خطأ أثناء تحميل الأسئلة. حاول مرة أخرى.');
+                        console.error(err);
+                        closeExam();
+                    }
+                } 
+            }, 1000); 
+        }
+
         function renderQuestions() { document.getElementById('exam-questions').innerHTML = currentQuestions.map((q, i) => { let inputsHtml = ''; if (q.type === 'essay') { inputsHtml = `<textarea id="essay_q_${i}" rows="3" class="w-full p-3 border border-slate-300 rounded-xl bg-slate-50 focus:bg-white" placeholder="اكتب إجابتك هنا..."></textarea>`; } else { const opts = q.type==='tf'?['صح','خطأ']:shuffle([...q.options||[]]); inputsHtml = `<div class="space-y-3">` + opts.map(o=>`<label class="flex items-center gap-3 p-4 bg-slate-50 border border-slate-200 rounded-xl cursor-pointer hover:bg-indigo-50 transition-colors"><input type="radio" name="q_${i}" value="${o}" class="w-5 h-5 accent-indigo-600"><span class="font-bold text-slate-700">${o}</span></label>`).join('') + `</div>`; } return `<div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 question-block" data-index="${i}" data-ans="${q.answer || ''}"><h3 class="font-black mb-4 flex gap-2 text-lg leading-relaxed text-slate-800"><span class="bg-indigo-100 text-indigo-700 px-3 py-1 rounded-xl text-sm h-fit shrink-0">${i+1}</span> ${q.q}</h3>${inputsHtml}<div class="result-feedback hidden mt-4 p-3 rounded-xl text-sm font-bold"></div></div>`; }).join(''); }
         function startTimer() { timeLeft = 600; const d = document.getElementById('timer-display'); clearInterval(examTimer); d.parentElement.classList.remove('bg-red-100','text-red-600','animate-pulse'); examTimer = setInterval(()=>{ timeLeft--; let m=Math.floor(timeLeft/60), s=timeLeft%60; d.innerText=`${m<10?'0'+m:m}:${s<10?'0'+s:s}`; if(timeLeft<=60) d.parentElement.classList.add('bg-red-100','text-red-600','animate-pulse'); if(timeLeft<=0){ clearInterval(examTimer); alert('انتهى الوقت! ⏳'); submitExam(); } }, 1000); }
         function submitExam() { clearInterval(examTimer); const blocks = document.querySelectorAll('.question-block'); let sc = 0, autoGradedTotal = 0, essayCount = 0; let mistakesBank = []; blocks.forEach((block) => { const i = block.getAttribute('data-index'); const q = currentQuestions[i]; const feedbackDiv = block.querySelector('.result-feedback'); feedbackDiv.classList.remove('hidden'); if (q.type === 'essay') { essayCount++; const textVal = document.getElementById(`essay_q_${i}`).value.trim(); feedbackDiv.classList.add('bg-blue-50', 'text-blue-700', 'border', 'border-blue-200'); feedbackDiv.innerHTML = textVal ? '📝 سيتم مراجعة الإجابة المقالية من قبل المدرس.' : '⚠️ لم تقم بكتابة إجابة.'; } else { autoGradedTotal++; const sel = block.querySelector(`input[name="q_${i}"]:checked`); const correctAns = block.getAttribute('data-ans'); block.querySelectorAll('label').forEach(lbl => { lbl.classList.add('opacity-50', 'pointer-events-none'); const inp = lbl.querySelector('input'); if(inp.value === correctAns) { lbl.classList.remove('opacity-50', 'bg-slate-50', 'border-slate-200'); lbl.classList.add('correct-answer'); } }); if (sel && sel.value === correctAns) { sc++; feedbackDiv.classList.add('bg-emerald-100', 'text-emerald-700'); feedbackDiv.innerText = '✅ إجابة صحيحة!'; } else { let studentAns = sel ? sel.value : "لم يجب"; mistakesBank.push({ q: q.q, ans: studentAns, corr: correctAns }); if(sel) { sel.parentElement.classList.remove('opacity-50', 'bg-slate-50'); sel.parentElement.classList.add('wrong-answer'); } feedbackDiv.classList.add('bg-red-100', 'text-red-700'); feedbackDiv.innerText = `❌ إجابة خاطئة! الإجابة الصحيحة هي: ${correctAns}`; } } }); const timeTaken = 600 - timeLeft; const st = JSON.parse(localStorage.getItem('geox_student_user')); document.getElementById('exam-actions').classList.add('hidden'); const resBox = document.getElementById('exam-score-display'); let resText = `<h3 class="text-2xl font-black mb-2 ${sc >= autoGradedTotal/2 ? 'text-emerald-600' : 'text-red-600'}">نتيجتك: ${sc} / ${autoGradedTotal}</h3>`; if(essayCount > 0) resText += `<p class="text-sm font-bold text-slate-500 mt-2">يوجد ${essayCount} سؤال مقالي بانتظار التقييم.</p>`; resBox.innerHTML = resText; document.getElementById('exam-results-actions').classList.remove('hidden'); window.scrollTo(0,0); database.ref('exam_results').push({ lessonId: currentLesson, uid: st.uid, name: st.name, phone: st.phone || st.email, score: sc, total: autoGradedTotal, time: timeTaken, date: new Date().toLocaleString('ar-EG'), mistakes: mistakesBank }); }
@@ -610,6 +663,29 @@
         function exportExcel(id, name) { const wb = XLSX.utils.table_to_book(document.getElementById(id)); XLSX.writeFile(wb, name+'.xlsx'); }
         function saveAnnouncementText() { const txt = document.getElementById('adminAnnouncementInput').value.trim(); database.ref('announcement').set(txt).then(() => alert('تم النشر!')); }
         function clearAnnouncementText() { database.ref('announcement').set('').then(() => { document.getElementById('adminAnnouncementInput').value = ''; alert('تم إيقاف الإعلان!'); }); }
+
+        // نظام تحميل التطبيق PWA
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            const installBtn = document.getElementById('install-app-btn');
+            if (installBtn) installBtn.classList.remove('hidden');
+        });
+
+        function installPWA() {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        document.getElementById('install-app-btn').classList.add('hidden');
+                    }
+                    deferredPrompt = null;
+                });
+            } else {
+                alert('لتثبيت التطبيق على الآيفون: اضغط على زر المشاركة (Share) ثم "Add to Home Screen".');
+            }
+        }
 
         if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js').then(reg => { console.log('PWA Service Worker Registered', reg); }).catch(err => console.log('Service Worker Error', err)); }); }
     </script>
