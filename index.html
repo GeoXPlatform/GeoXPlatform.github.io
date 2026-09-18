@@ -89,8 +89,8 @@
         .cropper-modal { background-color: rgba(15, 23, 42, 0.8); }
 
         .bottom-nav { background: var(--header-bg); border-top: 1px solid var(--card-border); }
-        .nav-item { color: var(--text-muted); }
-        .nav-item.active { color: #4F46E5; }
+        .nav-item { color: var(--text-muted); transition: all 0.3s ease;}
+        .nav-item.active { color: #4F46E5; transform: translateY(-2px); }
         
         .dark-mode .bg-white { background-color: var(--card-bg); }
         .dark-mode .bg-slate-50 { background-color: var(--input-bg); }
@@ -102,30 +102,31 @@
 </head>
 <body class="flex flex-col selection:bg-indigo-500 selection:text-white relative" oncontextmenu="return false;">
 
+    <!-- شريط الإعلانات -->
     <div id="announcement-bar" class="hidden bg-gradient-to-r from-red-600 to-rose-500 text-white text-sm md:text-base py-2 px-4 overflow-hidden border-b border-red-700 shadow-sm relative z-50 w-full" dir="ltr">
         <div class="marquee-rtl font-black tracking-wide" id="announcement-text" dir="rtl"></div>
     </div>
 
     <!-- ================= NAVBAR ================= -->
     <nav class="bg-[#0B1437] text-white sticky top-0 z-40 shadow-lg backdrop-blur-md bg-opacity-95">
-        <div class="container mx-auto px-4 py-2 md:py-3 flex justify-between items-center relative h-16 md:h-20">
+        <div class="container mx-auto px-2 md:px-4 py-2 md:py-3 flex justify-between items-center relative h-16 md:h-20">
             
-            <!-- اللوجو على اليمين -->
-            <div class="flex items-center cursor-pointer group z-20 shrink-0" onclick="openSocialModal()">
-                <img src="./logo-transparent.png" loading="lazy" decoding="async" alt="Geo X Logo" class="h-10 md:h-14 w-auto object-contain drop-shadow-[0_0_8px_rgba(255,255,255,0.2)] hover:scale-110 transition-transform">
-            </div>
-
-            <!-- الكلمة المتوسطة المظبوطة بدون تداخل -->
-            <div class="absolute left-1/2 transform -translate-x-1/2 flex items-center justify-center z-10 pointer-events-none w-[50%] md:w-auto overflow-hidden" dir="ltr">
-                <span class="text-white font-black text-[12px] sm:text-[14px] md:text-[22px] lg:text-[24px] uppercase tracking-[0.1em] md:tracking-widest drop-shadow-md whitespace-nowrap">PLATFORM FOR</span>
-                <span class="text-emerald-400 font-black text-[12px] sm:text-[14px] md:text-[22px] lg:text-[24px] uppercase tracking-[0.1em] md:tracking-widest drop-shadow-md whitespace-nowrap ml-1 md:ml-2">GEN Z</span>
-            </div>
-
             <!-- زر الدخول أو الصورة الشخصية على اليسار -->
             <div id="nav-actions" class="flex items-center z-20 shrink-0">
                 <button id="student-greeting" onclick="handleUnifiedLogin()" class="px-4 py-1.5 md:py-2 rounded-xl font-bold bg-white/10 hover:bg-white/20 text-white border border-white/10 transition-all text-xs md:text-sm flex items-center shadow-sm cursor-pointer whitespace-nowrap">
                     التسجيل
                 </button>
+            </div>
+
+            <!-- الكلمة المتوسطة المظبوطة بدون تداخل -->
+            <div class="absolute left-1/2 transform -translate-x-1/2 flex items-center justify-center z-10 pointer-events-none w-full max-w-[50%] overflow-hidden" dir="ltr">
+                <span class="text-white font-black text-[12px] sm:text-[14px] md:text-[22px] lg:text-[24px] uppercase tracking-[0.1em] md:tracking-widest drop-shadow-md whitespace-nowrap">PLATFORM FOR</span>
+                <span class="text-emerald-400 font-black text-[12px] sm:text-[14px] md:text-[22px] lg:text-[24px] uppercase tracking-[0.1em] md:tracking-widest drop-shadow-md whitespace-nowrap ml-1 md:ml-2">GEN Z</span>
+            </div>
+
+            <!-- اللوجو على اليمين -->
+            <div class="flex items-center gap-1 md:gap-3 cursor-pointer group z-20 shrink-0" onclick="openSocialModal()">
+                <img src="./logo-transparent.png" loading="lazy" decoding="async" alt="Geo X Logo" class="h-10 md:h-14 w-auto object-contain drop-shadow-[0_0_8px_rgba(255,255,255,0.2)] hover:scale-110 transition-transform">
             </div>
             
             <button id="install-app-btn" onclick="installPWA()" class="hidden absolute -bottom-8 left-1/2 transform -translate-x-1/2 bg-indigo-600 px-3 py-1 rounded-b-lg text-white text-[10px] font-bold border-b border-x border-indigo-400 hover:bg-indigo-500 shadow-md z-30">
@@ -139,14 +140,16 @@
         <!-- ================= تبويبة الرئيسية (المنهج) ================= -->
         <div id="app-tab-home" class="app-tab block">
             
+            <!-- قسم السنين الدراسية -->
             <div id="student-stages" class="hidden animate-[fadeIn_0.2s_ease-out]">
                 <div class="text-center mb-8">
-                    <h2 id="main-welcome-msg" class="text-3xl md:text-4xl font-black text-slate-800 mb-2 tracking-tight"> اهلا بالبطل 🎓</h2>
-                    <p class="text-slate-500 font-semibold text-sm">اختار سنتك الدراسية عشان تشوف المنهج بتاعك</p>
+                    <h2 id="main-welcome-msg" class="text-3xl md:text-4xl font-black text-slate-800 dark:text-white mb-2 tracking-tight"> اهلا بالبطل 🎓</h2>
+                    <p class="text-slate-500 dark:text-slate-400 font-semibold text-sm">اختار سنتك الدراسية عشان تشوف المنهج بتاعك</p>
                 </div>
                 <div id="stages-grid" class="grid grid-cols-1 md:grid-cols-3 gap-5 max-w-5xl mx-auto"></div>
             </div>
 
+            <!-- قسم الوحدات -->
             <div id="student-units-container" class="hidden animate-[fadeIn_0.2s_ease-out]">
                 <div class="flex justify-between items-center mb-6 bg-white p-4 rounded-2xl shadow-sm border border-slate-100">
                     <h2 id="units-title" class="text-base md:text-xl font-black text-slate-800"></h2>
@@ -155,24 +158,27 @@
                 <div id="student-units-grid" class="grid grid-cols-1 md:grid-cols-2 gap-5"></div>
             </div>
 
+            <!-- قسم الدروس -->
             <div id="student-lessons-container" class="hidden animate-[fadeIn_0.2s_ease-out]">
                 <div class="flex flex-col md:flex-row justify-between items-center mb-6 bg-[#0B1437] text-white p-5 rounded-2xl gap-4 shadow-lg">
                     <div class="text-center md:text-right">
                         <span id="lesson-unit-badge" class="text-[10px] bg-indigo-500/30 text-indigo-200 px-2 py-1 rounded-md font-bold mb-2 inline-block"></span>
                         <h2 id="lessons-title" class="text-lg md:text-xl font-black"></h2>
                     </div>
-                    <button onclick="document.getElementById('student-lessons-container').classList.add('hidden'); document.getElementById('student-units-container').classList.remove('hidden');" class="bg-white/10 hover:bg-white/20 font-bold py-2 px-4 rounded-xl text-xs transition-colors">🔙 ارجع للوحدات</button>
+                    <button onclick="openGrade(currentGrade, true)" class="bg-white/10 hover:bg-white/20 font-bold py-2 px-4 rounded-xl text-xs transition-colors">🔙 ارجع للوحدات</button>
                 </div>
                 <div id="student-lessons-list" class="space-y-3 max-w-3xl mx-auto"></div>
             </div>
 
+            <!-- قسم محتوى الدرس (فيديو - ملزمة - فلاش كارد - امتحان) -->
             <div id="student-content-container" class="hidden animate-[fadeIn_0.2s_ease-out]">
                 <div class="flex justify-between items-center mb-6 bg-white p-4 rounded-2xl shadow-sm border border-slate-100 gap-2 relative overflow-hidden">
                     <div class="absolute right-0 top-0 bottom-0 w-1.5 bg-indigo-500"></div>
                     <h2 id="content-title" class="text-sm md:text-lg font-black text-slate-800 pr-2 truncate max-w-[70%]"></h2>
-                    <button onclick="document.getElementById('student-content-container').classList.add('hidden'); document.getElementById('student-lessons-container').classList.remove('hidden');" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-2 px-3 rounded-xl text-xs transition-colors shrink-0">🔙 الدروس</button>
+                    <button onclick="openUnit(currentUnit, true)" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-2 px-3 rounded-xl text-xs transition-colors shrink-0">🔙 الدروس</button>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-w-5xl mx-auto justify-center" id="content-cards-grid">
+                    
                     <div class="bg-white p-5 rounded-[1.5rem] shadow-sm border border-slate-100 text-center ui-card" id="card-yt">
                         <div class="w-12 h-12 bg-red-50 text-red-500 rounded-xl mx-auto flex items-center justify-center text-xl mb-3">📺</div>
                         <h3 class="text-xs font-black text-slate-800 mb-2">فيديو الشرح</h3>
@@ -196,6 +202,7 @@
                         <h3 class="text-xs font-black mb-2">امتحان الدرس</h3>
                         <button id="btn-exam" class="w-full bg-emerald-500 hover:bg-emerald-400 text-white font-black py-3 rounded-xl text-sm transition-colors mt-3 shadow-lg shadow-emerald-500/30">ابتدى الامتحان 🚀</button>
                     </div>
+                    
                 </div>
             </div>
         </div>
@@ -218,6 +225,7 @@
                     </select>
                 </div>
                 <div class="p-4 bg-slate-50 flex-grow overflow-y-auto space-y-2 min-h-[50vh]" id="global-leaderboard-list">
+                    <!-- سيتم حقن الأبطال هنا -->
                 </div>
             </div>
         </div>
@@ -254,6 +262,7 @@
                         </div>
                     </div>
 
+                    <!-- تسجيل الخروج -->
                     <button onclick="logoutUnified()" class="w-full bg-red-50 text-red-600 hover:bg-red-500 hover:text-white font-black py-3 rounded-xl border border-red-200 transition-colors shadow-sm text-sm">تسجيل الخروج 🚪</button>
                 </div>
             </div>
@@ -275,6 +284,7 @@
                 <button onclick="showAdminTab('tab-ai')" id="btn-tab-ai" class="admin-tab-btn font-bold py-2 rounded-xl text-[11px] md:text-xs bg-indigo-50 text-indigo-700 border-indigo-200">🤖 الـ AI</button>
             </div>
 
+            <!-- الكفرات والصور -->
             <div id="tab-covers" class="admin-tab block bg-white p-6 rounded-[2rem] shadow-sm border border-slate-100">
                 <h3 class="text-sm font-black text-slate-800 mb-4 border-b pb-2">إدارة صور الغلاف (لا يوجد مسح)</h3>
                 <form onsubmit="handleCoverUpload(event)" class="space-y-4">
@@ -285,6 +295,7 @@
                 </form>
             </div>
 
+            <!-- المحتوى والملازم -->
             <div id="tab-content" class="admin-tab hidden bg-white p-6 rounded-[2rem] shadow-sm border border-slate-100">
                 <h3 class="text-sm font-black text-slate-800 mb-4 border-b pb-2">محتوى الدروس</h3>
                 <form onsubmit="handleContentUpload(event)" class="space-y-4">
@@ -318,6 +329,7 @@
                 </form>
             </div>
 
+            <!-- الطلاب ومسحهم بالكامل -->
             <div id="tab-students" class="admin-tab hidden bg-white p-4 rounded-[2rem] shadow-sm border border-slate-100">
                 <input type="text" id="searchStudent" onkeyup="filterStudents()" placeholder="بحث باسم الطالب..." class="w-full p-2 border rounded-lg mb-3 text-xs">
                 <div class="overflow-x-auto">
@@ -328,7 +340,7 @@
                 </div>
             </div>
 
-            <!-- صفحة الكنترول والامتحانات لمسح امتحان محدد للطالب -->
+            <!-- الامتحانات ومسح امتحان للطالب -->
             <div id="tab-exams" class="admin-tab hidden bg-white p-4 rounded-[2rem] shadow-sm border border-slate-100">
                 <div class="grid grid-cols-2 gap-2 mb-2">
                     <select id="lbGrade" onchange="updateLbUnitDropdown()" class="p-2 border rounded-lg text-xs"><option value="">السنة</option><option value="prep1">أولى إعدادي</option><option value="prep2">تانية إعدادي</option><option value="prep3">تالتة إعدادي</option></select>
@@ -419,7 +431,7 @@
         <button onclick="document.getElementById('cheat-overlay').classList.add('hidden')" class="mt-8 px-8 py-3 bg-white text-red-600 rounded-xl font-black shadow-lg hover:scale-105 transition-transform">فهمت، العودة للامتحان فوراً</button>
     </div>
 
-    <!-- ================= النوافذ المساعدة والمودال ================= -->
+    <!-- ================= باقي النوافذ المعتادة ================= -->
     <div id="exam-screen" class="hidden fixed inset-0 bg-var(--bg-main) dark:bg-slate-900 z-[100] overflow-y-auto no-select" style="user-select:none;-webkit-user-select:none;">
         <div class="container mx-auto max-w-3xl py-8 px-4 relative">
             <div id="exam-active-header" class="sticky top-4 bg-white/95 dark:bg-slate-800/95 backdrop-blur-lg p-4 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 flex justify-between items-center z-50 mb-8 gap-3">
@@ -440,7 +452,7 @@
         </div>
     </div>
 
-    <!-- بروفايل الطالب المصغر -->
+    <!-- بروفايل الطالب المصغر (درجات وإنجاز وأخطاء فقط) -->
     <div id="profile-modal" class="hidden fixed inset-0 bg-[#0B1437]/80 backdrop-blur-sm z-[300] flex items-center justify-center p-4">
         <div class="bg-white dark:bg-slate-800 rounded-[2rem] w-full max-w-sm overflow-hidden shadow-2xl flex flex-col max-h-[85vh]">
             <div class="bg-gradient-to-br from-[#0F172A] to-[#1E293B] p-6 text-center relative shrink-0">
@@ -495,6 +507,7 @@
         </div>
     </div>
 
+    <!-- النافذة لطلب رقم الهاتف عند تسجيل طالب جديد -->
     <div id="phone-modal" class="hidden fixed inset-0 bg-[#0B1437]/80 backdrop-blur-sm z-[400] flex items-center justify-center p-4"><div class="bg-white dark:bg-slate-800 p-7 rounded-[2rem] w-full max-w-sm text-center shadow-2xl border border-slate-100 dark:border-slate-700"><h2 class="text-2xl font-black text-slate-800 dark:text-white mb-2">خطوة أخيرة 🎓</h2><p class="text-xs text-slate-500 dark:text-slate-400 mb-4 font-bold">أدخل رقم الموبايل لتأمين حسابك</p><input type="tel" id="newStudentPhone" placeholder="رقم الموبايل (010...)" class="w-full p-4 border rounded-xl bg-slate-50 dark:bg-slate-900 mb-4 text-center font-bold" dir="ltr"><button onclick="saveStudentPhone()" class="w-full btn-premium text-white font-black py-3.5 rounded-xl shadow-md">دخول المنصة 🚀</button></div></div>
     
     <div id="mistakes-modal" class="hidden fixed inset-0 bg-[#0B1437]/90 backdrop-blur-md z-[600] flex items-center justify-center p-4"><div class="bg-white dark:bg-slate-800 rounded-[2rem] w-full max-w-md overflow-hidden flex flex-col max-h-[80vh] border border-slate-100 dark:border-slate-700"><div class="bg-red-50 dark:bg-red-900/30 p-4 flex justify-between items-center border-b border-red-100 dark:border-red-900/50 shrink-0"><h3 class="text-lg font-black text-red-700 dark:text-red-400">بنك أخطائي ❌</h3><button onclick="document.getElementById('mistakes-modal').classList.add('hidden')" class="text-red-400 hover:text-red-600 text-2xl font-bold">✖</button></div><div class="p-4 bg-slate-50 dark:bg-slate-900 flex-grow overflow-y-auto" id="mistakes-list"></div></div></div>
@@ -503,26 +516,28 @@
     
     <div id="certificate-modal" class="hidden fixed inset-0 bg-[#0B1437]/90 backdrop-blur-md z-[700] flex items-center justify-center p-4"><div class="bg-white w-full max-w-xl relative border-[10px] border-amber-500 p-1.5 text-center"><button onclick="document.getElementById('certificate-modal').classList.add('hidden')" class="absolute top-2 right-2 text-slate-400 text-xl font-bold z-10 bg-white rounded-full w-7 h-7 flex items-center justify-center shadow-sm">✖</button><div class="border-2 border-amber-300 p-8 md:p-10 relative bg-white/95"><div class="text-4xl mb-3">👑</div><h1 class="text-3xl md:text-4xl font-black text-amber-600 mb-3">شـهـادة تـفـوق</h1><h2 class="text-xl font-black text-slate-800 my-4 bg-slate-50 inline-block px-6 py-2 rounded-xl border" id="cert-name"></h2><p class="text-[11px] font-bold mb-2">لاجتيازه بتفوق مبهر اختبار:</p><h3 class="text-sm md:text-lg font-black text-indigo-700 mb-6" id="cert-lesson"></h3><div class="flex justify-between items-center border-t pt-4 px-2"><div class="text-center"><p class="text-[10px] font-black">مستر</p><p class="text-amber-600 font-black text-base">چو</p></div><div class="text-2xl">🏅</div><div class="text-center"><p class="text-[10px] font-black">مستر</p><p class="text-amber-600 font-black text-base">فتحي</p></div></div></div></div></div>
 
-    <!-- نافذة تواصل معنا (تمت إعادتها بالشكل الأصلي وإضافة اللوجوهات الاحترافية) -->
+    <!-- نافذة تواصل معنا (بدون قص دائري للصور، تظهر كاملة بوضوح) -->
     <div id="social-modal" class="hidden fixed inset-0 bg-[#0B1437]/80 backdrop-blur-sm z-[500] flex items-center justify-center p-4">
-        <div class="bg-white dark:bg-slate-800 p-7 rounded-[2rem] w-full max-w-sm text-center relative border border-slate-100 dark:border-slate-700 shadow-2xl">
+        <div class="bg-white dark:bg-slate-800 p-6 rounded-[2rem] w-full max-w-sm text-center relative border border-slate-100 dark:border-slate-700 shadow-2xl">
             <button onclick="document.getElementById('social-modal').classList.add('hidden')" class="absolute top-4 left-4 text-slate-400 hover:text-red-500 text-xl transition-colors">✖</button>
             <div class="w-16 h-16 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-500 dark:text-indigo-400 rounded-2xl mx-auto flex items-center justify-center text-4xl mb-4 shadow-sm border border-indigo-100 dark:border-indigo-800/50">🌍</div>
             <h3 class="text-xl font-black text-slate-800 dark:text-white mb-1">تواصل معنا</h3>
             <p class="text-xs text-slate-500 dark:text-slate-400 font-semibold mb-6">منصة Geo X للدراسات الاجتماعية</p>
             
             <div class="space-y-4">
+                <!-- صور المعلمين (تم إلغاء الدائرة والإطار لتظهر الصورة الـ PNG بحرية ووضوح) -->
                 <div class="grid grid-cols-2 gap-3">
                     <a href="https://wa.me/201019517904" target="_blank" class="bg-amber-50 dark:bg-amber-900/20 p-3 rounded-xl border border-amber-200 dark:border-amber-700/50 text-center flex flex-col items-center justify-center hover:scale-105 transition-transform">
-                        <img src="./mr-fathy.png" alt="مستر فتحي" class="w-14 h-14 object-cover mb-2 rounded-full border-2 border-red-200 shadow-sm">
+                        <img src="./mr-fathy.png" alt="مستر فتحي" class="w-16 h-16 object-contain mb-2 drop-shadow-md">
                         <span class="font-black text-sm text-amber-900 dark:text-amber-500">مستر فتحي</span>
                     </a>
                     <a href="https://wa.me/201090337409" target="_blank" class="bg-amber-50 dark:bg-amber-900/20 p-3 rounded-xl border border-amber-200 dark:border-amber-700/50 text-center flex flex-col items-center justify-center hover:scale-105 transition-transform">
-                        <img src="./mr-joe.png" alt="مستر چو" class="w-14 h-14 object-cover mb-2 rounded-full border-2 border-slate-300 shadow-sm">
+                        <img src="./mr-joe.png" alt="مستر چو" class="w-16 h-16 object-contain mb-2 drop-shadow-md">
                         <span class="font-black text-sm text-amber-900 dark:text-amber-500">مستر چو</span>
                     </a>
                 </div>
                 
+                <!-- أزرار التواصل بلوجوهات أصلية -->
                 <div class="flex gap-2 mt-4">
                     <a href="https://tiktok.com/@geox.platform" target="_blank" class="flex-1 bg-black text-white font-bold py-3 rounded-xl text-xs flex items-center justify-center gap-2 shadow-md hover:bg-gray-800 transition-colors">
                         <svg class="w-4 h-4 fill-current" viewBox="0 0 448 512"><path d="M448 209.91a210.06 210.06 0 0 1-122.77-39.25V349.38A162.55 162.55 0 1 1 185 188.31v89.89a74.62 74.62 0 1 0 52.23 71.18V0l88 0a121.18 121.18 0 0 0 1.86 22.17h0A122.18 122.18 0 0 0 381 102.39a121.43 121.43 0 0 0 67 20.14Z"/></svg>
@@ -612,6 +627,7 @@
         const cachedStudent = JSON.parse(localStorage.getItem('geox_student_user'));
         const isAdminCached = localStorage.getItem('geox_admin_logged');
         const savedAdminTab = localStorage.getItem('geox_admin_tab') || 'tab-covers';
+        const lastView = JSON.parse(sessionStorage.getItem('geox_current_view'));
 
         // المنصة بتفتح في الرئيسية فوراً
         history.replaceState({view: 'home'}, '', window.location.pathname);
@@ -654,11 +670,11 @@
                     renderStudentsTable(); renderLeaderboardAdmin(); showAdminTab(savedAdminTab, true); 
                 } else { 
                     localStorage.removeItem('geox_admin_logged'); document.getElementById('teacher-view').classList.add('hidden'); document.querySelector('.bottom-nav').classList.remove('hidden'); document.getElementById('student-view').classList.remove('hidden'); document.getElementById('ai-fab').classList.remove('hidden'); 
-                    database.ref('students/'+user.uid).once('value', snap => { 
+                    database.ref('students/'+user.uid).once('value').then(snap => { 
                         if(snap.exists()) { 
                             localStorage.setItem('geox_student_user', JSON.stringify(snap.val())); updateStudentUI(snap.val()); updateSettingsTabUI(); 
                         } else { pendingGoogleUser = user; document.getElementById('phone-modal').classList.remove('hidden'); } 
-                    }); 
+                    }).catch(err => console.log(err)); 
                 } 
             } else { localStorage.removeItem('geox_admin_logged'); localStorage.removeItem('geox_student_user'); updateStudentUI(null); } 
         });
@@ -694,7 +710,8 @@
             } 
         }
 
-        function handleUnifiedLogin() { auth.signInWithPopup(googleProvider).catch(err => alert("حدث خطأ أثناء التسجيل: " + err.message)); }
+        function handleUnifiedLogin() { auth.signInWithPopup(googleProvider).then((result) => { }).catch(err => alert("حدث خطأ أثناء التسجيل: " + err.message)); }
+        
         function saveStudentPhone() { 
             const phone = document.getElementById('newStudentPhone').value.trim(); if(phone.length < 10) return alert('اكتب رقم صحيح'); 
             const sd = {uid: pendingGoogleUser.uid, name: pendingGoogleUser.displayName, email: pendingGoogleUser.email, phone: phone, nameEdited: false, phoneEdited: false, profilePic: null, date: new Date().toLocaleString('ar-EG')}; 
@@ -728,47 +745,148 @@
             }); 
         }
 
-        // التوجيه الصارم داخل الموقع
-        window.addEventListener('popstate', (e) => { 
-            const st = e.state; 
-            document.getElementById('student-units-container').classList.add('hidden'); document.getElementById('student-lessons-container').classList.add('hidden'); document.getElementById('student-content-container').classList.add('hidden'); 
-            if(!st || st.view === 'home') { currentGrade = ''; if(!localStorage.getItem('geox_admin_logged')) document.getElementById('student-stages').classList.remove('hidden'); } 
-            else if(st.view === 'grade') { openGrade(st.g, true); } 
-            else if(st.view === 'unit') { currentGrade = st.g; openUnit(st.u, true); } 
-            else if(st.view === 'lesson') { currentGrade = st.g; currentUnit = st.u; openLessonContent(st.l, st.t, true); } 
-        });
-        function goBackVisually() { history.back(); }
-
-        function renderStagesGrid() { document.getElementById('stages-grid').innerHTML = Object.keys(GRADES).map(g => `<div onclick="openGrade('${g}')" class="ui-card cursor-pointer rounded-[2rem] overflow-hidden aspect-video relative bg-[#0B1437]"><img src="${coversData['STAGE_COVER_'+g]||DEFAULT_COVER}" loading="lazy" class="absolute inset-0 w-full h-full object-cover opacity-70 hover:opacity-100 transition-opacity"><div class="absolute bottom-0 inset-x-0 p-5 bg-gradient-to-t from-[#0B1437] to-transparent z-20 flex items-end"><h3 class="text-2xl font-black text-white">${GRADES[g]}</h3></div></div>`).join(''); }
-        function openGrade(g, f=false) { if(!f) { history.pushState({view:'grade', g:g}, '', '#grade'); sessionStorage.setItem('geox_current_view', JSON.stringify({view:'grade', g:g})); } currentGrade = g; document.getElementById('student-stages').classList.add('hidden'); document.getElementById('student-units-container').classList.remove('hidden'); document.getElementById('units-title').innerText = '📚 وحدات ' + GRADES[g]; document.getElementById('student-units-grid').innerHTML = CURRICULUM.filter(u => u.grade === g).map(u => `<div onclick="openUnit('${u.id}')" class="ui-card cursor-pointer bg-white dark:bg-slate-800 rounded-[2rem] overflow-hidden shadow-sm hover:shadow-md border border-slate-100 dark:border-slate-700"><img src="${coversData[u.id]||DEFAULT_COVER}" loading="lazy" class="aspect-video w-full object-cover"><div class="p-4 font-black text-slate-800 dark:text-white text-sm">${u.title.split(':').join(':<br><span class="text-indigo-600 dark:text-indigo-400 text-[11px] font-bold">')}</span></div></div>`).join(''); }
-        function openUnit(id, f=false) { if(!f) { history.pushState({view:'unit', u:id, g:currentGrade}, '', '#unit'); sessionStorage.setItem('geox_current_view', JSON.stringify({view:'unit', g:currentGrade, u:id})); } currentUnit = id; document.getElementById('student-units-container').classList.add('hidden'); document.getElementById('student-lessons-container').classList.remove('hidden'); const u = CURRICULUM.find(x => x.id === id); document.getElementById('lesson-unit-badge').innerText = GRADES[u.grade]; document.getElementById('lessons-title').innerText = u.title.split(':')[0]; let html = u.lessons.map((l,i) => `<div onclick="openLessonContent('${l.id}','${l.t.replace(/'/g,"\\'")}')" class="bg-white dark:bg-slate-800 p-3 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 cursor-pointer flex items-center gap-3 hover:border-indigo-400 group"><div class="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 font-black flex items-center justify-center group-hover:bg-indigo-600 group-hover:text-white transition-colors text-xs">${i+1}</div><h4 class="font-bold text-slate-800 dark:text-white text-xs">${l.t}</h4></div>`).join(''); html += `<div onclick="openLessonContent('${u.id}_review','المراجعة الشاملة')" class="bg-amber-50 dark:bg-amber-900/20 p-3 rounded-2xl border border-amber-200 dark:border-amber-700/50 cursor-pointer flex items-center gap-3 mt-4"><div class="w-8 h-8 rounded-lg bg-amber-100 text-amber-600 font-black flex items-center justify-center text-sm">🌟</div><h4 class="font-black text-amber-900 dark:text-amber-500 text-xs">المراجعة الشاملة</h4></div>`; document.getElementById('student-lessons-list').innerHTML = html; }
-
-        window.recordAnalytics = function(id, type) { database.ref('analytics/'+id+'/'+type).transaction(v => (v||0)+1); };
-        function openYT(url) { if(!url) return; recordAnalytics(currentLesson, 'yt'); let m = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent); if(m && url.includes('youtube.com/watch?v=')) { let v = url.split('v=')[1].split('&')[0]; window.location.href = 'vnd.youtube://'+v; setTimeout(() => { window.open(url,'_blank'); }, 1500); } else if(m && url.includes('youtu.be/')) { let v = url.split('youtu.be/')[1].split('?')[0]; window.location.href = 'vnd.youtube://'+v; setTimeout(() => { window.open(url,'_blank'); }, 1500); } else { window.open(url,'_blank'); } }
-
-        function getSafeExamData(e) { if(!e) return []; let a = []; if(Array.isArray(e)) a = [...e]; else if(typeof e === 'object') a = Object.values(e); return a.filter(i => i && typeof i === 'object' && i.q); }
-
-        function openLessonContent(id, title, f=false) { 
-            if(!f) { history.pushState({view:'lesson', l:id, t:title, u:currentUnit, g:currentGrade}, '', '#lesson'); sessionStorage.setItem('geox_current_view', JSON.stringify({view:'lesson', g:currentGrade, u:currentUnit, l:id, t:title})); } 
-            currentLesson = id; document.getElementById('student-lessons-container').classList.add('hidden'); document.getElementById('student-content-container').classList.remove('hidden'); document.getElementById('content-title').innerText = '📄 ' + title; 
-            const data = lessonsDataCache[id] || {}; currentExamData = data.exam; 
-            const bYt = document.getElementById('btn-yt'), bPdf = document.getElementById('btn-pdf'), cPdf = document.getElementById('card-pdf'), bEx = document.getElementById('btn-exam'), bFc = document.getElementById('btn-flashcards'); 
-            
-            if(data.yt) { bYt.setAttribute('onclick', `openYT('${data.yt}')`); bYt.className = "block w-full bg-red-500 hover:bg-red-600 text-white font-bold py-2.5 rounded-lg text-xs transition-colors mt-3 cursor-pointer"; bYt.innerText = "اتفرج دلوقتي ▶️"; } else { bYt.removeAttribute('onclick'); bYt.className = "block w-full bg-slate-200 dark:bg-slate-700 text-slate-400 dark:text-slate-300 font-bold py-2.5 rounded-lg text-xs pointer-events-none mt-3"; bYt.innerText = "مش متاح ❌"; } 
-            
-            // إخفاء الملزمة لو مفيش ملزمة مرفوعة
-            if(data.pdf) { cPdf.classList.remove('hidden'); bPdf.className = "w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2.5 rounded-lg text-xs mt-3"; bPdf.innerText = "حملها من هنا 📥"; bPdf.onclick = () => { recordAnalytics(id, 'pdf'); const a = document.createElement('a'); a.href = data.pdf; a.download = title+'.pdf'; a.click(); }; } else { cPdf.classList.add('hidden'); } 
-            
-            let sData = getSafeExamData(currentExamData); let hEx = sData.length > 0; 
-            if(hEx) { bFc.className = "w-full bg-amber-500 hover:bg-amber-600 text-white font-bold py-2.5 rounded-lg text-xs mt-3"; bFc.innerText = "راجع معلوماتك 🔄"; bFc.onclick = openFlashcards; } else { bFc.className = "w-full bg-slate-200 dark:bg-slate-700 text-slate-400 dark:text-slate-300 font-bold py-2.5 rounded-lg text-xs pointer-events-none mt-3"; bFc.innerText = "مش متاح ❌"; bFc.onclick = null; } 
-            
-            const st = JSON.parse(localStorage.getItem('geox_student_user')); 
-            if(st && examResultsCache.find(r => r.uid === st.uid && r.lessonId === id)) { bEx.className = "w-full bg-slate-700 text-slate-400 font-black py-3 rounded-xl text-sm mt-3 pointer-events-none"; bEx.innerText = "امتحنته خلاص 🔒"; bEx.onclick = null; } 
-            else if(hEx) { bEx.className = "w-full bg-emerald-500 hover:bg-emerald-400 text-white font-black py-3 rounded-xl text-sm mt-3 shadow-lg"; bEx.innerText = st ? "ابتدى الامتحان 🚀" : "التسجيل للامتحان 🚀"; bEx.onclick = st ? () => startExam(title) : () => auth.signInWithPopup(googleProvider); } 
-            else { bEx.className = "w-full bg-slate-700 text-slate-400 font-black py-3 rounded-xl text-sm pointer-events-none mt-3"; bEx.innerText = "مفيش امتحان ❌"; bEx.onclick = null; } 
+        // إخفاء كل المحتوى
+        function hideAllContainers() {
+            ['student-stages', 'student-units-container', 'student-lessons-container', 'student-content-container'].forEach(id => {
+                document.getElementById(id).classList.add('hidden');
+            });
         }
 
-        // إعدادات وتعديل البيانات
+        window.addEventListener('popstate', (e) => { 
+            const st = e.state; 
+            hideAllContainers();
+            
+            if(!st || st.view === 'home') { 
+                currentGrade = ''; if(!localStorage.getItem('geox_admin_logged')) document.getElementById('student-stages').classList.remove('hidden'); 
+            } else if(st.view === 'grade') { 
+                openGrade(st.g, true); 
+            } else if(st.view === 'unit') { 
+                currentGrade = st.g; openUnit(st.u, true); 
+            } else if(st.view === 'lesson') { 
+                currentGrade = st.g; currentUnit = st.u; openLessonContent(st.l, st.t, true); 
+            } else if(st.view === 'exam') {
+                currentGrade = st.g; currentUnit = st.u; openLessonContent(st.l, st.t, true); 
+            }
+        });
+        
+        function goBackVisuallyTo(target) {
+            hideAllContainers();
+            if (target === 'home') {
+                currentGrade = '';
+                document.getElementById('student-stages').classList.remove('hidden');
+                history.pushState({view:'home'},'','');
+            } else if (target === 'grade') {
+                document.getElementById('student-units-container').classList.remove('hidden');
+                history.pushState({view:'grade', g:currentGrade},'','#grade');
+            } else if (target === 'unit') {
+                document.getElementById('student-lessons-container').classList.remove('hidden');
+                history.pushState({view:'unit', u:currentUnit, g:currentGrade},'','#unit');
+            }
+        }
+
+        function renderStagesGrid() { document.getElementById('stages-grid').innerHTML = Object.keys(GRADES).map(g => `<div onclick="openGrade('${g}')" class="ui-card cursor-pointer rounded-[2rem] overflow-hidden aspect-video relative bg-[#0B1437]"><img src="${coversData['STAGE_COVER_'+g]||DEFAULT_COVER}" loading="lazy" decoding="async" class="absolute inset-0 w-full h-full object-cover opacity-70 hover:opacity-100 transition-opacity duration-700"><div class="absolute bottom-0 inset-x-0 p-5 bg-gradient-to-t from-[#0B1437] via-[#0B1437]/80 to-transparent z-20 flex items-end"><h3 class="text-2xl md:text-3xl font-black text-white drop-shadow-lg">${GRADES[g]}</h3></div></div>`).join(''); }
+        
+        function openGrade(g, fromHistory=false) { 
+            if(!fromHistory) { history.pushState({view:'grade',g:g},'','#grade'); sessionStorage.setItem('geox_current_view',JSON.stringify({view:'grade',g:g})); } 
+            currentGrade = g; hideAllContainers();
+            document.getElementById('student-units-container').classList.remove('hidden'); 
+            document.getElementById('units-title').innerText = '📚 وحدات ' + GRADES[g]; 
+            document.getElementById('student-units-grid').innerHTML = CURRICULUM.filter(u=>u.grade===g).map(u => `<div onclick="openUnit('${u.id}')" class="ui-card cursor-pointer bg-white dark:bg-slate-800 rounded-[2rem] overflow-hidden border border-slate-100 dark:border-slate-700 shadow-sm hover:shadow-md"><img src="${coversData[u.id]||DEFAULT_COVER}" loading="lazy" decoding="async" class="aspect-video w-full object-cover"><div class="p-5 font-black text-slate-800 dark:text-white text-sm md:text-lg">${u.title.split(':').join(':<br><span class="text-indigo-600 dark:text-indigo-400 text-sm md:text-base font-bold">')}</span></div></div>`).join(''); 
+        }
+        
+        function openUnit(id, fromHistory=false) { 
+            if(!fromHistory) { history.pushState({view:'unit',u:id,g:currentGrade},'','#unit'); sessionStorage.setItem('geox_current_view',JSON.stringify({view:'unit',g:currentGrade,u:id})); } 
+            currentUnit = id; hideAllContainers();
+            document.getElementById('student-lessons-container').classList.remove('hidden'); 
+            const u = CURRICULUM.find(x=>x.id===id); 
+            document.getElementById('lesson-unit-badge').innerText = GRADES[u.grade]; 
+            document.getElementById('lessons-title').innerText = u.title.split(':')[0]; 
+            let html = u.lessons.map((l,i) => `<div onclick="openLessonContent('${l.id}', '${l.t.replace(/'/g, "\\'")}')" class="bg-white dark:bg-slate-800 p-4 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 cursor-pointer flex items-center gap-4 hover:border-indigo-400 group"><div class="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 font-black flex items-center justify-center group-hover:bg-indigo-600 group-hover:text-white transition-colors">${i+1}</div><h4 class="font-bold text-slate-800 dark:text-white flex-grow">${l.t}</h4></div>`).join(''); 
+            html += `<div onclick="openLessonContent('${u.id}_review', 'المراجعة الشاملة')" class="bg-amber-50 dark:bg-amber-900/20 p-5 rounded-2xl border border-amber-200 dark:border-amber-700/50 cursor-pointer flex items-center gap-4 group mt-6 md:col-span-2"><div class="w-12 h-12 rounded-xl bg-amber-100 text-amber-600 font-black flex items-center justify-center text-xl">🌟</div><h4 class="font-black text-amber-900 dark:text-amber-500 flex-grow text-lg">المراجعة الشاملة للوحدة</h4></div>`; 
+            document.getElementById('student-lessons-list').innerHTML = html; 
+        }
+
+        window.recordAnalytics = function(lessonId, type) { database.ref('analytics/' + lessonId + '/' + type).transaction(val => (val || 0) + 1); };
+
+        function openYouTubeNative(url) {
+            if (!url) return;
+            recordAnalytics(currentLesson, 'yt');
+            let isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+            if (isMobile && url.includes('youtube.com/watch?v=')) { let vid = url.split('v=')[1].split('&')[0]; window.location.href = 'vnd.youtube://' + vid; setTimeout(() => { window.open(url, '_blank'); }, 1500);
+            } else if (isMobile && url.includes('youtu.be/')) { let vid = url.split('youtu.be/')[1].split('?')[0]; window.location.href = 'vnd.youtube://' + vid; setTimeout(() => { window.open(url, '_blank'); }, 1500);
+            } else { window.open(url, '_blank'); }
+        }
+
+        function getSafeExamData(examData) {
+            if (!examData) return [];
+            let arr = [];
+            if (Array.isArray(examData)) { arr = [...examData]; } 
+            else if (typeof examData === 'object') { arr = Object.values(examData); }
+            return arr.filter(item => item && typeof item === 'object' && item.q);
+        }
+
+        function openLessonContent(id, title, fromHistory=false) {
+            if(!fromHistory) { history.pushState({view:'lesson',l:id,t:title,u:currentUnit,g:currentGrade},'','#lesson'); sessionStorage.setItem('geox_current_view',JSON.stringify({view:'lesson',g:currentGrade,u:currentUnit,l:id,t:title})); }
+            currentLesson = id; hideAllContainers();
+            document.getElementById('student-content-container').classList.remove('hidden'); 
+            document.getElementById('content-title').innerText = '📄 ' + title;
+            const data = lessonsDataCache[id] || {}; currentExamData = data.exam;
+            const bYt = document.getElementById('btn-yt'), bPdf = document.getElementById('btn-pdf'), cPdf = document.getElementById('card-pdf'), bEx = document.getElementById('btn-exam'), bFc = document.getElementById('btn-flashcards');
+            
+            if(data.yt) { bYt.setAttribute('onclick', `openYouTubeNative('${data.yt}')`); bYt.className="block w-full bg-red-500 hover:bg-red-600 text-white font-bold py-3 rounded-xl text-sm transition-colors mt-4 shadow-md shadow-red-500/20 cursor-pointer"; bYt.innerText="اتفرج دلوقتي ▶️"; } else { bYt.removeAttribute('onclick'); bYt.className="block w-full bg-slate-200 dark:bg-slate-700 text-slate-400 dark:text-slate-300 font-bold py-3 rounded-xl text-sm pointer-events-none mt-4"; bYt.innerText="مش متاح ❌"; }
+            if(data.pdf) { cPdf.classList.remove('hidden'); bPdf.className="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 rounded-xl text-sm transition-colors mt-4 shadow-md shadow-blue-500/20"; bPdf.innerText="حملها من هنا 📥"; bPdf.onclick=()=>{ recordAnalytics(id, 'pdf'); const a=document.createElement('a');a.href=data.pdf;a.download=title+'.pdf';a.click();}; } else { cPdf.classList.add('hidden'); }
+            
+            let safeData = getSafeExamData(currentExamData);
+            let hasValidExam = safeData.length > 0;
+
+            if(hasValidExam) { bFc.className="w-full bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 rounded-xl text-sm transition-colors mt-4 shadow-md shadow-amber-500/20"; bFc.innerText="راجع معلوماتك 🔄"; bFc.onclick = openFlashcards; } else { bFc.className="w-full bg-slate-200 dark:bg-slate-700 text-slate-400 dark:text-slate-300 font-bold py-3 rounded-xl text-sm pointer-events-none mt-4"; bFc.innerText="مش متاح ❌"; bFc.onclick=null; }
+            
+            const st = JSON.parse(localStorage.getItem('geox_student_user'));
+            if(st && examResultsCache.find(r=>r.uid===st.uid && r.lessonId===id)) { bEx.className="w-full bg-slate-700 text-slate-400 font-black py-3 rounded-xl text-sm mt-4 border border-slate-600 pointer-events-none cursor-not-allowed"; bEx.innerText="امتحنته خلاص 🔒"; bEx.onclick = null; } 
+            else if(hasValidExam) { bEx.className="w-full bg-emerald-500 hover:bg-emerald-400 text-white font-black py-3 rounded-xl text-sm transition-colors mt-4 shadow-lg shadow-emerald-500/30"; bEx.innerText=st ? "ابتدى الامتحان 🚀" : "التسجيل للامتحان 🚀"; bEx.onclick = st ? ()=>startExam(title) : handleUnifiedLogin; } 
+            else { bEx.className="w-full bg-slate-700 text-slate-400 font-black py-3 rounded-xl text-sm pointer-events-none mt-4 border border-slate-600"; bEx.innerText="مفيش امتحان ❌"; bEx.onclick=null; }
+        }
+
+        function getLessonNameById(lessonId) { if (lessonId.includes('_review')) return "مراجعة شاملة"; for (let u of CURRICULUM) { let l = u.lessons.find(x => x.id === lessonId); if (l) return l.t; } return lessonId; }
+
+        function openProfileModal() {
+            const st = JSON.parse(localStorage.getItem('geox_student_user'));
+            if(st) { 
+                let realName = getStudentRealName(st.uid, st.name);
+                document.getElementById('profile-name').innerText = realName; 
+                document.getElementById('profile-modal-avatar').className = `w-full h-full bg-white/10 rounded-full flex items-center justify-center text-4xl text-emerald-400 overflow-hidden shadow-lg border-2 border-white/20 ${getUserRankClass(st.uid)}`;
+                document.getElementById('profile-modal-avatar').innerHTML = st.profilePic ? `<img src="${st.profilePic}" class="w-full h-full object-cover">` : `𓂀`;
+
+                const myScores = examResultsCache.filter(r => r.uid === st.uid).sort((a,b) => new Date(b.date) - new Date(a.date)); 
+                let totalSc = 0, totalMax = 0;
+                myScores.forEach(s => { totalSc += s.score; totalMax += s.total; });
+                let overallPerc = Math.round((totalSc / totalMax) * 100) || 0;
+
+                let badgesHtml = ''; 
+                if(myScores.length > 0) {
+                    if (myScores.length === 1) {
+                        if (overallPerc >= 50) badgesHtml = '<span class="bg-amber-100 text-amber-700 px-2 py-1 rounded text-[10px] font-bold shadow-sm">بداية مبشرة 🚶</span>';
+                        else badgesHtml = '<span class="bg-slate-100 text-slate-700 px-2 py-1 rounded text-[10px] font-bold shadow-sm">محاولة أولى 🎯</span>';
+                    } else {
+                        if (overallPerc >= 90) badgesHtml = '<span class="bg-yellow-100 text-yellow-700 px-2 py-1 rounded text-[10px] font-bold shadow-sm">أسطورة الجغرافيا 👑</span>';
+                        else if (overallPerc >= 75) badgesHtml = '<span class="bg-emerald-100 text-emerald-700 px-2 py-1 rounded text-[10px] font-bold shadow-sm">بطل صاعد 🌟</span>';
+                        else badgesHtml = '<span class="bg-blue-100 text-blue-700 px-2 py-1 rounded text-[10px] font-bold shadow-sm">طالب مكافح 📚</span>';
+                    }
+                    if(myScores.some(s => s.score === s.total && s.total > 0)) {
+                        badgesHtml += ' <span class="bg-purple-100 text-purple-700 px-2 py-1 rounded text-[10px] font-bold shadow-sm">قناص الدرجات 🎯</span>';
+                    }
+                }
+                document.getElementById('student-badges').innerHTML = badgesHtml;
+
+                if(myScores.length > 0) {
+                    const uniqueLessons = [...new Set(myScores.map(s => s.lessonId))]; let gCounts = {prep1:0, prep2:0, prep3:0}; uniqueLessons.forEach(lId => { const u = CURRICULUM.find(x => x.lessons.some(l => l.id === lId) || lId === x.id+'_review'); if(u) gCounts[u.grade]++; }); const domGrade = Object.keys(gCounts).reduce((a,b) => gCounts[a] > gCounts[b] ? a : b); const unitsInGrade = CURRICULUM.filter(x => x.grade === domGrade); const totalItems = unitsInGrade.reduce((acc, curr) => acc + curr.lessons.length + 1, 0); const percentage = Math.min(100, Math.round((uniqueLessons.length / totalItems) * 100)); document.getElementById('profile-progress').style.width = percentage + '%'; document.getElementById('profile-progress-text').innerText = `إنجازك: ${percentage}%`;
+                } else { document.getElementById('profile-progress').style.width = '0%'; document.getElementById('profile-progress-text').innerText = `إنجازك: 0%`; }
+
+                let listHtml = myScores.length === 0 ? '<p class="text-slate-400 text-center text-xs py-4">لم تمتحن بعد.</p>' : '';
+                myScores.forEach(s => { let p = Math.round((s.score / s.total) * 100) || 0; let c = p >= 85 ? 'text-emerald-600 bg-emerald-50 border-emerald-100' : (p >= 50 ? 'text-amber-600 bg-amber-50 border-amber-100' : 'text-red-600 bg-red-50 border-red-100'); listHtml += `<div class="bg-white dark:bg-slate-700 p-3 rounded-xl border border-slate-100 dark:border-slate-600 shadow-sm flex items-center justify-between"><div class="text-right w-2/3"><div class="font-bold text-slate-800 dark:text-white text-[11px] truncate">${getLessonNameById(s.lessonId)}</div></div><div class="px-2 py-1 rounded border font-black text-[10px] shrink-0 ${c}">${s.score}/${s.total}</div></div>`; }); document.getElementById('student-scores-list').innerHTML = listHtml; document.getElementById('profile-modal').classList.remove('hidden'); 
+            } else handleUnifiedLogin();
+        }
+
         function updateSettingsTabUI() { const st = JSON.parse(localStorage.getItem('geox_student_user')); if(st) { let pic = st.profilePic ? `<img src="${st.profilePic}" class="w-full h-full object-cover">` : `𓂀`; document.getElementById('settings-avatar').innerHTML = pic; } }
         function showSettingsEditForm(type) { 
             const st = JSON.parse(localStorage.getItem('geox_student_user')); 
@@ -797,67 +915,17 @@
                 if(p.length < 10) return alert('رقم غير صحيح'); 
                 up = {phone: p, phoneEdited: true}; 
             } 
-            database.ref('students/' + st.uid).update(up).then(() => { 
-                Object.assign(st, up); localStorage.setItem('geox_student_user', JSON.stringify(st)); updateStudentUI(st); document.getElementById('settings-edit-modal').classList.add('hidden'); alert('تم الحفظ بنجاح!'); 
-            }); 
+            database.ref('students/' + st.uid).update(up).then(() => { Object.assign(st, up); localStorage.setItem('geox_student_user', JSON.stringify(st)); updateStudentUI(st); updateSettingsTabUI(); document.getElementById('settings-edit-modal').classList.add('hidden'); alert('تم الحفظ بنجاح!'); }); 
         }
 
-        // البروفايل المصغر 
-        function openProfileModal() { 
-            const st = JSON.parse(localStorage.getItem('geox_student_user')); if(!st) return; 
-            document.getElementById('profile-name').innerText = getStudentRealName(st.uid, st.name); 
-            let rc = getUserRankClass(st.uid); 
-            document.getElementById('profile-modal-avatar').className = `w-full h-full bg-white/10 rounded-full flex items-center justify-center text-4xl text-emerald-400 overflow-hidden shadow-lg border border-white/20 ${rc}`; 
-            document.getElementById('profile-modal-avatar').innerHTML = st.profilePic ? `<img src="${st.profilePic}" class="w-full h-full object-cover">` : `𓂀`; 
-            const mSc = examResultsCache.filter(r => r.uid === st.uid).sort((a,b) => new Date(b.date) - new Date(a.date)); 
-            let totalSc = 0, totalMax = 0; mSc.forEach(s => {totalSc += s.score; totalMax += s.total;}); let perc = Math.round((totalSc / totalMax) * 100) || 0; 
-            let bH = ''; 
-            if(mSc.length > 0) { 
-                if(mSc.length === 1) { bH = perc >= 50 ? '<span class="bg-amber-100 text-amber-700 px-2 py-1 rounded text-[10px] font-bold shadow-sm">بداية مبشرة 🚶</span>' : '<span class="bg-slate-100 text-slate-700 px-2 py-1 rounded text-[10px] font-bold shadow-sm">محاولة أولى 🎯</span>'; } 
-                else { if(perc >= 90) bH = '<span class="bg-yellow-100 text-yellow-700 px-2 py-1 rounded text-[10px] font-bold shadow-sm">أسطورة الجغرافيا 👑</span>'; else if(perc >= 75) bH = '<span class="bg-emerald-100 text-emerald-700 px-2 py-1 rounded text-[10px] font-bold shadow-sm">بطل صاعد 🌟</span>'; else bH = '<span class="bg-blue-100 text-blue-700 px-2 py-1 rounded text-[10px] font-bold shadow-sm">طالب مكافح 📚</span>'; } 
-                if(mSc.some(s => s.score === s.total && s.total > 0)) bH += ' <span class="bg-purple-100 text-purple-700 px-2 py-1 rounded text-[10px] font-bold shadow-sm">قناص الدرجات 🎯</span>'; 
-            } 
-            document.getElementById('student-badges').innerHTML = bH; 
-            if(mSc.length > 0) { 
-                const uLs = [...new Set(mSc.map(s => s.lessonId))]; let gC = {prep1: 0, prep2: 0, prep3: 0}; 
-                uLs.forEach(lId => { const u = CURRICULUM.find(x => x.lessons.some(l => l.id === lId) || lId === x.id + '_review'); if(u) gC[u.grade]++; }); 
-                const dG = Object.keys(gC).reduce((a,b) => gC[a] > gC[b] ? a : b); 
-                const tI = CURRICULUM.filter(x => x.grade === dG).reduce((acc, curr) => acc + curr.lessons.length + 1, 0); 
-                const p = Math.min(100, Math.round((uLs.length / tI) * 100)); 
-                document.getElementById('profile-progress').style.width = p + '%'; document.getElementById('profile-progress-text').innerText = `إنجازك: ${p}%`; 
-            } else { document.getElementById('profile-progress').style.width = '0%'; document.getElementById('profile-progress-text').innerText = `إنجازك: 0%`; } 
-            
-            let lH = mSc.length === 0 ? '<p class="text-slate-400 text-center text-xs py-4">لم تمتحن بعد.</p>' : ''; 
-            mSc.forEach(s => { 
-                let p = Math.round((s.score / s.total) * 100) || 0; 
-                let c = p >= 85 ? 'text-emerald-600 bg-emerald-50 border-emerald-100' : (p >= 50 ? 'text-amber-600 bg-amber-50 border-amber-100' : 'text-red-600 bg-red-50 border-red-100'); 
-                lH += `<div class="bg-white dark:bg-slate-700 p-3 rounded-xl border border-slate-100 dark:border-slate-600 shadow-sm flex items-center justify-between"><div class="text-right w-2/3"><div class="font-bold text-slate-800 dark:text-white text-[11px] truncate">${getLessonNameById(s.lessonId)}</div></div><div class="px-2 py-1 rounded border font-black text-[10px] shrink-0 ${c}">${s.score}/${s.total}</div></div>`; 
-            }); 
-            document.getElementById('student-scores-list').innerHTML = lH; document.getElementById('profile-modal').classList.remove('hidden'); 
-        }
-
-        function openMistakesBank() { 
-            const st = JSON.parse(localStorage.getItem('geox_student_user')); 
-            const mSc = examResultsCache.filter(r => r.uid === st.uid && r.mistakes && r.mistakes.length > 0); 
-            let h = ''; 
-            if(mSc.length === 0) { h = '<p class="text-slate-400 text-center text-xs py-8 font-bold">رائع! ليس لديك أخطاء مسجلة.</p>'; } 
-            else { 
-                mSc.forEach(s => { 
-                    h += `<h4 class="font-black text-slate-700 dark:text-slate-300 bg-slate-200 dark:bg-slate-700 p-2 rounded-lg mt-3 mb-2 text-[11px]">${getLessonNameById(s.lessonId)}</h4><div class="space-y-2">`; 
-                    s.mistakes.forEach(m => { h += `<div class="bg-white dark:bg-slate-800 p-3 rounded-xl border border-red-100 dark:border-red-900 shadow-sm"><p class="font-bold text-slate-800 dark:text-slate-200 text-[10px] mb-1">س: ${m.q}</p><p class="text-[9px] text-red-600 font-bold">إجابتك: <span class="line-through">${m.ans}</span></p><p class="text-[9px] text-emerald-600 font-bold">الصحيحة: ${m.corr}</p></div>`; }); 
-                    h += `</div>`; 
-                }); 
-            } 
-            document.getElementById('mistakes-list').innerHTML = h; document.getElementById('mistakes-modal').classList.remove('hidden'); 
-        }
-
+        function openMistakesBank() { const st = JSON.parse(localStorage.getItem('geox_student_user')); const mSc = examResultsCache.filter(r => r.uid === st.uid && r.mistakes && r.mistakes.length > 0); let h = ''; if(mSc.length === 0) { h = '<p class="text-slate-400 text-center text-xs py-8 font-bold">رائع! ليس لديك أخطاء مسجلة.</p>'; } else { mSc.forEach(s => { h += `<h4 class="font-black text-slate-700 dark:text-slate-300 bg-slate-200 dark:bg-slate-700 p-2 rounded-lg mt-3 mb-2 text-[11px]">${getLessonNameById(s.lessonId)}</h4><div class="space-y-2">`; s.mistakes.forEach(m => { h += `<div class="bg-white dark:bg-slate-800 p-3 rounded-xl border border-red-100 dark:border-red-900 shadow-sm"><p class="font-bold text-slate-800 dark:text-slate-200 text-[10px] mb-1">س: ${m.q}</p><p class="text-[9px] text-red-600 font-bold">إجابتك: <span class="line-through">${m.ans}</span></p><p class="text-[9px] text-emerald-600 font-bold">الصحيحة: ${m.corr}</p></div>`; }); h += `</div>`; }); } document.getElementById('mistakes-list').innerHTML = h; document.getElementById('mistakes-modal').classList.remove('hidden'); }
         function openFlashcards() { let s = getSafeExamData(currentExamData); flashcardsList = s.filter(q => q.type !== 'essay' && q.answer); if(flashcardsList.length === 0) return alert('لا توجد كروت هنا.'); currentFlashcardIndex = 0; renderFlashcard(); document.getElementById('flashcards-modal').classList.remove('hidden'); }
         function renderFlashcard() { const q = flashcardsList[currentFlashcardIndex]; document.getElementById('flashcard-counter').innerText = `${currentFlashcardIndex + 1} / ${flashcardsList.length}`; document.getElementById('flashcard-container').innerHTML = `<div class="flip-card" onclick="this.classList.toggle('flipped')"><div class="flip-card-inner"><div class="flip-card-front"><p class="text-sm">${q.q}</p></div><div class="flip-card-back"><p class="text-sm">${q.answer}</p></div></div></div>`; }
         function nextFlashcard() { if(currentFlashcardIndex < flashcardsList.length - 1) { currentFlashcardIndex++; renderFlashcard(); } }
         function prevFlashcard() { if(currentFlashcardIndex > 0) { currentFlashcardIndex--; renderFlashcard(); } }
         function openSocialModal() { document.getElementById('social-modal').classList.remove('hidden'); }
 
-        // أبطال المنصة والتراكمي 
+        // أبطال المنصة والتراكمي بناءً على النقاط ثم الوقت
         function openGlobalLeaderboard(grade = 'prep3') { 
             document.getElementById('gl-prep1-btn').className = `px-4 py-2 text-xs font-bold rounded-lg transition-colors ${grade === 'prep1' ? 'bg-indigo-600 text-white shadow-sm' : 'bg-slate-200 text-slate-600'}`; 
             document.getElementById('gl-prep2-btn').className = `px-4 py-2 text-xs font-bold rounded-lg transition-colors ${grade === 'prep2' ? 'bg-indigo-600 text-white shadow-sm' : 'bg-slate-200 text-slate-600'}`; 
@@ -892,7 +960,7 @@
             document.getElementById('global-leaderboard-list').innerHTML = h; 
         }
 
-        // حماية الامتحانات (3 تحذيرات وغباشة)
+        // حماية الامتحان الصارمة (Anti-Cheat 3 Warnings)
         let examTimer = null, timeLeft = 600, currentQuestions = [], isExamActive = false;
         
         document.addEventListener("visibilitychange", () => { 
@@ -908,7 +976,7 @@
 
         function startExam(title) { 
             document.querySelector('.bottom-nav').classList.add('hidden'); document.getElementById('ai-fab').classList.add('hidden'); 
-            history.pushState({view: 'exam'}, '', '#exam'); 
+            history.pushState({view: 'exam', l:currentLesson, t:title, u:currentUnit, g:currentGrade}, '', '#exam'); 
             document.getElementById('exam-header-title').innerText = title; 
             document.getElementById('exam-actions').classList.remove('hidden'); document.getElementById('exam-results-actions').classList.add('hidden'); 
             document.getElementById('exam-questions').innerHTML = ''; 
@@ -1096,7 +1164,11 @@
             }).join(''); 
         }
         
-        function deleteExamResult(key) { if(confirm("مسح الامتحان ده للطالب؟ (هيقدر يعيده وأخطاؤه هتتمسح)")) { database.ref('exam_results/'+key).remove().then(() => { alert('تم المسح!'); renderLeaderboardAdmin(); }); } }
+        function deleteExamResult(key) { 
+            if(confirm("مسح الامتحان ده للطالب؟ (هيقدر يعيده وأخطاؤه هتتمسح)")) { 
+                database.ref('exam_results/'+key).remove().then(() => { alert('تم المسح!'); renderLeaderboardAdmin(); }); 
+            } 
+        }
         
         function exportExcel(id, name) { const wb = XLSX.utils.table_to_book(document.getElementById(id)); XLSX.writeFile(wb, name+'.xlsx'); }
         function saveAnnouncementText() { const t = document.getElementById('adminAnnouncementInput').value.trim(); database.ref('announcement').set(t).then(() => alert('تم النشر!')); }
