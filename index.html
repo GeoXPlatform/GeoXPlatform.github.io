@@ -1,204 +1,1395 @@
-<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>Geo X Platform</title><link rel="manifest" href="manifest.json"><meta name="theme-color" content="#0B1437"><link rel="icon" href="./logo-transparent.png" type="image/png"><link rel="apple-touch-icon" href="./logo-transparent.png"><script src="https://cdn.tailwindcss.com"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet"><script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script><script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script><script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script><script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script><link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"><style>body{font-family:'Cairo',sans-serif;background-color:var(--bg-main);color:var(--text-main);overscroll-behavior-y:none;transition:background-color 0.3s, color 0.3s;padding-bottom:70px}:root{--bg-main:#F4F7FE;--text-main:#1E293B;--card-bg:#ffffff;--card-border:#E2E8F0;--modal-bg:rgba(11,20,55,0.8)}.dark-mode{--bg-main:#0F172A;--text-main:#F8FAFC;--card-bg:#1E293B;--card-border:#334155;--modal-bg:rgba(0,0,0,0.9)}.glass-card{background:var(--card-bg);border:1px solid var(--card-border);box-shadow:0 4px 30px rgba(0,0,0,0.05)}.ui-card{background:var(--card-bg);border:1px solid var(--card-border);transition:all 0.3s cubic-bezier(0.4,0,0.2,1)}.ui-card:hover{transform:translateY(-5px);box-shadow:0 20px 40px -8px rgba(15,23,42,0.12);border-color:#4F46E5}.btn-premium{background:linear-gradient(135deg,#4F46E5 0%,#3B82F6 100%);transition:all 0.3s ease}.btn-premium:hover{transform:translateY(-1px);box-shadow:0 10px 25px -5px rgba(79,70,229,0.4)}@keyframes popIn{0%{transform:scale(0.5);opacity:0}50%{transform:scale(1.2);opacity:1}100%{transform:scale(1);opacity:0}}.countdown-text{animation:popIn 1s ease-in-out infinite}.admin-tab-btn{background-color:#f1f5f9;color:#64748b;border:1px solid #e2e8f0;transition:all 0.3s ease}.admin-tab-btn:hover{background-color:#e2e8f0;color:#0f172a}.admin-tab-btn.active{background-color:#4F46E5 !important;color:white !important;border-color:transparent !important;transform:scale(1.05);box-shadow:0 10px 15px -3px rgba(79,70,229,0.3);z-index:10}input,select,textarea{background-color:var(--card-bg);color:var(--text-main);border-color:var(--card-border);transition:all 0.3s ease}input:focus,select:focus,textarea:focus{box-shadow:0 0 0 4px rgba(79,70,229,0.1);outline:none;border-color:#4F46E5}.correct-answer{background-color:#d1fae5 !important;border-color:#10b981 !important;color:#065f46}.wrong-answer{background-color:#fee2e2 !important;border-color:#ef4444 !important;color:#991b1b}.no-select{-webkit-user-select:none;user-select:none}.flip-card{background-color:transparent;height:300px;perspective:1000px;cursor:pointer}.flip-card-inner{position:relative;width:100%;height:100%;text-align:center;transition:transform 0.6s;transform-style:preserve-3d}.flip-card.flipped .flip-card-inner{transform:rotateY(180deg)}.flip-card-front,.flip-card-back{position:absolute;width:100%;height:100%;-webkit-backface-visibility:hidden;backface-visibility:hidden;display:flex;align-items:center;justify-content:center;padding:24px;border-radius:1.5rem;box-shadow:0 4px 6px -1px rgba(0,0,0,0.1)}.flip-card-front{background-color:var(--card-bg);border:2px solid var(--card-border);color:var(--text-main);font-weight:900;font-size:1.125rem}.flip-card-back{background-color:#4f46e5;border:2px solid #4338ca;color:white;transform:rotateY(180deg);font-weight:900;font-size:1.125rem}.marquee-rtl{display:inline-block;white-space:nowrap;animation:marquee-rtl 25s linear infinite}@keyframes marquee-rtl{0%{transform:translateX(100%)}100%{transform:translateX(-100%)}}#crop-container{touch-action:none;}.bottom-nav{background:var(--card-bg);border-top:1px solid var(--card-border)}.nav-item{color:#64748b}.dark-mode .nav-item{color:#94a3b8}.nav-item.active{color:#4F46E5}.dark-mode .text-slate-800{color:#F8FAFC}.dark-mode .bg-white{background-color:var(--card-bg)}.dark-mode .bg-slate-50{background-color:#0F172A}.dark-mode .border-slate-100{border-color:var(--card-border)}</style></head><body class="flex flex-col selection:bg-indigo-500 selection:text-white relative" oncontextmenu="return false;"><div id="announcement-bar" class="hidden bg-gradient-to-r from-red-600 to-rose-500 text-white text-sm md:text-base py-2 px-4 overflow-hidden border-b border-red-700 shadow-sm relative z-50 w-full" dir="ltr"><div class="marquee-rtl font-black tracking-wide" id="announcement-text" dir="rtl"></div></div><nav class="bg-[#0B1437] text-white sticky top-0 z-40 border-b border-indigo-900/50 shadow-lg backdrop-blur-md bg-opacity-95"><div class="container mx-auto px-2 md:px-4 py-2 md:py-3 flex justify-between items-center relative h-16 md:h-20"><div class="flex items-center gap-1 md:gap-3 cursor-pointer group z-10 shrink-0" onclick="openSocialModal()"><img src="./logo-transparent.png" loading="lazy" decoding="async" alt="Geo X" class="h-12 md:h-16 w-auto object-contain drop-shadow-[0_0_8px_rgba(255,255,255,0.2)] hover:scale-110 transition-transform"></div><div class="absolute left-1/2 transform -translate-x-1/2 flex items-center justify-center z-10 pointer-events-none w-[60%] md:w-auto overflow-hidden" dir="ltr"><span class="text-white font-black text-[16px] sm:text-[20px] md:text-[26px] lg:text-[28px] uppercase tracking-widest drop-shadow-md whitespace-nowrap">PLATFORM FOR</span><span class="text-emerald-400 font-black text-[16px] sm:text-[20px] md:text-[26px] lg:text-[28px] uppercase tracking-widest drop-shadow-md whitespace-nowrap ml-1.5 md:ml-2.5">GEN Z</span></div><div id="nav-actions" class="flex items-center gap-2 z-10 shrink-0"><button id="student-greeting" class="px-3 py-2 rounded-xl font-bold bg-white/10 hover:bg-white/20 text-white border border-white/10 transition-all text-xs md:text-sm flex items-center shadow-sm">التسجيل</button></div><button id="install-app-btn" onclick="installPWA()" class="hidden absolute -bottom-8 left-1/2 transform -translate-x-1/2 bg-indigo-600 px-3 py-1 rounded-b-lg text-white text-[10px] font-bold border-b border-x border-indigo-400 hover:bg-indigo-500 shadow-md">تنزيل التطبيق 📲</button></div></nav>
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Geo X Platform</title>
+    
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0B1437">
+    <link rel="icon" href="./logo-transparent.png" type="image/png">
+    <link rel="apple-touch-icon" href="./logo-transparent.png">
 
-<main class="container mx-auto px-4 py-6 flex-grow max-w-5xl relative">
+    <!-- المكاتب الأساسية (Tailwind - Excel - Cropper - Firebase) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
 
-<!-- تبويبة الرئيسية -->
-<div id="app-tab-home" class="app-tab block">
-    <div id="student-stages" class="hidden animate-[fadeIn_0.3s_ease-out]"><div class="text-center mb-8"><h2 id="main-welcome-msg" class="text-3xl md:text-4xl font-black text-slate-800 mb-2 tracking-tight"> اهلا بالبطل 🎓</h2><p class="text-slate-500 font-semibold">اختار سنتك الدراسية عشان تشوف المنهج بتاعك</p></div><div id="stages-grid" class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto"></div></div>
-    <div id="student-units-container" class="hidden animate-[fadeIn_0.3s_ease-out]"><div class="flex justify-between items-center mb-6 bg-white p-5 rounded-2xl shadow-sm border border-slate-100"><h2 id="units-title" class="text-lg md:text-2xl font-black text-slate-800"></h2><button onclick="goBackVisually()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-2 px-4 rounded-xl text-xs md:text-sm transition-colors">🔙 ارجع للسنين</button></div><div id="student-units-grid" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div></div>
-    <div id="student-lessons-container" class="hidden animate-[fadeIn_0.3s_ease-out]"><div class="flex flex-col md:flex-row justify-between items-center mb-6 bg-[#0B1437] text-white p-5 rounded-[2rem] gap-4 shadow-lg"><div class="text-center md:text-right"><span id="lesson-unit-badge" class="text-[11px] bg-indigo-500/30 text-indigo-200 px-3 py-1 rounded-full font-bold mb-2 inline-block"></span><h2 id="lessons-title" class="text-xl md:text-2xl font-black"></h2></div><button onclick="goBackVisually()" class="bg-white/10 hover:bg-white/20 font-bold py-2 px-4 rounded-xl text-sm transition-colors">🔙 ارجع للوحدات</button></div><div id="student-lessons-list" class="space-y-4 max-w-3xl mx-auto"></div></div>
-    <div id="student-content-container" class="hidden animate-[fadeIn_0.3s_ease-out]"><div class="flex flex-col md:flex-row justify-between items-center mb-8 bg-white p-5 rounded-[2rem] shadow-sm border border-slate-100 gap-4 relative overflow-hidden"><div class="absolute right-0 top-0 bottom-0 w-2 bg-indigo-500"></div><h2 id="content-title" class="text-lg md:text-xl font-black text-slate-800 pr-2"></h2><button onclick="goBackVisually()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-2 px-4 rounded-xl text-sm transition-colors">🔙 الدروس</button></div>
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 max-w-5xl mx-auto justify-center" id="content-cards-grid">
-        <div class="bg-white p-6 rounded-[2rem] shadow-sm border border-slate-100 text-center ui-card" id="card-yt"><div class="w-14 h-14 bg-red-50 text-red-500 rounded-2xl mx-auto flex items-center justify-center text-2xl mb-4">📺</div><h3 class="text-sm font-black text-slate-800 mb-2">فيديو الشرح</h3><a id="btn-yt" class="block w-full bg-red-500 hover:bg-red-600 text-white font-bold py-3 rounded-xl text-sm transition-colors mt-4">اتفرج دلوقتي ▶️</a></div>
-        <div class="bg-white p-6 rounded-[2rem] shadow-sm border border-slate-100 text-center ui-card" id="card-pdf"><div class="w-14 h-14 bg-blue-50 text-blue-500 rounded-2xl mx-auto flex items-center justify-center text-2xl mb-4">📄</div><h3 class="text-sm font-black text-slate-800 mb-2">ملزمة الدرس</h3><button id="btn-pdf" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 rounded-xl text-sm transition-colors mt-4">حملها من هنا 📥</button></div>
-        <div class="bg-white p-6 rounded-[2rem] shadow-sm border border-slate-100 text-center ui-card" id="card-flash"><div class="w-14 h-14 bg-amber-50 text-amber-500 rounded-2xl mx-auto flex items-center justify-center text-2xl mb-4">🗂️</div><h3 class="text-sm font-black text-slate-800 mb-2">كروت الذاكرة</h3><button id="btn-flashcards" onclick="openFlashcards()" class="w-full bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 rounded-xl text-sm transition-colors mt-4">راجع معلوماتك 🔄</button></div>
-        <div class="bg-[#0F172A] p-6 rounded-[2rem] shadow-lg text-center text-white ui-card md:col-span-2 lg:col-span-3 max-w-md mx-auto w-full"><div class="w-14 h-14 bg-white/10 text-emerald-400 rounded-2xl mx-auto flex items-center justify-center text-2xl mb-4">⏱️</div><h3 class="text-sm font-black mb-2">امتحان الدرس</h3><button id="btn-exam" class="w-full bg-emerald-500 hover:bg-emerald-400 text-white font-black py-3 rounded-xl text-sm transition-colors mt-4 shadow-lg shadow-emerald-500/30">ابتدى الامتحان 🚀</button></div>
-    </div></div>
-</div>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
-<!-- تبويبة لوحة الأبطال -->
-<div id="app-tab-leaderboard" class="app-tab hidden animate-[fadeIn_0.3s_ease-out]">
-    <div class="bg-white rounded-[2rem] w-full overflow-hidden shadow-sm border border-slate-100 flex flex-col">
-        <div class="bg-gradient-to-r from-amber-400 to-orange-500 p-5 text-center"><h3 class="text-2xl font-black text-white drop-shadow-md">🏆 أبطال المنصة</h3><p class="text-white/80 text-sm font-bold">الترتيب يعتمد على النقاط ثم الأسرع في الوقت</p></div>
-        <div class="bg-slate-100 p-3 flex flex-wrap gap-2 justify-center border-b border-slate-200">
-            <button id="gl-prep1-btn" onclick="openGlobalLeaderboard('prep1')" class="px-4 py-2 text-sm font-bold rounded-lg transition-colors bg-indigo-600 text-white shadow-sm">أولى إعدادي</button>
-            <button id="gl-prep2-btn" onclick="openGlobalLeaderboard('prep2')" class="px-4 py-2 text-sm font-bold rounded-lg transition-colors bg-slate-200 text-slate-600 hover:bg-slate-300">تانية إعدادي</button>
-            <button id="gl-prep3-btn" onclick="openGlobalLeaderboard('prep3')" class="px-4 py-2 text-sm font-bold rounded-lg transition-colors bg-slate-200 text-slate-600 hover:bg-slate-300">تالتة إعدادي</button>
-        </div>
-        <div class="bg-white p-3 flex justify-center"><select id="gl-unit-filter" onchange="filterLeaderboardUnit()" class="w-full max-w-sm p-2 border rounded-xl text-sm font-bold bg-slate-50"><option value="ALL">🌟 الترتيب التراكمي (كل المنهج)</option></select></div>
-        <div class="p-4 bg-slate-50 flex-grow overflow-y-auto space-y-3 min-h-[50vh]" id="global-leaderboard-list"></div>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- تنسيقات المنصة المتقدمة (الوضع الليلي والنهاري) -->
+    <style>
+        body { 
+            font-family: 'Cairo', sans-serif; 
+            background-color: var(--bg-main); 
+            color: var(--text-main); 
+            overscroll-behavior-y: none; 
+            transition: background-color 0.3s, color 0.3s; 
+            padding-bottom: 70px; /* لترك مساحة للشريط السفلي */
+        }
+        
+        :root {
+            --bg-main: #F4F7FE;
+            --text-main: #1E293B;
+            --card-bg: #ffffff;
+            --card-border: #E2E8F0;
+            --modal-bg: rgba(11, 20, 55, 0.8);
+        }
+
+        .dark-mode {
+            --bg-main: #0F172A;
+            --text-main: #F8FAFC;
+            --card-bg: #1E293B;
+            --card-border: #334155;
+            --modal-bg: rgba(0, 0, 0, 0.9);
+        }
+
+        .ui-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .ui-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px -8px rgba(15, 23, 42, 0.12);
+            border-color: #4F46E5;
+        }
+
+        .btn-premium {
+            background: linear-gradient(135deg, #4F46E5 0%, #3B82F6 100%);
+            transition: all 0.3s ease;
+        }
+
+        .btn-premium:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 10px 25px -5px rgba(79, 70, 229, 0.4);
+        }
+
+        @keyframes popIn { 0% { transform: scale(0.5); opacity: 0; } 50% { transform: scale(1.2); opacity: 1; } 100% { transform: scale(1); opacity: 0; } }
+        .countdown-text { animation: popIn 1s ease-in-out infinite; }
+
+        .admin-tab-btn { background-color: #f1f5f9; color: #64748b; border: 1px solid #e2e8f0; transition: all 0.3s ease; }
+        .admin-tab-btn:hover { background-color: #e2e8f0; color: #0f172a; }
+        .admin-tab-btn.active { background-color: #4F46E5 !important; color: white !important; border-color: transparent !important; transform: scale(1.05); box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.3); z-index: 10; }
+
+        input, select, textarea { background-color: var(--card-bg); color: var(--text-main); border-color: var(--card-border); transition: all 0.3s ease; }
+        input:focus, select:focus, textarea:focus { box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1); outline: none; border-color: #4F46E5; }
+        input[type="radio"]:checked + span { color: #4F46E5; }
+
+        .correct-answer { background-color: #d1fae5 !important; border-color: #10b981 !important; color: #065f46; }
+        .wrong-answer { background-color: #fee2e2 !important; border-color: #ef4444 !important; color: #991b1b; }
+        .no-select { -webkit-user-select: none; user-select: none; }
+
+        .flip-card { background-color: transparent; height: 300px; perspective: 1000px; cursor: pointer; }
+        .flip-card-inner { position: relative; width: 100%; height: 100%; text-align: center; transition: transform 0.6s; transform-style: preserve-3d; }
+        .flip-card.flipped .flip-card-inner { transform: rotateY(180deg); }
+        .flip-card-front, .flip-card-back { position: absolute; width: 100%; height: 100%; -webkit-backface-visibility: hidden; backface-visibility: hidden; display: flex; align-items: center; justify-content: center; padding: 24px; border-radius: 1.5rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+        .flip-card-front { background-color: var(--card-bg); border: 2px solid var(--card-border); color: var(--text-main); font-weight: 900; font-size: 1.125rem; }
+        .flip-card-back { background-color: #4f46e5; border: 2px solid #4338ca; color: white; transform: rotateY(180deg); font-weight: 900; font-size: 1.125rem; }
+
+        .marquee-rtl { display: inline-block; white-space: nowrap; animation: marquee-rtl 25s linear infinite; }
+        @keyframes marquee-rtl { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
+
+        .cropper-view-box, .cropper-face { border-radius: 50%; }
+        .cropper-modal { background-color: rgba(15, 23, 42, 0.8); }
+
+        .bottom-nav { background: var(--card-bg); border-top: 1px solid var(--card-border); }
+        .nav-item { color: #64748b; }
+        .dark-mode .nav-item { color: #94a3b8; }
+        .nav-item.active { color: #4F46E5; }
+        .dark-mode .text-slate-800 { color: #F8FAFC; }
+        .dark-mode .bg-white { background-color: var(--card-bg); }
+        .dark-mode .bg-slate-50 { background-color: #0F172A; }
+        .dark-mode .border-slate-100 { border-color: var(--card-border); }
+    </style>
+</head>
+<body class="flex flex-col selection:bg-indigo-500 selection:text-white relative" oncontextmenu="return false;">
+
+    <!-- شريط الإعلانات -->
+    <div id="announcement-bar" class="hidden bg-gradient-to-r from-red-600 to-rose-500 text-white text-sm md:text-base py-2 px-4 overflow-hidden border-b border-red-700 shadow-sm relative z-50 w-full" dir="ltr">
+        <div class="marquee-rtl font-black tracking-wide" id="announcement-text" dir="rtl"></div>
     </div>
-</div>
 
-<!-- تبويبة الإعدادات -->
-<div id="app-tab-settings" class="app-tab hidden animate-[fadeIn_0.3s_ease-out]">
-    <div class="bg-white rounded-[2rem] w-full overflow-hidden shadow-sm border border-slate-100 p-6">
-        <h3 class="text-2xl font-black text-slate-800 mb-6 text-center">⚙️ إعدادات الحساب</h3>
-        <div class="space-y-6 max-w-md mx-auto">
-            <div class="flex items-center justify-between p-4 bg-slate-50 rounded-xl border border-slate-200">
-                <span class="font-black text-slate-700">🌙 الوضع الليلي (Dark Mode)</span>
-                <label class="relative inline-flex items-center cursor-pointer"><input type="checkbox" id="dark-mode-toggle" class="sr-only peer" onchange="toggleDarkMode()"><div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:right-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div></label>
+    <!-- ================= NAVBAR ================= -->
+    <nav class="bg-[#0B1437] text-white sticky top-0 z-40 border-b border-indigo-900/50 shadow-lg backdrop-blur-md bg-opacity-95">
+        <div class="container mx-auto px-2 md:px-4 py-2 md:py-3 flex justify-between items-center relative h-16 md:h-20">
+            
+            <div class="flex items-center gap-1 md:gap-3 cursor-pointer group z-10 shrink-0" onclick="openSocialModal()">
+                <img src="./logo-transparent.png" loading="lazy" decoding="async" alt="Geo X Logo" class="h-12 md:h-16 w-auto object-contain drop-shadow-[0_0_8px_rgba(255,255,255,0.2)] hover:scale-110 transition-transform">
             </div>
-            <div class="p-4 bg-slate-50 rounded-xl border border-slate-200">
-                <p class="text-xs text-red-500 font-bold mb-2">⚠️ تعديل البيانات مسموح لمرة واحدة فقط</p>
-                <button onclick="showSettingsEditForm('name')" class="w-full bg-white border border-indigo-200 text-indigo-700 font-bold py-3 rounded-xl mb-3 shadow-sm hover:bg-indigo-50">تغيير اسم الطالب ✏️</button>
-                <button onclick="showSettingsEditForm('phone')" class="w-full bg-white border border-indigo-200 text-indigo-700 font-bold py-3 rounded-xl shadow-sm hover:bg-indigo-50">تغيير رقم ولي الأمر 📱</button>
+
+            <!-- الكلمة المتوسطة المظبوطة بدون تداخل -->
+            <div class="absolute left-1/2 transform -translate-x-1/2 flex items-center justify-center z-10 pointer-events-none w-[60%] md:w-auto overflow-hidden" dir="ltr">
+                <span class="text-white font-black text-[16px] sm:text-[20px] md:text-[26px] lg:text-[28px] uppercase tracking-widest drop-shadow-md whitespace-nowrap">PLATFORM FOR</span>
+                <span class="text-emerald-400 font-black text-[16px] sm:text-[20px] md:text-[26px] lg:text-[28px] uppercase tracking-widest drop-shadow-md whitespace-nowrap ml-1.5 md:ml-2.5">GEN Z</span>
             </div>
-            <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 text-center">
-                <label class="block font-black text-slate-700 mb-3">تغيير الصورة الشخصية 🖼️</label>
-                <div class="relative w-24 h-24 mx-auto mb-3"><div id="settings-avatar" class="w-24 h-24 bg-indigo-100 rounded-full flex items-center justify-center text-4xl overflow-hidden shadow-inner border-2 border-indigo-200">𓂀</div><label for="settings-pic-upload" class="absolute -bottom-2 -left-2 bg-emerald-500 text-white w-10 h-10 rounded-full flex items-center justify-center cursor-pointer shadow-lg hover:scale-110 transition-transform">📷</label><input type="file" id="settings-pic-upload" accept="image/*" class="hidden" onchange="triggerCropModal(event)"></div>
+
+            <div id="nav-actions" class="flex items-center gap-2 z-10 shrink-0">
+                <button id="student-greeting" class="px-3 py-2 rounded-xl font-bold bg-white/10 hover:bg-white/20 text-white border border-white/10 transition-all text-xs md:text-sm flex items-center shadow-sm">
+                    التسجيل
+                </button>
             </div>
-            <button onclick="logoutUnified()" class="w-full bg-red-50 text-red-600 hover:bg-red-500 hover:text-white font-black py-4 rounded-xl border border-red-200 transition-colors shadow-sm">تسجيل الخروج 🚪</button>
+            
+            <button id="install-app-btn" onclick="installPWA()" class="hidden absolute -bottom-8 left-1/2 transform -translate-x-1/2 bg-indigo-600 px-3 py-1 rounded-b-lg text-white text-[10px] font-bold border-b border-x border-indigo-400 hover:bg-indigo-500 shadow-md">
+                تنزيل التطبيق 📲
+            </button>
+        </div>
+    </nav>
+
+    <main class="container mx-auto px-4 py-6 flex-grow max-w-5xl relative">
+
+        <!-- ================= تبويبة الرئيسية (المنهج) ================= -->
+        <div id="app-tab-home" class="app-tab block">
+            
+            <!-- قسم السنين الدراسية -->
+            <div id="student-stages" class="hidden animate-[fadeIn_0.3s_ease-out]">
+                <div class="text-center mb-8">
+                    <h2 id="main-welcome-msg" class="text-3xl md:text-4xl font-black text-slate-800 mb-2 tracking-tight"> اهلا بالبطل 🎓</h2>
+                    <p class="text-slate-500 font-semibold">اختار سنتك الدراسية عشان تشوف المنهج بتاعك</p>
+                </div>
+                <div id="stages-grid" class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto"></div>
+            </div>
+
+            <!-- قسم الوحدات -->
+            <div id="student-units-container" class="hidden animate-[fadeIn_0.3s_ease-out]">
+                <div class="flex justify-between items-center mb-6 bg-white p-5 rounded-2xl shadow-sm border border-slate-100">
+                    <h2 id="units-title" class="text-lg md:text-2xl font-black text-slate-800"></h2>
+                    <button onclick="goBackVisually()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-2 px-4 rounded-xl text-xs md:text-sm transition-colors">🔙 ارجع للسنين</button>
+                </div>
+                <div id="student-units-grid" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
+            </div>
+
+            <!-- قسم الدروس -->
+            <div id="student-lessons-container" class="hidden animate-[fadeIn_0.3s_ease-out]">
+                <div class="flex flex-col md:flex-row justify-between items-center mb-6 bg-[#0B1437] text-white p-5 rounded-[2rem] gap-4 shadow-lg">
+                    <div class="text-center md:text-right">
+                        <span id="lesson-unit-badge" class="text-[11px] bg-indigo-500/30 text-indigo-200 px-3 py-1 rounded-full font-bold mb-2 inline-block"></span>
+                        <h2 id="lessons-title" class="text-xl md:text-2xl font-black"></h2>
+                    </div>
+                    <button onclick="goBackVisually()" class="bg-white/10 hover:bg-white/20 font-bold py-2 px-4 rounded-xl text-sm transition-colors">🔙 ارجع للوحدات</button>
+                </div>
+                <div id="student-lessons-list" class="space-y-4 max-w-3xl mx-auto"></div>
+            </div>
+
+            <!-- قسم محتوى الدرس (فيديو - ملزمة - فلاش كارد - امتحان) -->
+            <div id="student-content-container" class="hidden animate-[fadeIn_0.3s_ease-out]">
+                <div class="flex flex-col md:flex-row justify-between items-center mb-8 bg-white p-5 rounded-[2rem] shadow-sm border border-slate-100 gap-4 relative overflow-hidden">
+                    <div class="absolute right-0 top-0 bottom-0 w-2 bg-indigo-500"></div>
+                    <h2 id="content-title" class="text-lg md:text-xl font-black text-slate-800 pr-2"></h2>
+                    <button onclick="goBackVisually()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-2 px-4 rounded-xl text-sm transition-colors">🔙 قائمة الدروس</button>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 max-w-5xl mx-auto justify-center" id="content-cards-grid">
+                    
+                    <div class="bg-white p-6 rounded-[2rem] shadow-sm border border-slate-100 text-center ui-card" id="card-yt">
+                        <div class="w-14 h-14 bg-red-50 text-red-500 rounded-2xl mx-auto flex items-center justify-center text-2xl mb-4">📺</div>
+                        <h3 class="text-sm font-black text-slate-800 mb-2">فيديو الشرح</h3>
+                        <a id="btn-yt" class="block w-full bg-red-500 hover:bg-red-600 text-white font-bold py-3 rounded-xl text-sm transition-colors mt-4 cursor-pointer">اتفرج دلوقتي ▶️</a>
+                    </div>
+                    
+                    <div class="bg-white p-6 rounded-[2rem] shadow-sm border border-slate-100 text-center ui-card" id="card-pdf">
+                        <div class="w-14 h-14 bg-blue-50 text-blue-500 rounded-2xl mx-auto flex items-center justify-center text-2xl mb-4">📄</div>
+                        <h3 class="text-sm font-black text-slate-800 mb-2">ملزمة الدرس</h3>
+                        <button id="btn-pdf" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 rounded-xl text-sm transition-colors mt-4">حملها من هنا 📥</button>
+                    </div>
+                    
+                    <div class="bg-white p-6 rounded-[2rem] shadow-sm border border-slate-100 text-center ui-card" id="card-flash">
+                        <div class="w-14 h-14 bg-amber-50 text-amber-500 rounded-2xl mx-auto flex items-center justify-center text-2xl mb-4">🗂️</div>
+                        <h3 class="text-sm font-black text-slate-800 mb-2">كروت الذاكرة</h3>
+                        <button id="btn-flashcards" onclick="openFlashcards()" class="w-full bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 rounded-xl text-sm transition-colors mt-4">راجع معلوماتك 🔄</button>
+                    </div>
+                    
+                    <div class="bg-[#0F172A] p-6 rounded-[2rem] shadow-lg text-center text-white ui-card md:col-span-2 lg:col-span-3 max-w-md mx-auto w-full">
+                        <div class="w-14 h-14 bg-white/10 text-emerald-400 rounded-2xl mx-auto flex items-center justify-center text-2xl mb-4">⏱️</div>
+                        <h3 class="text-sm font-black mb-2">امتحان الدرس</h3>
+                        <button id="btn-exam" class="w-full bg-emerald-500 hover:bg-emerald-400 text-white font-black py-3 rounded-xl text-sm transition-colors mt-4 shadow-lg shadow-emerald-500/30">ابتدى الامتحان 🚀</button>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= تبويبة لوحة الأبطال ================= -->
+        <div id="app-tab-leaderboard" class="app-tab hidden animate-[fadeIn_0.3s_ease-out]">
+            <div class="bg-white rounded-[2rem] w-full overflow-hidden shadow-sm border border-slate-100 flex flex-col">
+                <div class="bg-gradient-to-r from-amber-400 to-orange-500 p-5 text-center">
+                    <h3 class="text-2xl font-black text-white drop-shadow-md">🏆 أبطال المنصة</h3>
+                    <p class="text-white/80 text-sm font-bold">الترتيب يعتمد على النقاط ثم الأسرع في الوقت</p>
+                </div>
+                <div class="bg-slate-100 p-3 flex flex-wrap gap-2 justify-center border-b border-slate-200">
+                    <button id="gl-prep1-btn" onclick="openGlobalLeaderboard('prep1')" class="px-4 py-2 text-sm font-bold rounded-lg transition-colors bg-indigo-600 text-white shadow-sm">أولى إعدادي</button>
+                    <button id="gl-prep2-btn" onclick="openGlobalLeaderboard('prep2')" class="px-4 py-2 text-sm font-bold rounded-lg transition-colors bg-slate-200 text-slate-600 hover:bg-slate-300">تانية إعدادي</button>
+                    <button id="gl-prep3-btn" onclick="openGlobalLeaderboard('prep3')" class="px-4 py-2 text-sm font-bold rounded-lg transition-colors bg-slate-200 text-slate-600 hover:bg-slate-300">تالتة إعدادي</button>
+                </div>
+                <div class="bg-white p-3 flex justify-center">
+                    <select id="gl-unit-filter" onchange="filterLeaderboardUnit()" class="w-full max-w-sm p-2 border rounded-xl text-sm font-bold bg-slate-50">
+                        <option value="ALL">🌟 الترتيب التراكمي (كل المنهج)</option>
+                    </select>
+                </div>
+                <div class="p-4 bg-slate-50 flex-grow overflow-y-auto space-y-3 min-h-[50vh]" id="global-leaderboard-list">
+                    <!-- سيتم حقن الأبطال هنا -->
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= تبويبة الإعدادات والدارك مود ================= -->
+        <div id="app-tab-settings" class="app-tab hidden animate-[fadeIn_0.3s_ease-out]">
+            <div class="bg-white rounded-[2rem] w-full overflow-hidden shadow-sm border border-slate-100 p-6">
+                <h3 class="text-2xl font-black text-slate-800 mb-6 text-center">⚙️ إعدادات الحساب</h3>
+                
+                <div class="space-y-6 max-w-md mx-auto">
+                    
+                    <!-- الدارك مود -->
+                    <div class="flex items-center justify-between p-4 bg-slate-50 rounded-xl border border-slate-200">
+                        <span class="font-black text-slate-700">🌙 الوضع الليلي (Dark Mode)</span>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" id="dark-mode-toggle" class="sr-only peer" onchange="toggleDarkMode()">
+                            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:right-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
+                        </label>
+                    </div>
+
+                    <!-- تعديل البيانات الأساسية -->
+                    <div class="p-4 bg-slate-50 rounded-xl border border-slate-200">
+                        <p class="text-xs text-red-500 font-bold mb-2">⚠️ تعديل البيانات مسموح لمرة واحدة فقط</p>
+                        <button onclick="showSettingsEditForm('name')" class="w-full bg-white border border-indigo-200 text-indigo-700 font-bold py-3 rounded-xl mb-3 shadow-sm hover:bg-indigo-50 transition-colors">تغيير اسم الطالب ✏️</button>
+                        <button onclick="showSettingsEditForm('phone')" class="w-full bg-white border border-indigo-200 text-indigo-700 font-bold py-3 rounded-xl shadow-sm hover:bg-indigo-50 transition-colors">تغيير رقم ولي الأمر 📱</button>
+                    </div>
+
+                    <!-- تعديل الصورة الشخصية -->
+                    <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 text-center">
+                        <label class="block font-black text-slate-700 mb-3">تغيير الصورة الشخصية 🖼️</label>
+                        <div class="relative w-24 h-24 mx-auto mb-3">
+                            <div id="settings-avatar" class="w-24 h-24 bg-indigo-100 rounded-full flex items-center justify-center text-4xl overflow-hidden shadow-inner border-2 border-indigo-200">𓂀</div>
+                            <label for="settings-pic-upload" class="absolute -bottom-2 -left-2 bg-emerald-500 text-white w-10 h-10 rounded-full flex items-center justify-center cursor-pointer shadow-lg hover:scale-110 transition-transform">📷</label>
+                            <input type="file" id="settings-pic-upload" accept="image/*" class="hidden" onchange="triggerCropModal(event)">
+                        </div>
+                    </div>
+
+                    <!-- تسجيل الخروج -->
+                    <button onclick="logoutUnified()" class="w-full bg-red-50 text-red-600 hover:bg-red-500 hover:text-white font-black py-4 rounded-xl border border-red-200 transition-colors shadow-sm">تسجيل الخروج 🚪</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= TEACHER VIEW (لوحة الإدارة) ================= -->
+        <div id="teacher-view" class="hidden space-y-6">
+            <div class="flex justify-between items-center bg-white p-5 rounded-[2rem] shadow-sm border border-slate-100">
+                <h2 class="text-xl font-black text-slate-800 flex items-center gap-2"><span class="text-indigo-600">⚙️</span> الإدارة</h2>
+                <button onclick="logoutUnified()" class="bg-red-50 text-red-600 px-3 py-1.5 rounded-xl font-bold border border-red-100 text-sm">خروج</button>
+            </div>
+            
+            <div class="grid grid-cols-2 md:grid-cols-6 gap-2">
+                <button onclick="showAdminTab('tab-covers')" id="btn-tab-covers" class="admin-tab-btn font-bold py-2 rounded-xl text-xs active">🖼️ الغلاف</button>
+                <button onclick="showAdminTab('tab-content')" id="btn-tab-content" class="admin-tab-btn font-bold py-2 rounded-xl text-xs">📝 الدروس</button>
+                <button onclick="showAdminTab('tab-students')" id="btn-tab-students" class="admin-tab-btn font-bold py-2 rounded-xl text-xs">👥 الطلاب</button>
+                <button onclick="showAdminTab('tab-exams')" id="btn-tab-exams" class="admin-tab-btn font-bold py-2 rounded-xl text-xs">🏆 الدرجات</button>
+                <button onclick="showAdminTab('tab-announcements')" id="btn-tab-announcements" class="admin-tab-btn font-bold py-2 rounded-xl text-xs">📣 إعلان</button>
+                <button onclick="showAdminTab('tab-ai')" id="btn-tab-ai" class="admin-tab-btn font-bold py-2 rounded-xl text-xs bg-indigo-50 text-indigo-700 border-indigo-200">🤖 تغذية الـ AI</button>
+            </div>
+
+            <!-- الكفرات والصور -->
+            <div id="tab-covers" class="admin-tab block bg-white p-6 rounded-[2rem] shadow-sm border border-slate-100">
+                <h3 class="font-black text-slate-800 mb-4">إدارة صور الغلاف (بدون مسح)</h3>
+                <form onsubmit="handleCoverUpload(event)" class="space-y-4">
+                    <select id="coverGrade" onchange="updateCoverUnitDropdown()" required class="w-full p-3 border rounded-xl"><option value="" disabled selected>السنة الدراسية</option><option value="prep1">أولى إعدادي</option><option value="prep2">تانية إعدادي</option><option value="prep3">تالتة إعدادي</option></select>
+                    <select id="coverUnitId" class="w-full p-3 border rounded-xl"><option value="">-- اختار الوحدة (للسنة كاملة سيبها فاضية) --</option></select>
+                    <input type="file" id="coverImage" accept="image/*" required class="w-full p-3 border rounded-xl">
+                    <button type="submit" class="w-full btn-premium text-white font-bold py-3 rounded-xl">حفظ الكوڤر 📤</button>
+                </form>
+            </div>
+
+            <!-- المحتوى والملازم -->
+            <div id="tab-content" class="admin-tab hidden bg-white p-6 rounded-[2rem] shadow-sm border border-slate-100">
+                <h3 class="font-black text-slate-800 mb-4">محتوى الدروس</h3>
+                <form onsubmit="handleContentUpload(event)" class="space-y-4">
+                    <select id="contentGrade" onchange="updateContentUnitDropdown()" required class="w-full p-3 border rounded-xl"><option value="" disabled selected>السنة</option><option value="prep1">أولى إعدادي</option><option value="prep2">تانية إعدادي</option><option value="prep3">تالتة إعدادي</option></select>
+                    <select id="contentUnitId" onchange="updateContentLessonDropdown()" required class="w-full p-3 border rounded-xl"><option value="" disabled selected>الوحدة</option></select>
+                    <select id="contentLessonId" onchange="loadLessonData()" required class="w-full p-3 border border-indigo-200 bg-indigo-50 text-indigo-700 font-bold rounded-xl"><option value="" disabled selected>الدرس</option></select>
+                    
+                    <div id="admin-current-content" class="bg-blue-50 p-3 rounded-xl border border-blue-200 hidden">
+                        <h4 class="font-black text-blue-800 text-xs mb-2">المرفوع ومتاح للمسح:</h4>
+                        <div class="flex flex-wrap gap-2" id="admin-content-badges"></div>
+                    </div>
+                    
+                    <input type="url" id="lessonYoutube" placeholder="لينك يوتيوب" class="w-full p-3 border rounded-xl text-sm" dir="ltr">
+                    <input type="file" id="lessonPdf" accept=".pdf" class="w-full p-2 border rounded-xl text-sm">
+                    <span id="pdfStatus" class="text-xs font-bold text-emerald-600 block"></span>
+                    <textarea id="lessonExamText" placeholder='كود JSON للامتحان هنا...' rows="4" dir="ltr" class="w-full p-3 border rounded-xl bg-slate-900 text-emerald-400 font-mono text-xs"></textarea>
+                    
+                    <div class="flex justify-between text-xs font-bold text-slate-500 px-2">
+                        <span id="stat-yt">مشاهدات: 0</span>
+                        <span id="stat-pdf">تحميلات: 0</span>
+                    </div>
+                    <button type="submit" class="w-full bg-slate-800 text-white font-bold py-3 rounded-xl">حفظ المحتوى 💾</button>
+                </form>
+            </div>
+
+            <!-- الطلاب ومسحهم بالكامل -->
+            <div id="tab-students" class="admin-tab hidden bg-white p-6 rounded-[2rem] shadow-sm border border-slate-100">
+                <input type="text" id="searchStudent" onkeyup="filterStudents()" placeholder="بحث باسم الطالب..." class="w-full p-3 border rounded-xl mb-4 text-sm">
+                <div class="overflow-x-auto">
+                    <table id="studentsTable" class="w-full text-right text-xs whitespace-nowrap">
+                        <thead class="bg-slate-100"><tr><th class="p-3">الاسم</th><th class="p-3">الموبايل</th><th class="p-3 text-center">إجراءات</th></tr></thead>
+                        <tbody id="studentsListTbody" class="divide-y"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- الامتحانات ومسح امتحان للطالب -->
+            <div id="tab-exams" class="admin-tab hidden bg-white p-6 rounded-[2rem] shadow-sm border border-slate-100">
+                <select id="lbGrade" onchange="updateLbUnitDropdown()" class="w-full p-3 border rounded-xl mb-3 text-sm"><option value="">السنة</option><option value="prep1">أولى إعدادي</option><option value="prep2">تانية إعدادي</option><option value="prep3">تالتة إعدادي</option></select>
+                <select id="lbUnitId" onchange="updateLbLessonDropdown()" class="w-full p-3 border rounded-xl mb-3 text-sm"><option value="">الوحدة</option></select>
+                <select id="lbLessonId" onchange="renderLeaderboardAdmin()" class="w-full p-3 border bg-indigo-50 text-indigo-700 rounded-xl mb-4 text-sm font-bold"><option value="">الدرس أو المجموع</option></select>
+                <div class="overflow-x-auto">
+                    <table id="leaderboardTable" class="w-full text-right text-xs whitespace-nowrap">
+                        <thead class="bg-slate-800 text-white"><tr><th class="p-3">الطالب</th><th class="p-3">الدرجة/الوقت</th><th class="p-3 text-center">إجراءات</th></tr></thead>
+                        <tbody id="leaderboardTbody" class="divide-y"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="tab-announcements" class="admin-tab hidden bg-white p-6 rounded-[2rem] shadow-sm border border-slate-100">
+                <input type="text" id="adminAnnouncementInput" placeholder="اكتب الإعلان العاجل..." class="w-full p-3 border rounded-xl mb-4">
+                <div class="flex gap-2">
+                    <button onclick="saveAnnouncementText()" class="flex-1 bg-emerald-500 text-white font-bold py-3 rounded-xl">نشر 🚀</button>
+                    <button onclick="clearAnnouncementText()" class="flex-1 bg-red-50 text-red-600 font-bold py-3 rounded-xl border border-red-200">إيقاف ❌</button>
+                </div>
+            </div>
+
+            <!-- تغذية الذكاء الاصطناعي -->
+            <div id="tab-ai" class="admin-tab hidden bg-white p-6 rounded-[2rem] shadow-sm border border-slate-100">
+                <h3 class="font-black text-indigo-700 mb-2">تغذية الذكاء الاصطناعي 🤖</h3>
+                <p class="text-xs text-slate-500 mb-4">ضع محتوى المنهج هنا كنص لكي يفهمه المساعد الذكي ويجيب الطلاب منه فقط.</p>
+                <textarea id="admin-ai-knowledge" rows="10" placeholder="انسخ المنهج أو ملخصات الدروس هنا..." class="w-full p-4 border rounded-xl bg-slate-50 text-sm leading-relaxed mb-4"></textarea>
+                <button onclick="saveAiKnowledge()" class="w-full bg-indigo-600 text-white font-bold py-3 rounded-xl">حفظ الذاكرة الذكية 🧠</button>
+            </div>
+        </div>
+    </main>
+
+    <!-- ================= الشريط السفلي للتنقل (Bottom Navigation) ================= -->
+    <div class="fixed bottom-0 w-full bottom-nav flex justify-around p-2 z-40 shadow-[0_-5px_15px_rgba(0,0,0,0.05)] pb-4 md:pb-2 text-[10px] md:text-xs font-bold">
+        <button onclick="switchAppTab('home')" id="nav-btn-home" class="nav-item active flex flex-col items-center p-2 rounded-xl w-20">
+            <span class="text-xl mb-1">🏠</span>الرئيسية
+        </button>
+        <button onclick="switchAppTab('leaderboard')" id="nav-btn-leaderboard" class="nav-item flex flex-col items-center p-2 rounded-xl w-20">
+            <span class="text-xl mb-1">🏆</span>الأبطال
+        </button>
+        <button onclick="switchAppTab('settings')" id="nav-btn-settings" class="nav-item flex flex-col items-center p-2 rounded-xl w-20">
+            <span class="text-xl mb-1">⚙️</span>الإعدادات
+        </button>
+    </div>
+
+    <!-- ================= الذكاء الاصطناعي (أيقونة عائمة) ================= -->
+    <div id="ai-fab" class="hidden fixed bottom-24 right-4 z-50 animate-bounce">
+        <button onclick="openAiChat()" class="w-14 h-14 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full shadow-lg flex items-center justify-center text-3xl hover:scale-110 transition-transform border-2 border-white">
+            🤖
+        </button>
+    </div>
+
+    <!-- شات الذكاء الاصطناعي -->
+    <div id="ai-chat-modal" class="hidden fixed inset-0 bg-[#0B1437]/90 backdrop-blur-md z-[700] flex items-end sm:items-center justify-center p-0 sm:p-4">
+        <div class="bg-white dark:bg-slate-800 w-full sm:max-w-md h-[80vh] sm:h-[600px] sm:rounded-[2rem] rounded-t-[2rem] flex flex-col shadow-2xl overflow-hidden border border-slate-200 dark:border-slate-700">
+            <div class="bg-gradient-to-r from-indigo-600 to-purple-600 p-4 flex justify-between items-center text-white shrink-0">
+                <div class="flex items-center gap-2">
+                    <span class="text-3xl">🤖</span>
+                    <div>
+                        <h3 class="font-black text-lg">Geo AI Assistant</h3>
+                        <p class="text-[10px] opacity-80">المساعد الذكي للمنصة</p>
+                    </div>
+                </div>
+                <button onclick="closeAiChat()" class="text-white/80 hover:text-white text-2xl font-bold">✖</button>
+            </div>
+            <div id="ai-chat-box" class="flex-grow p-4 overflow-y-auto bg-slate-50 dark:bg-slate-900 space-y-4">
+                <div class="flex gap-2">
+                    <div class="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-lg shrink-0">🤖</div>
+                    <div class="bg-white dark:bg-slate-800 p-3 rounded-2xl rounded-tr-none shadow-sm text-sm text-slate-700 dark:text-slate-200 border border-slate-100 dark:border-slate-700 max-w-[85%] leading-relaxed">
+                        أهلاً يا بطل! أنا المساعد الذكي لمنصة Geo X. اسألني أي حاجة في المنهج وهجاوبك فوراً بناءً على معلومات مستر چو ومستر فتحي.
+                    </div>
+                </div>
+            </div>
+            <div class="p-3 bg-white dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 flex gap-2 shrink-0">
+                <input type="text" id="ai-chat-input" placeholder="اكتب سؤالك هنا..." class="flex-grow p-3 bg-slate-100 dark:bg-slate-900 rounded-xl text-sm border-none outline-none focus:ring-2 focus:ring-indigo-500" onkeypress="if(event.key==='Enter') sendAiMessage()">
+                <button onclick="sendAiMessage()" class="bg-indigo-600 hover:bg-indigo-700 text-white w-12 rounded-xl flex items-center justify-center shadow-md">➤</button>
+            </div>
         </div>
     </div>
-</div>
 
-<div id="teacher-view" class="hidden space-y-6"><div class="flex justify-between items-center bg-white p-5 rounded-[2rem] shadow-sm border border-slate-100"><h2 class="text-xl font-black text-slate-800 flex items-center gap-2"><span class="text-indigo-600">⚙️</span> الإدارة</h2><button onclick="logoutUnified()" class="bg-red-50 text-red-600 px-3 py-1.5 rounded-xl font-bold border border-red-100 text-sm">خروج</button></div><div class="grid grid-cols-2 md:grid-cols-6 gap-2"><button onclick="showAdminTab('tab-covers')" id="btn-tab-covers" class="admin-tab-btn font-bold py-2 rounded-xl text-xs active">🖼️ الغلاف</button><button onclick="showAdminTab('tab-content')" id="btn-tab-content" class="admin-tab-btn font-bold py-2 rounded-xl text-xs">📝 الدروس</button><button onclick="showAdminTab('tab-students')" id="btn-tab-students" class="admin-tab-btn font-bold py-2 rounded-xl text-xs">👥 الطلاب</button><button onclick="showAdminTab('tab-exams')" id="btn-tab-exams" class="admin-tab-btn font-bold py-2 rounded-xl text-xs">🏆 الدرجات</button><button onclick="showAdminTab('tab-announcements')" id="btn-tab-announcements" class="admin-tab-btn font-bold py-2 rounded-xl text-xs">📣 إعلان</button><button onclick="showAdminTab('tab-ai')" id="btn-tab-ai" class="admin-tab-btn font-bold py-2 rounded-xl text-xs bg-indigo-50 text-indigo-700 border-indigo-200">🤖 تغذية الـ AI</button></div><div id="tab-covers" class="admin-tab block bg-white p-6 rounded-[2rem] shadow-sm border border-slate-100"><h3 class="font-black text-slate-800 mb-4">إدارة الغلاف (بدون مسح)</h3><form onsubmit="handleCoverUpload(event)" class="space-y-4"><select id="coverGrade" onchange="updateCoverUnitDropdown()" required class="w-full p-3 border rounded-xl"><option value="" disabled selected>السنة الدراسية</option><option value="prep1">أولى إعدادي</option><option value="prep2">تانية إعدادي</option><option value="prep3">تالتة إعدادي</option></select><select id="coverUnitId" class="w-full p-3 border rounded-xl"><option value="">-- اختار الوحدة (للسنة كاملة سيبها فاضية) --</option></select><input type="file" id="coverImage" accept="image/*" required class="w-full p-3 border rounded-xl"><button type="submit" class="w-full btn-premium text-white font-bold py-3 rounded-xl">حفظ الكوڤر 📤</button></form></div><div id="tab-content" class="admin-tab hidden bg-white p-6 rounded-[2rem] shadow-sm border border-slate-100"><h3 class="font-black text-slate-800 mb-4">محتوى الدروس</h3><form onsubmit="handleContentUpload(event)" class="space-y-4"><select id="contentGrade" onchange="updateContentUnitDropdown()" required class="w-full p-3 border rounded-xl"><option value="" disabled selected>السنة</option><option value="prep1">أولى إعدادي</option><option value="prep2">تانية إعدادي</option><option value="prep3">تالتة إعدادي</option></select><select id="contentUnitId" onchange="updateContentLessonDropdown()" required class="w-full p-3 border rounded-xl"><option value="" disabled selected>الوحدة</option></select><select id="contentLessonId" onchange="loadLessonData()" required class="w-full p-3 border border-indigo-200 bg-indigo-50 text-indigo-700 font-bold rounded-xl"><option value="" disabled selected>الدرس</option></select><div id="admin-current-content" class="bg-blue-50 p-3 rounded-xl border border-blue-200 hidden"><h4 class="font-black text-blue-800 text-xs mb-2">المرفوع ومتاح للمسح:</h4><div class="flex flex-wrap gap-2" id="admin-content-badges"></div></div><input type="url" id="lessonYoutube" placeholder="لينك يوتيوب" class="w-full p-3 border rounded-xl text-sm" dir="ltr"><input type="file" id="lessonPdf" accept=".pdf" class="w-full p-2 border rounded-xl text-sm"><span id="pdfStatus" class="text-xs font-bold text-emerald-600 block"></span><textarea id="lessonExamText" placeholder='كود JSON للامتحان هنا...' rows="4" dir="ltr" class="w-full p-3 border rounded-xl bg-slate-900 text-emerald-400 font-mono text-xs"></textarea><div class="flex justify-between text-xs font-bold text-slate-500 px-2"><span id="stat-yt">مشاهدات: 0</span><span id="stat-pdf">تحميلات: 0</span></div><button type="submit" class="w-full bg-slate-800 text-white font-bold py-3 rounded-xl">حفظ المحتوى 💾</button></form></div><div id="tab-students" class="admin-tab hidden bg-white p-6 rounded-[2rem] shadow-sm border border-slate-100"><input type="text" id="searchStudent" onkeyup="filterStudents()" placeholder="بحث باسم الطالب..." class="w-full p-3 border rounded-xl mb-4 text-sm"><div class="overflow-x-auto"><table id="studentsTable" class="w-full text-right text-xs whitespace-nowrap"><thead class="bg-slate-100"><tr><th class="p-3">الاسم</th><th class="p-3">الموبايل</th><th class="p-3">إجراءات</th></tr></thead><tbody id="studentsListTbody" class="divide-y"></tbody></table></div></div><div id="tab-exams" class="admin-tab hidden bg-white p-6 rounded-[2rem] shadow-sm border border-slate-100"><select id="lbGrade" onchange="updateLbUnitDropdown()" class="w-full p-3 border rounded-xl mb-3 text-sm"><option value="">السنة</option><option value="prep1">أولى إعدادي</option><option value="prep2">تانية إعدادي</option><option value="prep3">تالتة إعدادي</option></select><select id="lbUnitId" onchange="updateLbLessonDropdown()" class="w-full p-3 border rounded-xl mb-3 text-sm"><option value="">الوحدة</option></select><select id="lbLessonId" onchange="renderLeaderboardAdmin()" class="w-full p-3 border bg-indigo-50 text-indigo-700 rounded-xl mb-4 text-sm font-bold"><option value="">الدرس أو المجموع</option></select><div class="overflow-x-auto"><table id="leaderboardTable" class="w-full text-right text-xs whitespace-nowrap"><thead class="bg-slate-800 text-white"><tr><th class="p-3">الطالب</th><th class="p-3">الدرجة/الوقت</th><th class="p-3 text-center">إجراءات</th></tr></thead><tbody id="leaderboardTbody" class="divide-y"></tbody></table></div></div><div id="tab-announcements" class="admin-tab hidden bg-white p-6 rounded-[2rem] shadow-sm border border-slate-100"><input type="text" id="adminAnnouncementInput" placeholder="اكتب الإعلان العاجل..." class="w-full p-3 border rounded-xl mb-4"><div class="flex gap-2"><button onclick="saveAnnouncementText()" class="flex-1 bg-emerald-500 text-white font-bold py-3 rounded-xl">نشر 🚀</button><button onclick="clearAnnouncementText()" class="flex-1 bg-red-50 text-red-600 font-bold py-3 rounded-xl border border-red-200">إيقاف ❌</button></div></div><div id="tab-ai" class="admin-tab hidden bg-white p-6 rounded-[2rem] shadow-sm border border-slate-100"><h3 class="font-black text-indigo-700 mb-2">تغذية الذكاء الاصطناعي 🤖</h3><p class="text-xs text-slate-500 mb-4">ضع محتوى المنهج هنا كنص لكي يفهمه المساعد الذكي ويجيب الطلاب منه فقط.</p><textarea id="admin-ai-knowledge" rows="10" placeholder="انسخ المنهج أو ملخصات الدروس هنا..." class="w-full p-4 border rounded-xl bg-slate-50 text-sm leading-relaxed mb-4"></textarea><button onclick="saveAiKnowledge()" class="w-full bg-indigo-600 text-white font-bold py-3 rounded-xl">حفظ الذاكرة الذكية 🧠</button></div></div></main>
+    <!-- ================= شاشة حماية الغش (التمويه القوي) ================= -->
+    <div id="cheat-overlay" class="hidden fixed inset-0 bg-red-600/95 backdrop-blur-xl z-[9999] flex flex-col items-center justify-center text-white text-center p-6">
+        <span class="text-7xl mb-4">🚨</span>
+        <h1 class="text-3xl font-black mb-2">تحذير غش!</h1>
+        <p class="text-lg font-bold">ممنوع الخروج من الصفحة أو فتح برامج أخرى أو تصوير الشاشة أثناء الامتحان.</p>
+        <p class="text-sm mt-4 opacity-80">لديك 3 تحذيرات قبل سحب الامتحان وتصفير نتيجتك.</p>
+        <button onclick="document.getElementById('cheat-overlay').classList.add('hidden')" class="mt-8 px-6 py-2 bg-white text-red-600 rounded-xl font-bold shadow-lg">العودة للامتحان فوراً</button>
+    </div>
 
-<div class="fixed bottom-0 w-full bottom-nav flex justify-around p-2 z-40 shadow-[0_-5px_15px_rgba(0,0,0,0.05)] pb-4 md:pb-2 text-[10px] md:text-xs font-bold"><button onclick="switchAppTab('home')" id="nav-btn-home" class="nav-item active flex flex-col items-center p-2 rounded-xl w-20"><span class="text-xl mb-1">🏠</span>الرئيسية</button><button onclick="switchAppTab('leaderboard')" id="nav-btn-leaderboard" class="nav-item flex flex-col items-center p-2 rounded-xl w-20"><span class="text-xl mb-1">🏆</span>الأبطال</button><button onclick="switchAppTab('settings')" id="nav-btn-settings" class="nav-item flex flex-col items-center p-2 rounded-xl w-20"><span class="text-xl mb-1">⚙️</span>الإعدادات</button></div>
+    <!-- ================= باقي النوافذ المعتادة (الامتحان والبروفايل) ================= -->
+    <div id="exam-screen" class="hidden fixed inset-0 bg-[#F4F7FE] dark:bg-slate-900 z-[100] overflow-y-auto no-select" style="user-select:none;-webkit-user-select:none;">
+        <div class="container mx-auto max-w-3xl py-8 px-4 relative">
+            <div id="exam-active-header" class="sticky top-4 bg-white/95 dark:bg-slate-800/95 backdrop-blur-lg p-4 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 flex justify-between items-center z-50 mb-8 gap-3">
+                <h2 id="exam-header-title" class="text-sm md:text-base font-black text-indigo-900 dark:text-indigo-300 truncate pr-2 border-r-4 border-indigo-500"></h2>
+                <div class="bg-red-50 border border-red-200 px-4 py-2 rounded-xl font-black text-sm text-red-600 flex items-center gap-2 shrink-0">⏳ <span id="timer-display">10:00</span></div>
+            </div>
+            <div id="exam-questions" class="space-y-5 mb-8"></div>
+            <div id="exam-actions">
+                <button id="btn-submit-exam" onclick="submitExam()" class="w-full btn-premium text-white font-black py-4 rounded-2xl text-base shadow-xl transition-all">سلم الإجابات ✅</button>
+            </div>
+            <div id="exam-results-actions" class="hidden mt-6">
+                <div id="exam-score-display" class="bg-white p-6 rounded-2xl text-center mb-6 shadow-sm border border-indigo-100"></div>
+                <button onclick="closeExam()" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-black py-4 rounded-2xl text-base shadow-xl transition-all">العودة للدرس 🔙</button>
+            </div>
+        </div>
+        <div id="exam-countdown" class="hidden fixed inset-0 bg-[#0B1437]/95 backdrop-blur-sm flex items-center justify-center z-[200]">
+            <div id="countdown-number" class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400 text-9xl font-black countdown-text drop-shadow-2xl">3</div>
+        </div>
+    </div>
 
-<div id="ai-fab" class="hidden fixed bottom-24 right-4 z-50 animate-bounce"><button onclick="openAiChat()" class="w-14 h-14 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full shadow-lg flex items-center justify-center text-3xl hover:scale-110 transition-transform border-2 border-white">🤖</button></div>
+    <!-- بروفايل الطالب المصغر (درجات وإنجاز وأخطاء فقط) -->
+    <div id="profile-modal" class="hidden fixed inset-0 bg-[#0B1437]/80 backdrop-blur-sm z-[300] flex items-center justify-center p-4">
+        <div class="bg-white rounded-[2rem] w-full max-w-sm overflow-hidden shadow-2xl flex flex-col max-h-[85vh]">
+            <div class="bg-gradient-to-br from-[#0F172A] to-[#1E293B] p-6 text-center relative shrink-0">
+                <button onclick="document.getElementById('profile-modal').classList.add('hidden')" class="absolute top-4 left-4 text-slate-400 text-2xl hover:text-white">✖</button>
+                <div class="relative w-20 h-20 mx-auto mb-3">
+                    <div id="profile-modal-avatar" class="w-full h-full bg-white/10 rounded-full flex items-center justify-center text-4xl text-emerald-400 overflow-hidden shadow-lg border-2 border-white/20">𓂀</div>
+                </div>
+                <h3 id="profile-name" class="text-lg font-black text-white mb-2"></h3>
+                <div id="student-badges" class="flex gap-1.5 justify-center mb-4 flex-wrap"></div>
+                <div class="text-right">
+                    <p class="text-[10px] text-indigo-200 font-bold mb-1" id="profile-progress-text">إنجازك:</p>
+                    <div class="bg-slate-700/50 rounded-full h-2 w-full overflow-hidden">
+                        <div id="profile-progress" class="bg-emerald-400 h-full w-0 transition-all duration-1000 relative"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="p-5 bg-slate-50 flex-grow overflow-y-auto">
+                <div class="flex justify-between items-center mb-4 border-b border-slate-200 pb-2">
+                    <h4 class="font-bold text-slate-700 text-sm">سجل درجاتك 🏆</h4>
+                    <button onclick="openMistakesBank()" class="bg-red-50 text-red-600 px-3 py-1 rounded-lg text-xs font-bold border border-red-100 shadow-sm">أخطائي ❌</button>
+                </div>
+                <div id="student-scores-list" class="space-y-2"></div>
+            </div>
+        </div>
+    </div>
 
-<div id="ai-chat-modal" class="hidden fixed inset-0 bg-[#0B1437]/90 backdrop-blur-md z-[700] flex items-end sm:items-center justify-center p-0 sm:p-4"><div class="bg-white dark:bg-slate-800 w-full sm:max-w-md h-[80vh] sm:h-[600px] sm:rounded-[2rem] rounded-t-[2rem] flex flex-col shadow-2xl overflow-hidden border border-slate-200 dark:border-slate-700"><div class="bg-gradient-to-r from-indigo-600 to-purple-600 p-4 flex justify-between items-center text-white shrink-0"><div class="flex items-center gap-2"><span class="text-3xl">🤖</span><div><h3 class="font-black text-lg">Geo AI Assistant</h3><p class="text-[10px] opacity-80">المساعد الذكي للمنصة</p></div></div><button onclick="closeAiChat()" class="text-white/80 hover:text-white text-2xl font-bold">✖</button></div><div id="ai-chat-box" class="flex-grow p-4 overflow-y-auto bg-slate-50 dark:bg-slate-900 space-y-4"><div class="flex gap-2"><div class="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-lg shrink-0">🤖</div><div class="bg-white dark:bg-slate-800 p-3 rounded-2xl rounded-tr-none shadow-sm text-sm text-slate-700 dark:text-slate-200 border border-slate-100 dark:border-slate-700 max-w-[85%] leading-relaxed">أهلاً يا بطل! أنا المساعد الذكي لمنصة Geo X. اسألني أي حاجة في المنهج وهجاوبك فوراً بناءً على معلومات مستر چو ومستر فتحي.</div></div></div><div class="p-3 bg-white dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 flex gap-2 shrink-0"><input type="text" id="ai-chat-input" placeholder="اكتب سؤالك هنا..." class="flex-grow p-3 bg-slate-100 dark:bg-slate-900 rounded-xl text-sm border-none outline-none focus:ring-2 focus:ring-indigo-500" onkeypress="if(event.key==='Enter') sendAiMessage()"><button onclick="sendAiMessage()" class="bg-indigo-600 hover:bg-indigo-700 text-white w-12 rounded-xl flex items-center justify-center shadow-md">➤</button></div></div></div>
+    <!-- شاشة قص الصورة بالـ Cropper.js -->
+    <div id="crop-modal" class="hidden fixed inset-0 bg-slate-900/95 backdrop-blur-md z-[600] flex items-center justify-center p-4">
+        <div class="bg-white p-5 rounded-[2rem] w-full max-w-sm text-center shadow-2xl">
+            <h3 class="text-lg font-black text-slate-800 mb-2">قص الصورة 🖼️</h3>
+            <p class="text-[10px] font-bold text-slate-500 mb-4">استخدم اصابعك للتكبير والتحريك بدقة</p>
+            <div class="w-full h-64 mx-auto mb-5 bg-black rounded-xl overflow-hidden">
+                <img id="cropper-image" class="max-w-full block" src="">
+            </div>
+            <div class="flex gap-2">
+                <button onclick="confirmCropAndUpload()" class="flex-1 bg-emerald-500 text-white font-black py-3 rounded-xl text-sm shadow-md">حفظ ✅</button>
+                <button onclick="closeCropModal()" class="flex-1 bg-slate-200 text-slate-700 font-black py-3 rounded-xl text-sm">إلغاء ❌</button>
+            </div>
+        </div>
+    </div>
 
-<!-- شاشة حماية الغش (التمويه) -->
-<div id="cheat-overlay" class="hidden fixed inset-0 bg-red-600/95 backdrop-blur-xl z-[9999] flex flex-col items-center justify-center text-white text-center p-6"><span class="text-7xl mb-4">🚨</span><h1 class="text-3xl font-black mb-2">تحذير غش!</h1><p class="text-lg font-bold">ممنوع الخروج من الصفحة أو فتح برامج أخرى أو تصوير الشاشة أثناء الامتحان.</p><p class="text-sm mt-4 opacity-80">ارجع للامتحان فوراً وإلا سيتم سحبه وتصفير نتيجتك.</p><button onclick="document.getElementById('cheat-overlay').classList.add('hidden')" class="mt-8 px-6 py-2 bg-white text-red-600 rounded-xl font-bold shadow-lg">العودة للامتحان</button></div>
+    <!-- نافذة تعديل البيانات من الإعدادات -->
+    <div id="settings-edit-modal" class="hidden fixed inset-0 bg-[#0B1437]/80 backdrop-blur-sm z-[500] flex items-center justify-center p-4">
+        <div class="bg-white p-6 rounded-[2rem] w-full max-w-sm">
+            <h3 class="text-xl font-black text-slate-800 mb-4 text-center" id="settings-edit-title"></h3>
+            <p class="text-xs text-red-500 font-bold mb-4 text-center">⚠️ مسموح بالتعديل لمرة واحدة فقط</p>
+            <div id="settings-edit-inputs" class="space-y-3 mb-5"></div>
+            <div class="flex gap-2">
+                <button onclick="saveSettingsEdit()" class="flex-1 bg-emerald-500 text-white font-bold py-3 rounded-xl">حفظ</button>
+                <button onclick="document.getElementById('settings-edit-modal').classList.add('hidden')" class="flex-1 bg-slate-200 text-slate-700 font-bold py-3 rounded-xl">إلغاء</button>
+            </div>
+        </div>
+    </div>
 
-<div id="exam-screen" class="hidden fixed inset-0 bg-[#F4F7FE] dark:bg-slate-900 z-[100] overflow-y-auto no-select" style="user-select:none;-webkit-user-select:none;"><div class="container mx-auto max-w-3xl py-8 px-4 relative"><div id="exam-active-header" class="sticky top-4 bg-white/95 dark:bg-slate-800/95 backdrop-blur-lg p-4 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 flex justify-between items-center z-50 mb-8 gap-3"><h2 id="exam-header-title" class="text-sm md:text-base font-black text-indigo-900 dark:text-indigo-300 truncate pr-2 border-r-4 border-indigo-500"></h2><div class="bg-red-50 border border-red-200 px-4 py-2 rounded-xl font-black text-sm text-red-600 flex items-center gap-2 shrink-0">⏳ <span id="timer-display">10:00</span></div></div><div id="exam-questions" class="space-y-5 mb-8"></div><div id="exam-actions"><button id="btn-submit-exam" onclick="submitExam()" class="w-full btn-premium text-white font-black py-4 rounded-2xl text-base shadow-xl transition-all">سلم الإجابات ✅</button></div><div id="exam-results-actions" class="hidden mt-6"><div id="exam-score-display" class="bg-white p-6 rounded-2xl text-center mb-6 shadow-sm border border-indigo-100"></div><button onclick="closeExam()" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-black py-4 rounded-2xl text-base shadow-xl transition-all">العودة للدرس 🔙</button></div></div><div id="exam-countdown" class="hidden fixed inset-0 bg-[#0B1437]/95 backdrop-blur-sm flex items-center justify-center z-[200]"><div id="countdown-number" class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400 text-9xl font-black countdown-text drop-shadow-2xl">3</div></div></div>
+    <!-- النوافذ المساعدة (الهاتف، الأخطاء، الشهادة، الفلاش، والتواصل) -->
+    <div id="phone-modal" class="hidden fixed inset-0 bg-[#0B1437]/80 backdrop-blur-sm z-[400] flex items-center justify-center p-4"><div class="bg-white p-7 rounded-[2rem] w-full max-w-sm text-center"><h2 class="text-2xl font-black text-slate-800 mb-2">خطوة أخيرة 🎓</h2><input type="tel" id="newStudentPhone" placeholder="رقم الموبايل (010...)" class="w-full p-4 border rounded-xl bg-slate-50 mb-4 text-center" dir="ltr"><button onclick="saveStudentPhone()" class="w-full btn-premium text-white font-black py-4 rounded-xl shadow-md">دخول 🚀</button></div></div>
+    
+    <div id="mistakes-modal" class="hidden fixed inset-0 bg-[#0B1437]/90 backdrop-blur-md z-[600] flex items-center justify-center p-4"><div class="bg-white rounded-[2rem] w-full max-w-md overflow-hidden flex flex-col max-h-[80vh]"><div class="bg-red-50 p-4 flex justify-between items-center border-b border-red-100 shrink-0"><h3 class="text-lg font-black text-red-700">بنك أخطائي ❌</h3><button onclick="document.getElementById('mistakes-modal').classList.add('hidden')" class="text-red-400 text-2xl font-bold">✖</button></div><div class="p-5 bg-slate-50 flex-grow overflow-y-auto" id="mistakes-list"></div></div></div>
+    
+    <div id="flashcards-modal" class="hidden fixed inset-0 bg-[#0B1437]/95 backdrop-blur-md z-[600] flex items-center justify-center p-4"><div class="w-full max-w-md text-center"><div class="flex justify-between items-center mb-6 text-white px-2"><h3 class="text-xl font-black">كروت الذاكرة 🗂️</h3><button onclick="document.getElementById('flashcards-modal').classList.add('hidden')" class="text-white/50 text-2xl">✖</button></div><div id="flashcard-container" class="mb-6 relative"></div><div class="flex justify-between gap-4"><button onclick="prevFlashcard()" class="w-full bg-white/10 text-white font-bold py-3 rounded-xl">السابق</button><span id="flashcard-counter" class="text-white/50 font-bold py-3 px-4 bg-white/5 rounded-xl">1/1</span><button onclick="nextFlashcard()" class="w-full bg-indigo-500 text-white font-bold py-3 rounded-xl">التالي</button></div></div></div>
+    
+    <div id="certificate-modal" class="hidden fixed inset-0 bg-[#0B1437]/90 backdrop-blur-md z-[700] flex items-center justify-center p-4"><div class="bg-white w-full max-w-xl relative border-[10px] border-amber-500 p-2 text-center"><button onclick="document.getElementById('certificate-modal').classList.add('hidden')" class="absolute top-2 right-2 text-slate-400 text-2xl font-bold z-10 bg-white rounded-full w-8 h-8 flex items-center justify-center shadow-sm">✖</button><div class="border-2 border-amber-300 p-8 md:p-10 relative bg-white/95"><div class="text-4xl mb-4">👑</div><h1 class="text-3xl md:text-4xl font-black text-amber-600 mb-4">شـهـادة تـفـوق</h1><h2 class="text-xl md:text-2xl font-black text-slate-800 my-4 bg-slate-50 inline-block px-6 py-2 rounded-xl border" id="cert-name"></h2><p class="text-sm font-bold mb-2">لاجتيازه بتفوق مبهر اختبار:</p><h3 class="text-md md:text-xl font-black text-indigo-700 mb-8" id="cert-lesson"></h3><div class="flex justify-between items-center border-t pt-4 px-2"><div class="text-center"><p class="text-xs font-black">مستر</p><p class="text-amber-600 font-black text-lg">چو</p></div><div class="text-2xl">🏅</div><div class="text-center"><p class="text-xs font-black">مستر</p><p class="text-amber-600 font-black text-lg">فتحي</p></div></div></div></div></div>
+    
+    <div id="social-modal" class="hidden fixed inset-0 bg-[#0B1437]/80 backdrop-blur-sm z-[500] flex items-center justify-center p-4"><div class="bg-white p-7 rounded-[2rem] w-full max-w-sm text-center relative"><button onclick="document.getElementById('social-modal').classList.add('hidden')" class="absolute top-4 left-4 text-slate-400 text-xl">✖</button><div class="text-4xl mb-3">🌍</div><h3 class="text-xl font-black text-slate-800 mb-1">تواصل معنا</h3><p class="text-xs text-slate-500 mb-5 font-bold">منصة Geo X</p><div class="grid grid-cols-2 gap-3 mb-4"><a href="https://wa.me/201090337409" target="_blank" class="bg-amber-50 p-3 rounded-xl border border-amber-200 text-center"><img src="./mr-joe.png" class="w-10 h-10 mx-auto mb-1 rounded-full"><div class="text-xs font-black text-amber-900">مستر چو</div></a><a href="https://wa.me/201019517904" target="_blank" class="bg-amber-50 p-3 rounded-xl border border-amber-200 text-center"><img src="./mr-fathy.png" class="w-10 h-10 mx-auto mb-1 rounded-full"><div class="text-xs font-black text-amber-900">مستر فتحي</div></a></div><div class="flex gap-2"><a href="#" class="flex-1 bg-red-50 text-red-600 font-bold py-2 rounded-lg text-xs border border-red-100">يوتيوب</a><a href="#" class="flex-1 bg-slate-100 text-slate-800 font-bold py-2 rounded-lg text-xs border border-slate-200">تيك توك</a></div></div></div>
 
-<div id="profile-modal" class="hidden fixed inset-0 bg-[#0B1437]/80 backdrop-blur-sm z-[300] flex items-center justify-center p-4"><div class="bg-white rounded-[2rem] w-full max-w-sm overflow-hidden shadow-2xl flex flex-col max-h-[85vh]"><div class="bg-gradient-to-br from-[#0F172A] to-[#1E293B] p-6 text-center relative shrink-0"><button onclick="document.getElementById('profile-modal').classList.add('hidden')" class="absolute top-4 left-4 text-slate-400 text-2xl hover:text-white">✖</button><div class="relative w-20 h-20 mx-auto mb-3"><div id="profile-modal-avatar" class="w-full h-full bg-white/10 rounded-full flex items-center justify-center text-4xl text-emerald-400 overflow-hidden shadow-lg border-2 border-white/20">𓂀</div></div><h3 id="profile-name" class="text-lg font-black text-white mb-2"></h3><div id="student-badges" class="flex gap-1.5 justify-center mb-4 flex-wrap"></div><div class="text-right"><p class="text-[10px] text-indigo-200 font-bold mb-1" id="profile-progress-text">إنجازك:</p><div class="bg-slate-700/50 rounded-full h-2 w-full overflow-hidden"><div id="profile-progress" class="bg-emerald-400 h-full w-0 transition-all duration-1000 relative"></div></div></div></div><div class="p-5 bg-slate-50 flex-grow overflow-y-auto"><div class="flex justify-between items-center mb-4 border-b border-slate-200 pb-2"><h4 class="font-bold text-slate-700 text-sm">سجل درجاتك 🏆</h4><button onclick="openMistakesBank()" class="bg-red-50 text-red-600 px-3 py-1 rounded-lg text-xs font-bold border border-red-100 shadow-sm">أخطائي ❌</button></div><div id="student-scores-list" class="space-y-2"></div></div></div></div>
+    <!-- ================= JAVASCRIPT LOGIC ================= -->
+    <script>
+        const firebaseConfig = { apiKey: "AIzaSyAkSD8k1Q4_gSwar3mwfDPVpUPWzHJevNk", authDomain: "geox-platform.firebaseapp.com", databaseURL: "https://geox-platform-default-rtdb.firebaseio.com", projectId: "geox-platform", storageBucket: "geox-platform.firebasestorage.app", messagingSenderId: "691272759644", appId: "1:691272759644:web:e7b451a077118de1ef6999", measurementId: "G-204B5J92L8" };
+        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+        const database = firebase.database(), auth = firebase.auth(), googleProvider = new firebase.auth.GoogleAuthProvider();
 
-<div id="crop-modal" class="hidden fixed inset-0 bg-slate-900/95 backdrop-blur-md z-[600] flex items-center justify-center p-4"><div class="bg-white p-5 rounded-[2rem] w-full max-w-sm text-center shadow-2xl"><h3 class="text-lg font-black text-slate-800 mb-2">قص الصورة 🖼️</h3><p class="text-[10px] font-bold text-slate-500 mb-4">استخدم اصابعك للتكبير والتحريك</p><div class="w-full h-64 mx-auto mb-5 bg-black rounded-xl overflow-hidden"><img id="cropper-image" class="max-w-full block" src=""></div><div class="flex gap-2"><button onclick="confirmCropAndUpload()" class="flex-1 bg-emerald-500 text-white font-black py-3 rounded-xl text-sm shadow-md">حفظ ✅</button><button onclick="closeCropModal()" class="flex-1 bg-slate-200 text-slate-700 font-black py-3 rounded-xl text-sm">إلغاء ❌</button></div></div></div>
+        const GRADES = { 'prep1': 'أولى إعدادي', 'prep2': 'تانية إعدادي', 'prep3': 'تالتة إعدادي' };
+        const CURRICULUM = [
+            { id: 'p1_u1', grade: 'prep1', title: 'الوحدة الأولى: الملامح الطبيعية لقارة إفريقيا وحضاراتها القديمة', lessons: [{id: 'p1_u1_l1', t: 'قارة إفريقيا (الموقع والكشوف الجغرافية).'}, {id: 'p1_u1_l2', t: 'مظاهر سطح قارة إفريقيا.'}, {id: 'p1_u1_l3', t: 'نهر النيل والحضارات القديمة في إفريقيا.'}] },
+            { id: 'p1_u2', grade: 'prep1', title: 'الوحدة الثانية: الحضارة المصرية القديمة وعلاقتها بحضارات إفريقيا', lessons: [{id: 'p1_u2_l1', t: 'عصر الدولة القديمة (عصر بناء الأهرام).'}, {id: 'p1_u2_l2', t: 'عصر الدولة الوسطى (عصر الرخاء الاقتصادي).'}, {id: 'p1_u2_l3', t: 'عصر الدولة الحديثة (عصر المجد الحربي).'}] },
+            { id: 'p1_u3', grade: 'prep1', title: 'الوحدة الثالثة: النظم البيئية في قارة إفريقيا', lessons: [{id: 'p1_u3_l1', t: 'نظم الغابات في إفريقيا (المدارية الممطرة والمتوسط).'}, {id: 'p1_u3_l2', t: 'نظم الحشائش (الحارة والمعتدلة) والصحاري الحارة.'}, {id: 'p1_u3_l3', t: 'النظم البيئية المائية في إفريقيا.'}] },
+            { id: 'p1_u4', grade: 'prep1', title: 'الوحدة الرابعة: علاقة مصر بإفريقيا خلال العصور الوسطى', lessons: [{id: 'p1_u4_l1', t: 'انتشار الإسلام في إفريقيا.'}, {id: 'p1_u4_l2', t: 'دور مصر الحضاري في قارة إفريقيا.'}] },
+            { id: 'p2_u1', grade: 'prep2', title: 'الوحدة الأولى: الملامح الطبيعية لقارتي آسيا وأوروبا', lessons: [{id: 'p2_u1_l1', t: 'موقع ومظاهر سطح قارتي آسيا وأوروبا.'}, {id: 'p2_u1_l2', t: 'المعادن ومصادر الطاقة في قارتي آسيا وأوروبا.'}] },
+            { id: 'p2_u2', grade: 'prep2', title: 'الوحدة الثانية: الحضارات القديمة في قارة آسيا وعلاقتها بمصر', lessons: [{id: 'p2_u2_l1', t: 'نماذج للحضارات القديمة بالشرق الأدنى.'}, {id: 'p2_u2_l2', t: 'نماذج لحضارات بلاد اليمن القديم.'}, {id: 'p2_u2_l3', t: 'نماذج للحضارات القديمة بالشرق الأقصى.'}, {id: 'p2_u2_l4', t: 'الحضارة الإسلامية.'}] },
+            { id: 'p2_u3', grade: 'prep2', title: 'الوحدة الثالثة: النظم البيئية في قارتي آسيا وأوروبا', lessons: [{id: 'p2_u3_l1', t: 'نظم الغابات في قارتي آسيا وأوروبا.'}, {id: 'p2_u3_l2', t: 'نظم الحشائش ونظم الصحاري في قارتي آسيا وأوروبا.'}, {id: 'p2_u3_l3', t: 'النظم البيئية المائية في قارتي آسيا وأوروبا.'}] },
+            { id: 'p2_u4', grade: 'prep2', title: 'الوحدة الرابعة: الحضارات القديمة في قارة أوروبا وعلاقتها بمصر', lessons: [{id: 'p2_u4_l1', t: 'الحضارة اليونانية.'}, {id: 'p2_u4_l2', t: 'الحضارة الرومانية.'}] },
+            { id: 'p3_u1', grade: 'prep3', title: 'الوحدة الأولى: الجغرافيا الطبيعية للعالم', lessons: [{id: 'p3_u1_l1', t: 'قارات العالم (الموقع والمساحة).'}, {id: 'p3_u1_l2', t: 'تضاريس العالم.'}, {id: 'p3_u1_l3', t: 'المناخ والنبات الطبيعي في العالم.'}] },
+            { id: 'p3_u2', grade: 'prep3', title: 'الوحدة الثانية: جغرافية سكان العالم', lessons: [{id: 'p3_u2_l1', t: 'السلالات البشرية في العالم.'}, {id: 'p3_u2_l2', t: 'توزيع السكان في العالم.'}, {id: 'p3_u2_l3', t: 'خصائص سكان العالم.'}] },
+            { id: 'p3_u3', grade: 'prep3', title: 'الوحدة الثالثة: مصر تحت الحكم العثماني', lessons: [{id: 'p3_u3_l1', t: 'مصر بين المماليك والعثمانيين.'}, {id: 'p3_u3_l2', t: 'الحملة الفرنسية على مصر (1798م - 1801م).'}, {id: 'p3_u3_l3', t: 'ثورة الشعب المصري وتولية محمد علي.'}, {id: 'p3_u3_l4', t: 'محمد علي وبناء مصر الحديثة.'}] },
+            { id: 'p3_u4', grade: 'prep3', title: 'الوحدة الرابعة: مصر والزحف الاستعماري ومحاولات التحرر الوطني', lessons: [{id: 'p3_u4_l1', t: 'خلفاء محمد علي وازدياد النفوذ الأجنبي.'}, {id: 'p3_u4_l2', t: 'الحركة الوطنية والثورة العرابية.'}, {id: 'p3_u4_l3', t: 'الكفاح الوطني ضد الاحتلال البريطاني.'}, {id: 'p3_u4_l4', t: 'مصر من الحماية البريطانية حتى ثورة يوليو 1952م.'}] }
+        ];
+        const DEFAULT_COVER='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNjAwIiBoZWlnaHQ9IjkwMCI+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0iIzBCOTE0MzciLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZm9udC1mYW1pbHk9IkNhaXJvLCBzYW5zLXNlcmlmIiBmb250LXdlaWdodD0iOTAwIiBmb250LXNpemU9IjYwIiBmaWxsPSIjMzQ4MkVCIiBkb21pbmFudC1iYXNlbGluZT0ibWlkZGxlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5HZW8gWDwvdGV4dD48L3N2Zz4=';
+        
+        let coversData={}, lessonsDataCache={}, examResultsCache=[], allStudents=[], aiKnowledgeData="";
+        let currentGrade='', currentUnit='', currentLesson=null, currentExamData=null, pendingGoogleUser=null;
+        let cheatWarnings=0, currentFlashcardIndex=0, flashcardsList=[], cropperInstance=null;
 
-<div id="phone-modal" class="hidden fixed inset-0 bg-[#0B1437]/80 backdrop-blur-sm z-[400] flex items-center justify-center p-4"><div class="bg-white p-7 rounded-[2rem] w-full max-w-sm text-center"><h2 class="text-2xl font-black text-slate-800 mb-2">خطوة أخيرة 🎓</h2><input type="tel" id="newStudentPhone" placeholder="رقم الموبايل (010...)" class="w-full p-4 border rounded-xl bg-slate-50 mb-4 text-center" dir="ltr"><button onclick="saveStudentPhone()" class="w-full btn-premium text-white font-black py-4 rounded-xl shadow-md">دخول 🚀</button></div></div>
+        // إعدادات الوضع الليلي (Dark Mode)
+        if(localStorage.getItem('geox_dark_mode') === 'true') { 
+            document.body.classList.add('dark-mode'); 
+            document.getElementById('dark-mode-toggle').checked = true; 
+        }
 
-<div id="settings-edit-modal" class="hidden fixed inset-0 bg-[#0B1437]/80 backdrop-blur-sm z-[500] flex items-center justify-center p-4"><div class="bg-white p-6 rounded-[2rem] w-full max-w-sm"><h3 class="text-xl font-black text-slate-800 mb-4 text-center" id="settings-edit-title"></h3><p class="text-xs text-red-500 font-bold mb-4 text-center">⚠️ مسموح بالتعديل لمرة واحدة فقط</p><div id="settings-edit-inputs" class="space-y-3 mb-5"></div><div class="flex gap-2"><button onclick="saveSettingsEdit()" class="flex-1 bg-emerald-500 text-white font-bold py-3 rounded-xl">حفظ</button><button onclick="document.getElementById('settings-edit-modal').classList.add('hidden')" class="flex-1 bg-slate-200 text-slate-700 font-bold py-3 rounded-xl">إلغاء</button></div></div></div>
+        function toggleDarkMode() { 
+            if(document.getElementById('dark-mode-toggle').checked) { 
+                document.body.classList.add('dark-mode'); 
+                localStorage.setItem('geox_dark_mode','true'); 
+            } else { 
+                document.body.classList.remove('dark-mode'); 
+                localStorage.setItem('geox_dark_mode','false'); 
+            } 
+        }
 
-<div id="mistakes-modal" class="hidden fixed inset-0 bg-[#0B1437]/90 backdrop-blur-md z-[600] flex items-center justify-center p-4"><div class="bg-white rounded-[2rem] w-full max-w-md overflow-hidden flex flex-col max-h-[80vh]"><div class="bg-red-50 p-4 flex justify-between items-center border-b border-red-100 shrink-0"><h3 class="text-lg font-black text-red-700">بنك أخطائي ❌</h3><button onclick="document.getElementById('mistakes-modal').classList.add('hidden')" class="text-red-400 text-2xl font-bold">✖</button></div><div class="p-5 bg-slate-50 flex-grow overflow-y-auto" id="mistakes-list"></div></div></div>
-<div id="flashcards-modal" class="hidden fixed inset-0 bg-[#0B1437]/95 backdrop-blur-md z-[600] flex items-center justify-center p-4"><div class="w-full max-w-md text-center"><div class="flex justify-between items-center mb-6 text-white px-2"><h3 class="text-xl font-black">كروت الذاكرة 🗂️</h3><button onclick="document.getElementById('flashcards-modal').classList.add('hidden')" class="text-white/50 text-2xl">✖</button></div><div id="flashcard-container" class="mb-6 relative"></div><div class="flex justify-between gap-4"><button onclick="prevFlashcard()" class="w-full bg-white/10 text-white font-bold py-3 rounded-xl">السابق</button><span id="flashcard-counter" class="text-white/50 font-bold py-3 px-4 bg-white/5 rounded-xl">1/1</span><button onclick="nextFlashcard()" class="w-full bg-indigo-500 text-white font-bold py-3 rounded-xl">التالي</button></div></div></div>
-<div id="certificate-modal" class="hidden fixed inset-0 bg-[#0B1437]/90 backdrop-blur-md z-[700] flex items-center justify-center p-4"><div class="bg-white w-full max-w-xl relative border-[10px] border-amber-500 p-2 text-center"><button onclick="document.getElementById('certificate-modal').classList.add('hidden')" class="absolute top-2 right-2 text-slate-400 text-2xl font-bold z-10 bg-white rounded-full w-8 h-8 flex items-center justify-center shadow-sm">✖</button><div class="border-2 border-amber-300 p-8 md:p-10 relative bg-white/95"><div class="text-4xl mb-4">👑</div><h1 class="text-3xl md:text-4xl font-black text-amber-600 mb-4">شـهـادة تـفـوق</h1><h2 class="text-xl md:text-2xl font-black text-slate-800 my-4 bg-slate-50 inline-block px-6 py-2 rounded-xl border" id="cert-name"></h2><p class="text-sm font-bold mb-2">لاجتيازه بتفوق مبهر اختبار:</p><h3 class="text-md md:text-xl font-black text-indigo-700 mb-8" id="cert-lesson"></h3><div class="flex justify-between items-center border-t pt-4 px-2"><div class="text-center"><p class="text-xs font-black">مستر</p><p class="text-amber-600 font-black text-lg">چو</p></div><div class="text-2xl">🏅</div><div class="text-center"><p class="text-xs font-black">مستر</p><p class="text-amber-600 font-black text-lg">فتحي</p></div></div></div></div></div>
-<div id="social-modal" class="hidden fixed inset-0 bg-[#0B1437]/80 backdrop-blur-sm z-[500] flex items-center justify-center p-4"><div class="bg-white p-7 rounded-[2rem] w-full max-w-sm text-center relative"><button onclick="document.getElementById('social-modal').classList.add('hidden')" class="absolute top-4 left-4 text-slate-400 text-xl">✖</button><div class="text-4xl mb-3">🌍</div><h3 class="text-xl font-black text-slate-800 mb-1">تواصل معنا</h3><p class="text-xs text-slate-500 mb-5 font-bold">منصة Geo X</p><div class="grid grid-cols-2 gap-3 mb-4"><a href="https://wa.me/201090337409" target="_blank" class="bg-amber-50 p-3 rounded-xl border border-amber-200 text-center"><img src="./mr-joe.png" class="w-10 h-10 mx-auto mb-1 rounded-full"><div class="text-xs font-black text-amber-900">مستر چو</div></a><a href="https://wa.me/201019517904" target="_blank" class="bg-amber-50 p-3 rounded-xl border border-amber-200 text-center"><img src="./mr-fathy.png" class="w-10 h-10 mx-auto mb-1 rounded-full"><div class="text-xs font-black text-amber-900">مستر فتحي</div></a></div><div class="flex gap-2"><a href="#" class="flex-1 bg-red-50 text-red-600 font-bold py-2 rounded-lg text-xs border border-red-100">يوتيوب</a><a href="#" class="flex-1 bg-slate-100 text-slate-800 font-bold py-2 rounded-lg text-xs border border-slate-200">تيك توك</a></div></div></div>
+        // التوجيه الذكي باستخدام التبويبات السفلية (Bottom Navigation Logic)
+        function switchAppTab(tab) { 
+            document.querySelectorAll('.app-tab').forEach(e => e.classList.add('hidden')); 
+            document.querySelectorAll('.nav-item').forEach(e => e.classList.remove('active')); 
+            document.getElementById('app-tab-'+tab).classList.remove('hidden'); 
+            document.getElementById('nav-btn-'+tab).classList.add('active'); 
+            
+            if(tab === 'home') { 
+                goBackVisuallyToRoot(); 
+            } else if (tab === 'leaderboard') { 
+                const btn = document.querySelector('#app-tab-leaderboard button.bg-indigo-600'); 
+                if(btn) openGlobalLeaderboard(btn.id.replace('gl-','').replace('-btn','')); 
+            } else if (tab === 'settings') { 
+                updateSettingsTabUI(); 
+            } 
+        }
 
-<script>
-const firebaseConfig = { apiKey: "AIzaSyAkSD8k1Q4_gSwar3mwfDPVpUPWzHJevNk", authDomain: "geox-platform.firebaseapp.com", databaseURL: "https://geox-platform-default-rtdb.firebaseio.com", projectId: "geox-platform", storageBucket: "geox-platform.firebasestorage.app", messagingSenderId: "691272759644", appId: "1:691272759644:web:e7b451a077118de1ef6999", measurementId: "G-204B5J92L8" };
-if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-const database = firebase.database(), auth = firebase.auth(), googleProvider = new firebase.auth.GoogleAuthProvider();
+        function goBackVisuallyToRoot() { 
+            document.getElementById('student-units-container').classList.add('hidden'); 
+            document.getElementById('student-lessons-container').classList.add('hidden'); 
+            document.getElementById('student-content-container').classList.add('hidden'); 
+            document.getElementById('student-stages').classList.remove('hidden'); 
+            currentGrade=''; currentUnit=''; currentLesson=null; 
+            history.pushState({view:'home'},'',''); 
+            sessionStorage.setItem('geox_current_view', JSON.stringify({view:'home'})); 
+        }
 
-const GRADES = { 'prep1': 'أولى إعدادي', 'prep2': 'تانية إعدادي', 'prep3': 'تالتة إعدادي' };
-const CURRICULUM = [
-    { id: 'p1_u1', grade: 'prep1', title: 'الوحدة الأولى: الملامح الطبيعية لقارة إفريقيا وحضاراتها القديمة', lessons: [{id: 'p1_u1_l1', t: 'قارة إفريقيا (الموقع والكشوف الجغرافية).'}, {id: 'p1_u1_l2', t: 'مظاهر سطح قارة إفريقيا.'}, {id: 'p1_u1_l3', t: 'نهر النيل والحضارات القديمة في إفريقيا.'}] },
-    { id: 'p1_u2', grade: 'prep1', title: 'الوحدة الثانية: الحضارة المصرية القديمة وعلاقتها بحضارات إفريقيا', lessons: [{id: 'p1_u2_l1', t: 'عصر الدولة القديمة (عصر بناء الأهرام).'}, {id: 'p1_u2_l2', t: 'عصر الدولة الوسطى (عصر الرخاء الاقتصادي).'}, {id: 'p1_u2_l3', t: 'عصر الدولة الحديثة (عصر المجد الحربي).'}] },
-    { id: 'p1_u3', grade: 'prep1', title: 'الوحدة الثالثة: النظم البيئية في قارة إفريقيا', lessons: [{id: 'p1_u3_l1', t: 'نظم الغابات في إفريقيا (المدارية الممطرة والمتوسط).'}, {id: 'p1_u3_l2', t: 'نظم الحشائش (الحارة والمعتدلة) والصحاري الحارة.'}, {id: 'p1_u3_l3', t: 'النظم البيئية المائية في إفريقيا.'}] },
-    { id: 'p1_u4', grade: 'prep1', title: 'الوحدة الرابعة: علاقة مصر بإفريقيا خلال العصور الوسطى', lessons: [{id: 'p1_u4_l1', t: 'انتشار الإسلام في إفريقيا.'}, {id: 'p1_u4_l2', t: 'دور مصر الحضاري في قارة إفريقيا.'}] },
-    { id: 'p2_u1', grade: 'prep2', title: 'الوحدة الأولى: الملامح الطبيعية لقارتي آسيا وأوروبا', lessons: [{id: 'p2_u1_l1', t: 'موقع ومظاهر سطح قارتي آسيا وأوروبا.'}, {id: 'p2_u1_l2', t: 'المعادن ومصادر الطاقة في قارتي آسيا وأوروبا.'}] },
-    { id: 'p2_u2', grade: 'prep2', title: 'الوحدة الثانية: الحضارات القديمة في قارة آسيا وعلاقتها بمصر', lessons: [{id: 'p2_u2_l1', t: 'نماذج للحضارات القديمة بالشرق الأدنى.'}, {id: 'p2_u2_l2', t: 'نماذج لحضارات بلاد اليمن القديم.'}, {id: 'p2_u2_l3', t: 'نماذج للحضارات القديمة بالشرق الأقصى.'}, {id: 'p2_u2_l4', t: 'الحضارة الإسلامية.'}] },
-    { id: 'p2_u3', grade: 'prep2', title: 'الوحدة الثالثة: النظم البيئية في قارتي آسيا وأوروبا', lessons: [{id: 'p2_u3_l1', t: 'نظم الغابات في قارتي آسيا وأوروبا.'}, {id: 'p2_u3_l2', t: 'نظم الحشائش ونظم الصحاري في قارتي آسيا وأوروبا.'}, {id: 'p2_u3_l3', t: 'النظم البيئية المائية في قارتي آسيا وأوروبا.'}] },
-    { id: 'p2_u4', grade: 'prep2', title: 'الوحدة الرابعة: الحضارات القديمة في قارة أوروبا وعلاقتها بمصر', lessons: [{id: 'p2_u4_l1', t: 'الحضارة اليونانية.'}, {id: 'p2_u4_l2', t: 'الحضارة الرومانية.'}] },
-    { id: 'p3_u1', grade: 'prep3', title: 'الوحدة الأولى: الجغرافيا الطبيعية للعالم', lessons: [{id: 'p3_u1_l1', t: 'قارات العالم (الموقع والمساحة).'}, {id: 'p3_u1_l2', t: 'تضاريس العالم.'}, {id: 'p3_u1_l3', t: 'المناخ والنبات الطبيعي في العالم.'}] },
-    { id: 'p3_u2', grade: 'prep3', title: 'الوحدة الثانية: جغرافية سكان العالم', lessons: [{id: 'p3_u2_l1', t: 'السلالات البشرية في العالم.'}, {id: 'p3_u2_l2', t: 'توزيع السكان في العالم.'}, {id: 'p3_u2_l3', t: 'خصائص سكان العالم.'}] },
-    { id: 'p3_u3', grade: 'prep3', title: 'الوحدة الثالثة: مصر تحت الحكم العثماني', lessons: [{id: 'p3_u3_l1', t: 'مصر بين المماليك والعثمانيين.'}, {id: 'p3_u3_l2', t: 'الحملة الفرنسية على مصر (1798م - 1801م).'}, {id: 'p3_u3_l3', t: 'ثورة الشعب المصري وتولية محمد علي.'}, {id: 'p3_u3_l4', t: 'محمد علي وبناء مصر الحديثة.'}] },
-    { id: 'p3_u4', grade: 'prep3', title: 'الوحدة الرابعة: مصر والزحف الاستعماري ومحاولات التحرر الوطني', lessons: [{id: 'p3_u4_l1', t: 'خلفاء محمد علي وازدياد النفوذ الأجنبي.'}, {id: 'p3_u4_l2', t: 'الحركة الوطنية والثورة العرابية.'}, {id: 'p3_u4_l3', t: 'الكفاح الوطني ضد الاحتلال البريطاني.'}, {id: 'p3_u4_l4', t: 'مصر من الحماية البريطانية حتى ثورة يوليو 1952م.'}] }
-];
-const DEFAULT_COVER='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNjAwIiBoZWlnaHQ9IjkwMCI+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0iIzBCOTE0MzciLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZm9udC1mYW1pbHk9IkNhaXJvLCBzYW5zLXNlcmlmIiBmb250LXdlaWdodD0iOTAwIiBmb250LXNpemU9IjYwIiBmaWxsPSIjMzQ4MkVCIiBkb21pbmFudC1iYXNlbGluZT0ibWlkZGxlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5HZW8gWDwvdGV4dD48L3N2Zz4=';
-let coversData={}, lessonsDataCache={}, examResultsCache=[], allStudents=[], aiKnowledgeData="";
-let currentGrade='', currentUnit='', currentLesson=null, currentExamData=null, pendingGoogleUser=null, cheatWarnings=0, currentFlashcardIndex=0, flashcardsList=[], cropperInstance=null;
+        // التحميل الاستباقي لمعلومات الطالب وتجنب شاشة الانتظار
+        const cachedStudent = JSON.parse(localStorage.getItem('geox_student_user'));
+        const isAdminCached = localStorage.getItem('geox_admin_logged');
+        const savedAdminTab = localStorage.getItem('geox_admin_tab') || 'tab-covers';
+        const lastView = JSON.parse(sessionStorage.getItem('geox_current_view'));
 
-if(localStorage.getItem('geox_dark_mode')==='true'){ document.body.classList.add('dark-mode'); document.getElementById('dark-mode-toggle').checked=true; }
+        if(isAdminCached) { 
+            document.getElementById('teacher-view').classList.remove('hidden'); 
+            showAdminTab(savedAdminTab, true); 
+        } else if (cachedStudent) { 
+            document.getElementById('student-view').classList.remove('hidden');
+            updateStudentUI(cachedStudent); 
+            if(lastView) { 
+                if(lastView.view === 'grade') openGrade(lastView.g, true); 
+                else if(lastView.view === 'unit') { currentGrade = lastView.g; openUnit(lastView.u, true); } 
+                else if(lastView.view === 'lesson') { currentUnit = lastView.u; currentGrade = lastView.g; openLessonContent(lastView.l, lastView.t, true); } 
+            } else { 
+                document.getElementById('student-stages').classList.remove('hidden'); 
+            }
+        } else { 
+            document.getElementById('student-view').classList.remove('hidden');
+            updateStudentUI(null); 
+            document.getElementById('student-stages').classList.remove('hidden');
+        }
 
-function toggleDarkMode() { if(document.getElementById('dark-mode-toggle').checked){ document.body.classList.add('dark-mode'); localStorage.setItem('geox_dark_mode','true'); }else{ document.body.classList.remove('dark-mode'); localStorage.setItem('geox_dark_mode','false'); } }
-function switchAppTab(tab) { document.querySelectorAll('.app-tab').forEach(e=>e.classList.add('hidden')); document.querySelectorAll('.nav-item').forEach(e=>e.classList.remove('active')); document.getElementById('app-tab-'+tab).classList.remove('hidden'); document.getElementById('nav-btn-'+tab).classList.add('active'); if(tab==='home'){ goBackVisuallyToRoot(); }else if(tab==='leaderboard'){ const btn=document.querySelector('#app-tab-leaderboard button.bg-indigo-600'); if(btn) openGlobalLeaderboard(btn.id.replace('gl-','').replace('-btn','')); }else if(tab==='settings'){ updateSettingsTabUI(); } }
-function goBackVisuallyToRoot(){ document.getElementById('student-units-container').classList.add('hidden'); document.getElementById('student-lessons-container').classList.add('hidden'); document.getElementById('student-content-container').classList.add('hidden'); document.getElementById('student-stages').classList.remove('hidden'); currentGrade=''; currentUnit=''; currentLesson=null; history.pushState({view:'home'},'',''); sessionStorage.setItem('geox_current_view',JSON.stringify({view:'home'})); }
+        // استماع لقواعد بيانات فايربيز لحظياً
+        database.ref('covers').on('value', s => { 
+            coversData = s.val() || {}; 
+            if(currentGrade === '' && !isAdminCached && (!lastView || lastView.view === 'home')) renderStagesGrid(); 
+        });
+        database.ref('lessons_data').on('value', s => lessonsDataCache = s.val() || {});
+        database.ref('analytics').on('value', s => analyticsDataCache = s.val() || {});
+        database.ref('exam_results').on('value', s => { 
+            const val = s.val() || {}; 
+            examResultsCache = Object.keys(val).map(k => ({...val[k], key: k})); 
+            if(isAdminCached) renderLeaderboardAdmin(); 
+            const st = JSON.parse(localStorage.getItem('geox_student_user')); 
+            if(st && !isAdminCached) { updateStudentUI(st); updateSettingsTabUI(); } 
+        });
+        database.ref('students').on('value', s => { 
+            const val = s.val() || {}; 
+            allStudents = Object.keys(val).map(k => ({...val[k], uid: k})); 
+            if(isAdminCached) renderStudentsTable(); 
+        });
+        database.ref('announcement').on('value', s => { 
+            const t = s.val() || ''; 
+            const bar = document.getElementById('announcement-bar'); 
+            if(t) { bar.classList.remove('hidden'); document.getElementById('announcement-text').innerText = t; } 
+            else { bar.classList.add('hidden'); } 
+            if(document.getElementById('adminAnnouncementInput')) document.getElementById('adminAnnouncementInput').value = t; 
+        });
+        database.ref('ai_knowledge').on('value', s => { 
+            aiKnowledgeData = s.val() || ''; 
+            if(document.getElementById('admin-ai-knowledge')) document.getElementById('admin-ai-knowledge').value = aiKnowledgeData; 
+        });
 
-database.ref('covers').on('value', s=>{ coversData=s.val()||{}; if(currentGrade===''&&!localStorage.getItem('geox_admin_logged')) renderStagesGrid(); });
-database.ref('lessons_data').on('value', s=>lessonsDataCache=s.val()||{});
-database.ref('exam_results').on('value', s=>{ const val=s.val()||{}; examResultsCache=Object.keys(val).map(k=>({...val[k], key:k})); if(localStorage.getItem('geox_admin_logged')) renderLeaderboardAdmin(); const st=JSON.parse(localStorage.getItem('geox_student_user')); if(st&&!localStorage.getItem('geox_admin_logged')){ updateStudentUI(st); updateSettingsTabUI(); } });
-database.ref('students').on('value', s=>{ const val=s.val()||{}; allStudents=Object.keys(val).map(k=>({...val[k], uid:k})); if(localStorage.getItem('geox_admin_logged')) renderStudentsTable(); });
-database.ref('announcement').on('value', s=>{ const t=s.val()||''; const bar=document.getElementById('announcement-bar'); if(t){ bar.classList.remove('hidden'); document.getElementById('announcement-text').innerText=t; }else{ bar.classList.add('hidden'); } if(document.getElementById('adminAnnouncementInput')) document.getElementById('adminAnnouncementInput').value=t; });
-database.ref('ai_knowledge').on('value', s=>{ aiKnowledgeData=s.val()||''; if(document.getElementById('admin-ai-knowledge')) document.getElementById('admin-ai-knowledge').value=aiKnowledgeData; });
+        // التحقق من حساب جوجل
+        auth.onAuthStateChanged(user => { 
+            if(user) { 
+                const admins = ['yousef74joe74@gmail.com', 'm.fathy9875@gmail.com']; 
+                if(admins.includes(user.email)) { 
+                    localStorage.setItem('geox_admin_logged','true'); 
+                    document.getElementById('student-view').classList.add('hidden'); 
+                    document.querySelector('.bottom-nav').classList.add('hidden'); 
+                    document.getElementById('ai-fab').classList.add('hidden'); 
+                    document.getElementById('teacher-view').classList.remove('hidden'); 
+                    document.getElementById('student-greeting').innerHTML = 'الإدارة ⚙️'; 
+                    document.getElementById('student-greeting').onclick = null; 
+                    renderStudentsTable(); renderLeaderboardAdmin(); 
+                    showAdminTab(savedAdminTab, true); 
+                } else { 
+                    localStorage.removeItem('geox_admin_logged'); 
+                    document.getElementById('teacher-view').classList.add('hidden'); 
+                    document.querySelector('.bottom-nav').classList.remove('hidden'); 
+                    document.getElementById('student-view').classList.remove('hidden'); 
+                    document.getElementById('ai-fab').classList.remove('hidden'); 
+                    database.ref('students/'+user.uid).once('value', snap => { 
+                        if(snap.exists()) { 
+                            localStorage.setItem('geox_student_user', JSON.stringify(snap.val())); 
+                            updateStudentUI(snap.val()); updateSettingsTabUI(); 
+                        } else { 
+                            pendingGoogleUser = user; document.getElementById('phone-modal').classList.remove('hidden'); 
+                        } 
+                    }); 
+                } 
+            } else { 
+                localStorage.removeItem('geox_admin_logged'); localStorage.removeItem('geox_student_user'); 
+                updateStudentUI(null); document.getElementById('ai-fab').classList.add('hidden'); 
+            } 
+        });
 
-auth.onAuthStateChanged(user=>{ if(user){ const admins=['yousef74joe74@gmail.com', 'm.fathy9875@gmail.com']; if(admins.includes(user.email)){ localStorage.setItem('geox_admin_logged','true'); document.getElementById('student-view').classList.add('hidden'); document.querySelector('.bottom-nav').classList.add('hidden'); document.getElementById('ai-fab').classList.add('hidden'); document.getElementById('teacher-view').classList.remove('hidden'); document.getElementById('student-greeting').innerHTML='الإدارة ⚙️'; document.getElementById('student-greeting').onclick=null; renderStudentsTable(); renderLeaderboardAdmin(); showAdminTab(localStorage.getItem('geox_admin_tab')||'tab-covers', true); }else{ localStorage.removeItem('geox_admin_logged'); document.getElementById('teacher-view').classList.add('hidden'); document.querySelector('.bottom-nav').classList.remove('hidden'); document.getElementById('student-view').classList.remove('hidden'); document.getElementById('ai-fab').classList.remove('hidden'); database.ref('students/'+user.uid).once('value', snap=>{ if(snap.exists()){ localStorage.setItem('geox_student_user',JSON.stringify(snap.val())); updateStudentUI(snap.val()); updateSettingsTabUI(); }else{ pendingGoogleUser=user; document.getElementById('phone-modal').classList.remove('hidden'); } }); } }else{ localStorage.removeItem('geox_admin_logged'); localStorage.removeItem('geox_student_user'); updateStudentUI(null); document.getElementById('ai-fab').classList.add('hidden'); } });
+        // حساب ترتيب الطالب لعمل الإطار الذهبي والفضي
+        function getUserRankClass(uid) { 
+            let bRank = 999999; 
+            ['prep1','prep2','prep3'].forEach(g => { 
+                const u = CURRICULUM.filter(x => x.grade === g); 
+                const vIds = []; 
+                u.forEach(x => { x.lessons.forEach(l => vIds.push(l.id)); vIds.push(x.id+'_review'); }); 
+                let gs = {}; 
+                examResultsCache.filter(r => vIds.includes(r.lessonId)).forEach(r => { 
+                    const iden = r.uid || r.phone; 
+                    if(!gs[iden]) gs[iden] = {uid: r.uid, phone: r.phone, score: 0, time: 0}; 
+                    gs[iden].score += r.score; gs[iden].time += r.time; 
+                }); 
+                const sorted = Object.values(gs).sort((a,b) => b.score !== a.score ? b.score - a.score : a.time - b.time); 
+                const idx = sorted.findIndex(r => r.uid === uid); 
+                if(idx !== -1 && idx < bRank) bRank = idx; 
+            }); 
+            if(bRank === 0) return 'ring-2 ring-yellow-400 shadow-[0_0_10px_rgba(250,204,21,0.8)]'; 
+            if(bRank === 1) return 'ring-2 ring-gray-300 shadow-[0_0_10px_rgba(209,213,219,0.8)]'; 
+            if(bRank === 2) return 'ring-2 ring-amber-700 shadow-[0_0_10px_rgba(180,83,9,0.8)]'; 
+            return 'border border-slate-300'; 
+        }
 
-function getUserRankClass(uid){ let bRank=999999; ['prep1','prep2','prep3'].forEach(g=>{ const u=CURRICULUM.filter(x=>x.grade===g); const vIds=[]; u.forEach(x=>{ x.lessons.forEach(l=>vIds.push(l.id)); vIds.push(x.id+'_review'); }); let gs={}; examResultsCache.filter(r=>vIds.includes(r.lessonId)).forEach(r=>{ const iden=r.uid||r.phone; if(!gs[iden]) gs[iden]={uid:r.uid, phone:r.phone, score:0, time:0}; gs[iden].score+=r.score; gs[iden].time+=r.time; }); const sorted=Object.values(gs).sort((a,b)=>b.score!==a.score?b.score-a.score:a.time-b.time); const idx=sorted.findIndex(r=>r.uid===uid); if(idx!==-1&&idx<bRank) bRank=idx; }); if(bRank===0) return 'ring-2 ring-yellow-400 shadow-[0_0_10px_rgba(250,204,21,0.8)]'; if(bRank===1) return 'ring-2 ring-gray-300 shadow-[0_0_10px_rgba(209,213,219,0.8)]'; if(bRank===2) return 'ring-2 ring-amber-700 shadow-[0_0_10px_rgba(180,83,9,0.8)]'; return 'border border-slate-300'; }
-function getStudentRealName(uid, fallback){ let st=allStudents.find(s=>s.uid===uid); return st?st.name:fallback; }
-function updateStudentUI(st){ const btn=document.getElementById('student-greeting'); if(st){ let rName=getStudentRealName(st.uid, st.name); let rc=getUserRankClass(st.uid); let pic=st.profilePic?`<img src="${st.profilePic}" class="w-8 h-8 md:w-9 md:h-9 rounded-full object-cover shrink-0 ${rc}">`:`<div class="w-8 h-8 md:w-9 md:h-9 rounded-full bg-indigo-50 text-indigo-600 flex items-center justify-center text-xs shrink-0 ${rc}">👤</div>`; btn.innerHTML=pic; btn.className="rounded-full hover:scale-105 transition-transform flex items-center justify-center shadow-md"; btn.onclick=openProfileModal; }else{ btn.innerHTML="التسجيل"; btn.className="px-3 md:px-4 py-1.5 rounded-xl font-bold bg-white/10 hover:bg-white/20 text-white text-[11px] md:text-sm border border-white/10"; btn.onclick=()=>auth.signInWithPopup(googleProvider).catch(e=>alert(e.message)); } }
-function saveStudentPhone(){ const phone=document.getElementById('newStudentPhone').value.trim(); if(phone.length<10)return alert('اكتب رقم صحيح'); const sd={uid:pendingGoogleUser.uid, name:pendingGoogleUser.displayName, email:pendingGoogleUser.email, phone:phone, nameEdited:false, phoneEdited:false, date:new Date().toLocaleString('ar-EG')}; database.ref('students/'+pendingGoogleUser.uid).set(sd).then(()=>{ localStorage.setItem('geox_student_user',JSON.stringify(sd)); document.getElementById('phone-modal').classList.add('hidden'); updateStudentUI(sd); updateSettingsTabUI(); }); }
-function logoutUnified(){ localStorage.removeItem('geox_student_user'); auth.signOut().then(()=>location.reload()); }
+        function getStudentRealName(uid, fallback) { let st = allStudents.find(s => s.uid === uid); return st ? st.name : fallback; }
 
-function triggerCropModal(e){ const f=e.target.files[0]; if(!f)return; const r=new FileReader(); r.onload=(ev)=>{ const img=document.getElementById('cropper-image'); img.src=ev.target.result; document.getElementById('crop-modal').classList.remove('hidden'); if(cropperInstance) cropperInstance.destroy(); cropperInstance=new Cropper(img,{ aspectRatio:1, viewMode:1, dragMode:'move', autoCropArea:1, restore:false, guides:false, center:false, highlight:false, cropBoxMovable:false, cropBoxResizable:false, toggleDragModeOnDblclick:false }); }; r.readAsDataURL(f); }
-function closeCropModal(){ document.getElementById('crop-modal').classList.add('hidden'); if(document.getElementById('settings-pic-upload')) document.getElementById('settings-pic-upload').value=''; if(cropperInstance) cropperInstance.destroy(); }
-function confirmCropAndUpload(){ if(!cropperInstance)return; const cvs=cropperInstance.getCroppedCanvas({width:300,height:300,fillColor:'#0F172A'}); const b64=cvs.toDataURL('image/jpeg',0.8); const st=JSON.parse(localStorage.getItem('geox_student_user')); database.ref('students/'+st.uid+'/profilePic').set(b64).then(()=>{ st.profilePic=b64; localStorage.setItem('geox_student_user',JSON.stringify(st)); updateStudentUI(st); updateSettingsTabUI(); closeCropModal(); alert('تم الحفظ بنجاح! 🖼️'); }); }
+        function updateStudentUI(st) { 
+            const btn = document.getElementById('student-greeting'); 
+            if(st) { 
+                let rc = getUserRankClass(st.uid); 
+                let pic = st.profilePic ? `<img src="${st.profilePic}" class="w-8 h-8 md:w-9 md:h-9 rounded-full object-cover shrink-0 ${rc}">` : `<div class="w-8 h-8 md:w-9 md:h-9 rounded-full bg-indigo-50 text-indigo-600 flex items-center justify-center text-xs shrink-0 ${rc}">👤</div>`; 
+                btn.innerHTML = pic; 
+                btn.className = "rounded-full hover:scale-105 transition-transform flex items-center justify-center shadow-md"; 
+                btn.onclick = openProfileModal; 
+            } else { 
+                btn.innerHTML = "التسجيل"; 
+                btn.className = "px-3 md:px-4 py-1.5 rounded-xl font-bold bg-white/10 hover:bg-white/20 text-white text-[11px] md:text-sm border border-white/10"; 
+                btn.onclick = () => auth.signInWithPopup(googleProvider).catch(e => alert(e.message)); 
+            } 
+        }
 
-function renderStagesGrid(){ document.getElementById('stages-grid').innerHTML=Object.keys(GRADES).map(g=>`<div onclick="openGrade('${g}')" class="ui-card cursor-pointer rounded-[2rem] overflow-hidden aspect-video relative bg-[#0B1437]"><img src="${coversData['STAGE_COVER_'+g]||DEFAULT_COVER}" loading="lazy" class="absolute inset-0 w-full h-full object-cover opacity-70 hover:opacity-100 transition-opacity"><div class="absolute bottom-0 inset-x-0 p-5 bg-gradient-to-t from-[#0B1437] to-transparent z-20 flex items-end"><h3 class="text-2xl font-black text-white">${GRADES[g]}</h3></div></div>`).join(''); }
-function openGrade(g, f=false){ if(!f) history.pushState({view:'grade',g:g},'','#grade'); currentGrade=g; document.getElementById('student-stages').classList.add('hidden'); document.getElementById('student-units-container').classList.remove('hidden'); document.getElementById('units-title').innerText='📚 وحدات '+GRADES[g]; document.getElementById('student-units-grid').innerHTML=CURRICULUM.filter(u=>u.grade===g).map(u=>`<div onclick="openUnit('${u.id}')" class="ui-card cursor-pointer bg-white rounded-[2rem] overflow-hidden shadow-sm hover:shadow-md border border-slate-100"><img src="${coversData[u.id]||DEFAULT_COVER}" loading="lazy" class="aspect-video w-full object-cover"><div class="p-5 font-black text-slate-800 text-sm md:text-lg">${u.title.split(':').join(':<br><span class="text-indigo-600 text-xs md:text-sm font-bold">')}</span></div></div>`).join(''); }
-function openUnit(id, f=false){ if(!f) history.pushState({view:'unit',u:id,g:currentGrade},'','#unit'); currentUnit=id; document.getElementById('student-units-container').classList.add('hidden'); document.getElementById('student-lessons-container').classList.remove('hidden'); const u=CURRICULUM.find(x=>x.id===id); document.getElementById('lesson-unit-badge').innerText=GRADES[u.grade]; document.getElementById('lessons-title').innerText=u.title.split(':')[0]; let html=u.lessons.map((l,i)=>`<div onclick="openLessonContent('${l.id}','${l.t.replace(/'/g,"\\'")}')" class="bg-white p-4 rounded-2xl shadow-sm border cursor-pointer flex items-center gap-4 hover:border-indigo-200 group"><div class="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 font-black flex justify-center items-center group-hover:bg-indigo-600 group-hover:text-white transition-colors">${i+1}</div><h4 class="font-bold text-slate-800 text-sm">${l.t}</h4></div>`).join(''); html+=`<div onclick="openLessonContent('${u.id}_review','المراجعة الشاملة')" class="bg-amber-50 p-4 rounded-2xl border border-amber-200 cursor-pointer flex items-center gap-4 mt-4"><div class="w-10 h-10 rounded-xl bg-amber-100 text-amber-600 font-black flex justify-center items-center">🌟</div><h4 class="font-black text-amber-900 text-sm">المراجعة الشاملة</h4></div>`; document.getElementById('student-lessons-list').innerHTML=html; }
-function goBackVisually(){ history.back(); }
-window.addEventListener('popstate',(e)=>{ const st=e.state; document.getElementById('student-units-container').classList.add('hidden'); document.getElementById('student-lessons-container').classList.add('hidden'); document.getElementById('student-content-container').classList.add('hidden'); if(!st||st.view==='home'){ currentGrade=''; if(!localStorage.getItem('geox_admin_logged')) document.getElementById('student-stages').classList.remove('hidden'); }else if(st.view==='grade'){ openGrade(st.g,true); }else if(st.view==='unit'){ currentGrade=st.g; openUnit(st.u,true); }else if(st.view==='lesson'){ currentGrade=st.g; currentUnit=st.u; openLessonContent(st.l,st.t,true); } });
+        function saveStudentPhone() { 
+            const phone = document.getElementById('newStudentPhone').value.trim(); 
+            if(phone.length < 10) return alert('اكتب رقم صحيح'); 
+            const sd = {uid: pendingGoogleUser.uid, name: pendingGoogleUser.displayName, email: pendingGoogleUser.email, phone: phone, nameEdited: false, phoneEdited: false, date: new Date().toLocaleString('ar-EG')}; 
+            database.ref('students/'+pendingGoogleUser.uid).set(sd).then(() => { 
+                localStorage.setItem('geox_student_user', JSON.stringify(sd)); 
+                document.getElementById('phone-modal').classList.add('hidden'); 
+                updateStudentUI(sd); updateSettingsTabUI(); 
+            }); 
+        }
+        function logoutUnified() { localStorage.removeItem('geox_student_user'); auth.signOut().then(() => location.reload()); }
 
-window.recordAnalytics=function(id,type){ database.ref('analytics/'+id+'/'+type).transaction(v=>(v||0)+1); };
-function openYT(url){ if(!url)return; recordAnalytics(currentLesson,'yt'); let m=/iPhone|iPad|iPod|Android/i.test(navigator.userAgent); if(m&&url.includes('youtube.com/watch?v=')){ let v=url.split('v=')[1].split('&')[0]; window.location.href='vnd.youtube://'+v; setTimeout(()=>{window.open(url,'_blank');},1500); }else if(m&&url.includes('youtu.be/')){ let v=url.split('youtu.be/')[1].split('?')[0]; window.location.href='vnd.youtube://'+v; setTimeout(()=>{window.open(url,'_blank');},1500); }else{ window.open(url,'_blank'); } }
+        // أداة القص المتقدمة باستخدام Cropper.js
+        function triggerCropModal(e) { 
+            const f = e.target.files[0]; if(!f) return; 
+            const r = new FileReader(); 
+            r.onload = (ev) => { 
+                const img = document.getElementById('cropper-image'); 
+                img.src = ev.target.result; 
+                document.getElementById('crop-modal').classList.remove('hidden'); 
+                if(cropperInstance) cropperInstance.destroy(); 
+                cropperInstance = new Cropper(img, { 
+                    aspectRatio: 1, viewMode: 1, dragMode: 'move', autoCropArea: 1, restore: false, guides: false, center: false, highlight: false, cropBoxMovable: false, cropBoxResizable: false, toggleDragModeOnDblclick: false 
+                }); 
+            }; 
+            r.readAsDataURL(f); 
+        }
 
-function openLessonContent(id, title, f=false){ if(!f) history.pushState({view:'lesson',l:id,t:title,u:currentUnit,g:currentGrade},'','#lesson'); currentLesson=id; document.getElementById('student-lessons-container').classList.add('hidden'); document.getElementById('student-content-container').classList.remove('hidden'); document.getElementById('content-title').innerText='📄 '+title; const data=lessonsDataCache[id]||{}; currentExamData=data.exam; const bYt=document.getElementById('btn-yt'), bPdf=document.getElementById('btn-pdf'), cPdf=document.getElementById('card-pdf'), bEx=document.getElementById('btn-exam'), bFc=document.getElementById('btn-flashcards'); if(data.yt){ bYt.setAttribute('onclick',`openYT('${data.yt}')`); bYt.className="block w-full bg-red-500 hover:bg-red-600 text-white font-bold py-3 rounded-xl text-sm transition-colors mt-4 cursor-pointer"; bYt.innerText="اتفرج دلوقتي ▶️"; }else{ bYt.removeAttribute('onclick'); bYt.className="block w-full bg-slate-200 text-slate-400 font-bold py-3 rounded-xl text-sm pointer-events-none mt-4"; bYt.innerText="مش متاح ❌"; } if(data.pdf){ cPdf.classList.remove('hidden'); bPdf.className="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 rounded-xl text-sm mt-4"; bPdf.innerText="حملها من هنا 📥"; bPdf.onclick=()=>{ recordAnalytics(id,'pdf'); const a=document.createElement('a');a.href=data.pdf;a.download=title+'.pdf';a.click(); }; }else{ cPdf.classList.add('hidden'); } let sData=getSafeExamData(currentExamData); let hEx=sData.length>0; if(hEx){ bFc.className="w-full bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 rounded-xl text-sm mt-4"; bFc.innerText="راجع معلوماتك 🔄"; bFc.onclick=openFlashcards; }else{ bFc.className="w-full bg-slate-200 text-slate-400 font-bold py-3 rounded-xl text-sm pointer-events-none mt-4"; bFc.innerText="مش متاح ❌"; bFc.onclick=null; } const st=JSON.parse(localStorage.getItem('geox_student_user')); if(st&&examResultsCache.find(r=>r.uid===st.uid&&r.lessonId===id)){ bEx.className="w-full bg-slate-700 text-slate-400 font-black py-3 rounded-xl text-sm mt-4 pointer-events-none"; bEx.innerText="امتحنته خلاص 🔒"; bEx.onclick=null; }else if(hEx){ bEx.className="w-full bg-emerald-500 hover:bg-emerald-400 text-white font-black py-3 rounded-xl text-sm mt-4 shadow-lg"; bEx.innerText=st?"ابتدى الامتحان 🚀":"سجل للامتحان 🚀"; bEx.onclick=st?()=>startExam(title):()=>auth.signInWithPopup(googleProvider); }else{ bEx.className="w-full bg-slate-700 text-slate-400 font-black py-3 rounded-xl text-sm pointer-events-none mt-4"; bEx.innerText="مفيش امتحان ❌"; bEx.onclick=null; } }
-function getSafeExamData(e){ if(!e)return[]; let a=[]; if(Array.isArray(e)) a=[...e]; else if(typeof e==='object') a=Object.values(e); return a.filter(i=>i&&typeof i==='object'&&i.q); }
-function getLessonNameById(id){ if(id.includes('_review')) return "مراجعة شاملة"; for(let u of CURRICULUM){ let l=u.lessons.find(x=>x.id===id); if(l) return l.t; } return id; }
+        function closeCropModal() { 
+            document.getElementById('crop-modal').classList.add('hidden'); 
+            if(document.getElementById('settings-pic-upload')) document.getElementById('settings-pic-upload').value = ''; 
+            if(cropperInstance) cropperInstance.destroy(); 
+        }
 
-// إعدادات الحساب والبروفايل
-function updateSettingsTabUI(){ const st=JSON.parse(localStorage.getItem('geox_student_user')); if(st){ let pic=st.profilePic?`<img src="${st.profilePic}" class="w-full h-full object-cover">`:`𓂀`; document.getElementById('settings-avatar').innerHTML=pic; } }
-function showSettingsEditForm(type){ const st=JSON.parse(localStorage.getItem('geox_student_user')); if(type==='name'){ if(st.nameEdited) return alert('عدلت اسمك قبل كده ومينفعش تاني!'); document.getElementById('settings-edit-title').innerText='تعديل الاسم الثلاثي'; document.getElementById('settings-edit-inputs').innerHTML=`<input type="text" id="edit-fname" placeholder="الاسم الأول" class="w-full p-3 border rounded-xl text-sm mb-2"><input type="text" id="edit-mname" placeholder="الاسم الثاني" class="w-full p-3 border rounded-xl text-sm mb-2"><input type="text" id="edit-lname" placeholder="الاسم الثالث" class="w-full p-3 border rounded-xl text-sm">`; document.getElementById('settings-edit-modal').setAttribute('data-edit-type','name'); }else if(type==='phone'){ if(st.phoneEdited) return alert('عدلت الرقم قبل كده ومينفعش تاني!'); document.getElementById('settings-edit-title').innerText='تعديل رقم الموبايل'; document.getElementById('settings-edit-inputs').innerHTML=`<input type="tel" id="edit-phone" placeholder="010..." class="w-full p-3 border rounded-xl text-center" dir="ltr" maxlength="11">`; document.getElementById('settings-edit-modal').setAttribute('data-edit-type','phone'); } document.getElementById('settings-edit-modal').classList.remove('hidden'); }
-function saveSettingsEdit(){ const type=document.getElementById('settings-edit-modal').getAttribute('data-edit-type'); const st=JSON.parse(localStorage.getItem('geox_student_user')); let up={}; if(type==='name'){ const f=document.getElementById('edit-fname').value.trim(), m=document.getElementById('edit-mname').value.trim(), l=document.getElementById('edit-lname').value.trim(); if(!f||!m||!l) return alert('اكتب الاسم الثلاثي'); up={name:`${f} ${m} ${l}`, nameEdited:true}; }else if(type==='phone'){ const p=document.getElementById('edit-phone').value.trim(); if(p.length<10) return alert('رقم غير صحيح'); up={phone:p, phoneEdited:true}; } database.ref('students/'+st.uid).update(up).then(()=>{ Object.assign(st, up); localStorage.setItem('geox_student_user',JSON.stringify(st)); updateStudentUI(st); document.getElementById('settings-edit-modal').classList.add('hidden'); alert('تم الحفظ بنجاح!'); }); }
+        function confirmCropAndUpload() { 
+            if(!cropperInstance) return; 
+            const cvs = cropperInstance.getCroppedCanvas({width: 300, height: 300, fillColor: '#0F172A'}); 
+            const b64 = cvs.toDataURL('image/jpeg', 0.8); 
+            const st = JSON.parse(localStorage.getItem('geox_student_user')); 
+            database.ref('students/' + st.uid + '/profilePic').set(b64).then(() => { 
+                st.profilePic = b64; 
+                localStorage.setItem('geox_student_user', JSON.stringify(st)); 
+                updateStudentUI(st); updateSettingsTabUI(); closeCropModal(); alert('تم الحفظ بنجاح! 🖼️'); 
+            }); 
+        }
 
-function openProfileModal(){ const st=JSON.parse(localStorage.getItem('geox_student_user')); if(!st)return; document.getElementById('profile-name').innerText=getStudentRealName(st.uid, st.name); let rc=getUserRankClass(st.uid); document.getElementById('profile-modal-avatar').className=`w-full h-full bg-white/10 rounded-full flex items-center justify-center text-4xl text-emerald-400 overflow-hidden shadow-lg border border-white/20 ${rc}`; document.getElementById('profile-modal-avatar').innerHTML=st.profilePic?`<img src="${st.profilePic}" class="w-full h-full object-cover">`:`𓂀`; const mSc=examResultsCache.filter(r=>r.uid===st.uid).sort((a,b)=>new Date(b.date)-new Date(a.date)); let totalSc=0, totalMax=0; mSc.forEach(s=>{totalSc+=s.score;totalMax+=s.total;}); let perc=Math.round((totalSc/totalMax)*100)||0; let bH=''; if(mSc.length>0){ if(mSc.length===1){ bH=perc>=50?'<span class="bg-amber-100 text-amber-700 px-2 py-1 rounded text-[10px] font-bold shadow-sm">بداية مبشرة 🚶</span>':'<span class="bg-slate-100 text-slate-700 px-2 py-1 rounded text-[10px] font-bold shadow-sm">محاولة أولى 🎯</span>'; }else{ if(perc>=90) bH='<span class="bg-yellow-100 text-yellow-700 px-2 py-1 rounded text-[10px] font-bold shadow-sm">أسطورة الجغرافيا 👑</span>'; else if(perc>=75) bH='<span class="bg-emerald-100 text-emerald-700 px-2 py-1 rounded text-[10px] font-bold shadow-sm">بطل صاعد 🌟</span>'; else bH='<span class="bg-blue-100 text-blue-700 px-2 py-1 rounded text-[10px] font-bold shadow-sm">طالب مكافح 📚</span>'; } if(mSc.some(s=>s.score===s.total&&s.total>0)) bH+=' <span class="bg-purple-100 text-purple-700 px-2 py-1 rounded text-[10px] font-bold shadow-sm">قناص الدرجات 🎯</span>'; } document.getElementById('student-badges').innerHTML=bH; if(mSc.length>0){ const uLs=[...new Set(mSc.map(s=>s.lessonId))]; let gC={prep1:0,prep2:0,prep3:0}; uLs.forEach(lId=>{ const u=CURRICULUM.find(x=>x.lessons.some(l=>l.id===lId)||lId===x.id+'_review'); if(u)gC[u.grade]++; }); const dG=Object.keys(gC).reduce((a,b)=>gC[a]>gC[b]?a:b); const tI=CURRICULUM.filter(x=>x.grade===dG).reduce((acc,curr)=>acc+curr.lessons.length+1,0); const p=Math.min(100,Math.round((uLs.length/tI)*100)); document.getElementById('profile-progress').style.width=p+'%'; document.getElementById('profile-progress-text').innerText=`إنجازك: ${p}%`; }else{ document.getElementById('profile-progress').style.width='0%'; document.getElementById('profile-progress-text').innerText=`إنجازك: 0%`; } let lH=mSc.length===0?'<p class="text-slate-400 text-center text-xs py-4">لم تمتحن بعد.</p>':''; mSc.forEach(s=>{ let p=Math.round((s.score/s.total)*100)||0; let c=p>=85?'text-emerald-600 bg-emerald-50 border-emerald-100':(p>=50?'text-amber-600 bg-amber-50 border-amber-100':'text-red-600 bg-red-50 border-red-100'); lH+=`<div class="bg-white p-3 rounded-xl border shadow-sm flex items-center justify-between"><div class="text-right w-2/3"><div class="font-bold text-slate-800 text-[11px] truncate">${getLessonNameById(s.lessonId)}</div></div><div class="px-2 py-1 rounded border font-black text-[10px] shrink-0 ${c}">${s.score}/${s.total}</div></div>`; }); document.getElementById('student-scores-list').innerHTML=lH; document.getElementById('profile-modal').classList.remove('hidden'); }
-function openMistakesBank(){ const st=JSON.parse(localStorage.getItem('geox_student_user')); const mSc=examResultsCache.filter(r=>r.uid===st.uid&&r.mistakes&&r.mistakes.length>0); let h=''; if(mSc.length===0){ h='<p class="text-slate-400 text-center text-xs py-8 font-bold">رائع! ليس لديك أخطاء مسجلة.</p>'; }else{ mSc.forEach(s=>{ h+=`<h4 class="font-black text-slate-700 bg-slate-200 p-2 rounded-lg mt-3 mb-2 text-[11px]">${getLessonNameById(s.lessonId)}</h4><div class="space-y-2">`; s.mistakes.forEach(m=>{ h+=`<div class="bg-white p-3 rounded-xl border border-red-100 shadow-sm"><p class="font-bold text-slate-800 text-[10px] mb-1">س: ${m.q}</p><p class="text-[9px] text-red-600 font-bold">إجابتك: <span class="line-through">${m.ans}</span></p><p class="text-[9px] text-emerald-600 font-bold">الصحيحة: ${m.corr}</p></div>`; }); h+=`</div>`; }); } document.getElementById('mistakes-list').innerHTML=h; document.getElementById('mistakes-modal').classList.remove('hidden'); }
-function openFlashcards(){ let s=getSafeExamData(currentExamData); flashcardsList=s.filter(q=>q.type!=='essay'&&q.answer); if(flashcardsList.length===0) return alert('لا توجد كروت هنا.'); currentFlashcardIndex=0; renderFlashcard(); document.getElementById('flashcards-modal').classList.remove('hidden'); }
-function renderFlashcard(){ const q=flashcardsList[currentFlashcardIndex]; document.getElementById('flashcard-counter').innerText=`${currentFlashcardIndex+1} / ${flashcardsList.length}`; document.getElementById('flashcard-container').innerHTML=`<div class="flip-card" onclick="this.classList.toggle('flipped')"><div class="flip-card-inner"><div class="flip-card-front"><p class="text-sm">${q.q}</p></div><div class="flip-card-back"><p class="text-sm">${q.answer}</p></div></div></div>`; }
-function nextFlashcard(){ if(currentFlashcardIndex<flashcardsList.length-1){ currentFlashcardIndex++; renderFlashcard(); } }
-function prevFlashcard(){ if(currentFlashcardIndex>0){ currentFlashcardIndex--; renderFlashcard(); } }
-function openSocialModal(){ document.getElementById('social-modal').classList.remove('hidden'); }
+        // بناء وعرض المناهج
+        function renderStagesGrid() { document.getElementById('stages-grid').innerHTML = Object.keys(GRADES).map(g => `<div onclick="openGrade('${g}')" class="ui-card cursor-pointer rounded-[2rem] overflow-hidden aspect-video relative bg-[#0B1437]"><img src="${coversData['STAGE_COVER_'+g]||DEFAULT_COVER}" loading="lazy" class="absolute inset-0 w-full h-full object-cover opacity-70 hover:opacity-100 transition-opacity"><div class="absolute bottom-0 inset-x-0 p-5 bg-gradient-to-t from-[#0B1437] to-transparent z-20 flex items-end"><h3 class="text-2xl font-black text-white">${GRADES[g]}</h3></div></div>`).join(''); }
+        
+        function openGrade(g, f=false) { 
+            if(!f) history.pushState({view:'grade', g:g}, '', '#grade'); 
+            currentGrade = g; 
+            document.getElementById('student-stages').classList.add('hidden'); 
+            document.getElementById('student-units-container').classList.remove('hidden'); 
+            document.getElementById('units-title').innerText = '📚 وحدات ' + GRADES[g]; 
+            document.getElementById('student-units-grid').innerHTML = CURRICULUM.filter(u => u.grade === g).map(u => `<div onclick="openUnit('${u.id}')" class="ui-card cursor-pointer bg-white rounded-[2rem] overflow-hidden shadow-sm hover:shadow-md border border-slate-100"><img src="${coversData[u.id]||DEFAULT_COVER}" loading="lazy" class="aspect-video w-full object-cover"><div class="p-5 font-black text-slate-800 text-sm md:text-lg">${u.title.split(':').join(':<br><span class="text-indigo-600 text-xs md:text-sm font-bold">')}</span></div></div>`).join(''); 
+        }
 
-// نظام أبطال المنصة بالترتيب والفلاتر
-function openGlobalLeaderboard(grade='prep3'){ document.getElementById('gl-prep1-btn').className=`px-4 py-2 text-sm font-bold rounded-lg transition-colors ${grade==='prep1'?'bg-indigo-600 text-white shadow-sm':'bg-slate-200 text-slate-600'}`; document.getElementById('gl-prep2-btn').className=`px-4 py-2 text-sm font-bold rounded-lg transition-colors ${grade==='prep2'?'bg-indigo-600 text-white shadow-sm':'bg-slate-200 text-slate-600'}`; document.getElementById('gl-prep3-btn').className=`px-4 py-2 text-sm font-bold rounded-lg transition-colors ${grade==='prep3'?'bg-indigo-600 text-white shadow-sm':'bg-slate-200 text-slate-600'}`; const uF=document.getElementById('gl-unit-filter'); uF.innerHTML='<option value="ALL">🌟 الترتيب التراكمي (كل المنهج)</option>'; CURRICULUM.filter(x=>x.grade===grade).forEach(u=>{ uF.innerHTML+=`<option value="${u.id}">📖 ${u.title.split(':')[0]}</option>`; }); uF.setAttribute('data-grade', grade); filterLeaderboardUnit(); }
-function filterLeaderboardUnit(){ const grade=document.getElementById('gl-unit-filter').getAttribute('data-grade'); const unitId=document.getElementById('gl-unit-filter').value; let vIds=[]; if(unitId==='ALL'){ CURRICULUM.filter(x=>x.grade===grade).forEach(u=>{ u.lessons.forEach(l=>vIds.push(l.id)); vIds.push(u.id+'_review'); }); }else{ const u=CURRICULUM.find(x=>x.id===unitId); if(u){ u.lessons.forEach(l=>vIds.push(l.id)); vIds.push(u.id+'_review'); } } let g={}; examResultsCache.filter(r=>vIds.includes(r.lessonId)).forEach(r=>{ const i=r.uid||r.phone; if(!g[i]) g[i]={name:r.name, score:0, time:0, uid:r.uid, phone:r.phone}; g[i].score+=r.score; g[i].time+=r.time; }); const sorted=Object.values(g).sort((a,b)=>b.score!==a.score?b.score-a.score:a.time-b.time); const top10=sorted.slice(0,10); const cSt=JSON.parse(localStorage.getItem('geox_student_user')); let h=top10.map((r,i)=>{ let m=i===0?'🥇':i===1?'🥈':i===2?'🥉':`<span class="text-slate-400 font-black text-sm w-5 text-center">#${i+1}</span>`; let st=allStudents.find(s=>s.uid===r.uid||(r.phone&&s.phone===r.phone)); let rN=st?st.name:r.name; let rc=i===0?'ring-2 ring-yellow-400 shadow-[0_0_10px_rgba(250,204,21,0.6)]':i===1?'ring-2 ring-gray-300 shadow-[0_0_10px_rgba(209,213,219,0.6)]':i===2?'ring-2 ring-amber-700 shadow-[0_0_10px_rgba(180,83,9,0.6)]':'border border-slate-300'; let av=(st&&st.profilePic)?`<img src="${st.profilePic}" loading="lazy" class="w-8 h-8 rounded-full object-cover shrink-0 ${rc}">`:`<div class="w-8 h-8 rounded-full bg-slate-200 flex justify-center items-center text-xs shrink-0 ${rc}">👤</div>`; let isM=(cSt&&(r.uid===cSt.uid||r.phone===cSt.phone)); let b=isM?'bg-indigo-50 border-indigo-300 shadow-md':(i<3?'border-amber-300 bg-amber-50':'border-slate-100'); return `<div class="flex justify-between items-center bg-white p-2 rounded-xl border ${b}"><div class="flex items-center gap-2 w-full pr-1 overflow-hidden"><div class="shrink-0 flex items-center justify-center">${m}</div>${av}<span class="font-black ${isM?'text-indigo-700':'text-slate-800'} text-[11px] md:text-sm truncate w-full">${rN} ${isM?'<span class="text-[9px] text-indigo-400">(أنت)</span>':''}</span></div><span class="font-black text-indigo-600 bg-indigo-50 px-2 py-1 rounded text-[10px] md:text-xs shrink-0 text-center leading-tight min-w-[55px]">${r.score} نقطة<br><span class="text-[8px] text-slate-500">${r.time} ث</span></span></div>`; }).join(''); if(!h) h='<p class="text-center text-slate-500 font-bold text-xs py-8">لا توجد بيانات هنا بعد.</p>'; if(cSt){ const myIdx=sorted.findIndex(r=>r.uid===cSt.uid||r.phone===cSt.phone); if(myIdx!==-1){ h+=`<div class="mt-3 p-3 bg-indigo-600 rounded-xl text-center text-white font-black text-xs shadow-md">ترتيبك هنا: المركز الـ ${myIdx+1} 🚀</div>`; }else{ h+=`<div class="mt-3 p-2 bg-slate-200 rounded-xl text-center text-slate-600 font-bold text-[10px]">لم تمتحن هنا بعد لتحديد ترتيبك.</div>`; } } document.getElementById('global-leaderboard-list').innerHTML=h; }
+        function openUnit(id, f=false) { 
+            if(!f) history.pushState({view:'unit', u:id, g:currentGrade}, '', '#unit'); 
+            currentUnit = id; 
+            document.getElementById('student-units-container').classList.add('hidden'); 
+            document.getElementById('student-lessons-container').classList.remove('hidden'); 
+            const u = CURRICULUM.find(x => x.id === id); 
+            document.getElementById('lesson-unit-badge').innerText = GRADES[u.grade]; 
+            document.getElementById('lessons-title').innerText = u.title.split(':')[0]; 
+            let html = u.lessons.map((l,i) => `<div onclick="openLessonContent('${l.id}','${l.t.replace(/'/g,"\\'")}')" class="bg-white p-4 rounded-2xl shadow-sm border cursor-pointer flex items-center gap-4 hover:border-indigo-200 group"><div class="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 font-black flex justify-center items-center group-hover:bg-indigo-600 group-hover:text-white transition-colors">${i+1}</div><h4 class="font-bold text-slate-800 text-sm">${l.t}</h4></div>`).join(''); 
+            html += `<div onclick="openLessonContent('${u.id}_review','المراجعة الشاملة')" class="bg-amber-50 p-4 rounded-2xl border border-amber-200 cursor-pointer flex items-center gap-4 mt-4"><div class="w-10 h-10 rounded-xl bg-amber-100 text-amber-600 font-black flex justify-center items-center">🌟</div><h4 class="font-black text-amber-900 text-sm">المراجعة الشاملة</h4></div>`; 
+            document.getElementById('student-lessons-list').innerHTML = html; 
+        }
 
-// حماية الامتحان والسحب الآلي (Anti-Cheat Pro)
-let examTimer=null, timeLeft=600, currentQuestions=[], isExamActive=false;
-document.addEventListener("visibilitychange", ()=>{ if(isExamActive&&document.visibilityState==='hidden'){ document.getElementById('cheat-overlay').classList.remove('hidden'); cheatWarnings++; if(cheatWarnings>=3){ alert('🚨 تم سحب الامتحان وتصفير نتيجتك بسبب الخروج المتكرر!'); submitExam(true); } } });
-document.addEventListener('contextmenu', e => { if(isExamActive) e.preventDefault(); });
-document.addEventListener('keyup', e => { if(isExamActive && e.key === 'PrintScreen'){ navigator.clipboard.writeText(''); alert('ممنوع تصوير الشاشة!'); } });
+        function goBackVisually() { history.back(); }
 
-function startExam(title){ document.querySelector('.bottom-nav').classList.add('hidden'); document.getElementById('ai-fab').classList.add('hidden'); history.pushState({view:'exam'},'','#exam'); document.getElementById('exam-header-title').innerText=title; document.getElementById('exam-actions').classList.remove('hidden'); document.getElementById('exam-results-actions').classList.add('hidden'); document.getElementById('exam-questions').innerHTML=''; const tD=document.getElementById('timer-display'); if(tD){ tD.innerText='10:00'; tD.parentElement.classList.remove('bg-red-100','text-red-600','animate-pulse'); } document.getElementById('exam-screen').classList.remove('hidden'); cheatWarnings=0; let c=3; document.getElementById('countdown-number').innerText=c; document.getElementById('exam-countdown').classList.remove('hidden'); const iv=setInterval(()=>{ c--; if(c>0) document.getElementById('countdown-number').innerText=c; else { clearInterval(iv); document.getElementById('exam-countdown').classList.add('hidden'); isExamActive=true; try{ let s=getSafeExamData(currentExamData); let sh=[...s]; for(let i=sh.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); const t=sh[i]; sh[i]=sh[j]; sh[j]=t; } currentQuestions=sh.slice(0,20); renderQuestionsSafe(); startTimer(); }catch(e){ alert('خطأ تحميل الأسئلة'); closeExam(); } } }, 1000); }
-function renderQuestionsSafe(){ let h=''; currentQuestions.forEach((q,i)=>{ let inp=''; if(q.type==='essay'){ inp=`<textarea id="e_q_${i}" rows="3" class="w-full p-3 border rounded-xl bg-slate-50 text-sm" placeholder="إجابتك..."></textarea>`; }else if(q.type==='tf'){ let o=['صح','خطأ']; inp=`<div class="space-y-2">`+o.map(x=>`<label class="flex items-center gap-2 p-3 bg-slate-50 border rounded-xl cursor-pointer hover:bg-indigo-50"><input type="radio" name="q_${i}" value="${x}" class="w-4 h-4 accent-indigo-600"><span class="font-bold text-sm text-slate-700">${x}</span></label>`).join('')+`</div>`; }else{ let o=[]; if(Array.isArray(q.options)) o=[...q.options]; else if(q.options&&typeof q.options==='object') o=Object.values(q.options); for(let k=o.length-1;k>0;k--){ const j=Math.floor(Math.random()*(k+1)); const t=o[k]; o[k]=o[j]; o[j]=t; } inp=`<div class="space-y-2">`+o.map(x=>`<label class="flex items-center gap-2 p-3 bg-slate-50 border rounded-xl cursor-pointer hover:bg-indigo-50"><input type="radio" name="q_${i}" value="${x}" class="w-4 h-4 accent-indigo-600"><span class="font-bold text-sm text-slate-700">${x}</span></label>`).join('')+`</div>`; } h+=`<div class="bg-white p-5 rounded-2xl shadow-sm border question-block" data-index="${i}" data-ans="${q.answer||''}"><h3 class="font-black mb-3 flex gap-2 text-sm leading-relaxed text-slate-800"><span class="bg-indigo-100 text-indigo-700 px-2 py-1 rounded-lg text-xs h-fit shrink-0">${i+1}</span> ${q.q}</h3>${inp}<div class="result-feedback hidden mt-3 p-2 rounded-lg text-xs font-bold"></div></div>`; }); document.getElementById('exam-questions').innerHTML=h; }
-function startTimer(){ timeLeft=600; const d=document.getElementById('timer-display'); if(d){ d.parentElement.classList.remove('bg-red-100','text-red-600','animate-pulse'); d.innerText='10:00'; } clearInterval(examTimer); examTimer=setInterval(()=>{ timeLeft--; let m=Math.floor(timeLeft/60), s=timeLeft%60; if(d) d.innerText=`${m<10?'0'+m:m}:${s<10?'0'+s:s}`; if(timeLeft<=60&&d) d.parentElement.classList.add('bg-red-100','text-red-600','animate-pulse'); if(timeLeft<=0){ clearInterval(examTimer); alert('انتهى الوقت! ⏳'); submitExam(false); } }, 1000); }
-function submitExam(forceZero = false){ isExamActive=false; clearInterval(examTimer); document.getElementById('cheat-overlay').classList.add('hidden'); const blocks=document.querySelectorAll('.question-block'); let sc=0, t=0, ec=0, mb=[]; blocks.forEach(b=>{ const i=b.getAttribute('data-index'); const q=currentQuestions[i]; const fb=b.querySelector('.result-feedback'); fb.classList.remove('hidden'); if(q.type==='essay'){ ec++; const v=document.getElementById(`e_q_${i}`).value.trim(); fb.className='result-feedback mt-3 p-2 rounded-lg text-xs font-bold bg-blue-50 text-blue-700 border border-blue-200'; fb.innerHTML=v?'📝 مقالي مسجل.':'⚠️ فارغ.'; }else{ t++; const sel=b.querySelector(`input[name="q_${i}"]:checked`); const cAns=b.getAttribute('data-ans'); b.querySelectorAll('label').forEach(l=>{ l.classList.add('opacity-50','pointer-events-none'); const inp=l.querySelector('input'); if(inp.value===cAns){ l.classList.remove('opacity-50','bg-slate-50'); l.classList.add('correct-answer'); } }); if(!forceZero && sel&&sel.value===cAns){ sc++; fb.className='result-feedback mt-3 p-2 rounded-lg text-xs font-bold bg-emerald-100 text-emerald-700'; fb.innerText='✅ صح!'; }else{ let sAns=sel?sel.value:"لم يجب"; if(!forceZero) mb.push({q:q.q, ans:sAns, corr:cAns}); if(sel){ sel.parentElement.classList.remove('opacity-50','bg-slate-50'); sel.parentElement.classList.add('wrong-answer'); } fb.className='result-feedback mt-3 p-2 rounded-lg text-xs font-bold bg-red-100 text-red-700'; fb.innerText=`❌ خطأ! الإجابة: ${cAns}`; } } }); const tt=600-timeLeft; const st=JSON.parse(localStorage.getItem('geox_student_user')); document.getElementById('exam-actions').classList.add('hidden'); const rb=document.getElementById('exam-score-display'); let rT=`<h3 class="text-xl font-black mb-1 ${sc>=t/2?'text-emerald-600':'text-red-600'}">النتيجة: ${sc} / ${t}</h3>`; if(ec>0) rT+=`<p class="text-xs text-slate-500">${ec} مقالي للتقييم.</p>`; rb.innerHTML=rT; document.getElementById('exam-results-actions').classList.remove('hidden'); window.scrollTo(0,0); database.ref('exam_results').push({ lessonId:currentLesson, uid:st.uid, name:st.name, phone:st.phone||st.email, score:forceZero?0:sc, total:t, time:tt, date:new Date().toLocaleString('ar-EG'), mistakes:forceZero?[]:mb }); }
-function closeExam(){ document.querySelector('.bottom-nav').classList.remove('hidden'); document.getElementById('ai-fab').classList.remove('hidden'); history.back(); }
+        window.addEventListener('popstate', (e) => { 
+            const st = e.state; 
+            document.getElementById('student-units-container').classList.add('hidden'); 
+            document.getElementById('student-lessons-container').classList.add('hidden'); 
+            document.getElementById('student-content-container').classList.add('hidden'); 
+            if(!st || st.view === 'home') { 
+                currentGrade = ''; if(!localStorage.getItem('geox_admin_logged')) document.getElementById('student-stages').classList.remove('hidden'); 
+            } else if(st.view === 'grade') { 
+                openGrade(st.g, true); 
+            } else if(st.view === 'unit') { 
+                currentGrade = st.g; openUnit(st.u, true); 
+            } else if(st.view === 'lesson') { 
+                currentGrade = st.g; currentUnit = st.u; openLessonContent(st.l, st.t, true); 
+            } 
+        });
 
-// الذكاء الاصطناعي الخاص بالمدرس (Geo AI)
-function openAiChat(){ const st=JSON.parse(localStorage.getItem('geox_student_user')); if(!st) return alert('لازم تسجل دخول الأول عشان تستخدم Geo AI 🤖'); document.getElementById('ai-chat-modal').classList.remove('hidden'); document.querySelector('.bottom-nav').classList.add('hidden'); }
-function closeAiChat(){ document.getElementById('ai-chat-modal').classList.add('hidden'); document.querySelector('.bottom-nav').classList.remove('hidden'); }
-function saveAiKnowledge(){ const k=document.getElementById('admin-ai-knowledge').value.trim(); database.ref('ai_knowledge').set(k).then(()=>alert('تم تغذية الـ AI بنجاح 🧠')); }
-function sendAiMessage(){ const inp=document.getElementById('ai-chat-input'); const v=inp.value.trim(); if(!v)return; inp.value=''; const box=document.getElementById('ai-chat-box'); box.innerHTML+=`<div class="flex gap-2 flex-row-reverse"><div class="bg-indigo-600 text-white p-3 rounded-2xl rounded-tl-none shadow-sm text-sm max-w-[85%] leading-relaxed">${v}</div></div>`; setTimeout(()=>{ const ans=simulateAISearch(v); box.innerHTML+=`<div class="flex gap-2"><div class="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-lg shrink-0">🤖</div><div class="bg-white dark:bg-slate-800 p-3 rounded-2xl rounded-tr-none shadow-sm text-sm text-slate-700 dark:text-slate-200 border border-slate-100 dark:border-slate-700 max-w-[85%] leading-relaxed">${ans}</div></div>`; box.scrollTop=box.scrollHeight; }, 600); }
-function simulateAISearch(query){ if(!aiKnowledgeData) return "عذراً، قاعدة بياناتي فارغة حالياً. برجاء إبلاغ المدرس بتغذية النظام."; const words=query.split(' ').filter(w=>w.length>2); if(words.length===0) return "ممكن توضح سؤالك أكتر؟"; const sentences=aiKnowledgeData.split(/[.\n]/).filter(s=>s.trim().length>10); let bestM="", maxSc=0; sentences.forEach(s=>{ let sc=0; words.forEach(w=>{ if(s.includes(w)) sc++; }); if(sc>maxSc){ maxSc=sc; bestM=s; } }); if(maxSc>0) return bestM.trim() + "."; return "عذراً يا بطل، مقدرتش ألاقي إجابة لسؤالك في المنهج اللي درستهولي. جرب تسأل بطريقة تانية."; }
+        window.recordAnalytics = function(id, type) { database.ref('analytics/'+id+'/'+type).transaction(v => (v||0)+1); };
 
-// لوحة تحكم الإدارة (بدون مسح الصور، مع كاشف المحتوى)
-function showAdminTab(id, f=false){ if(!f) localStorage.setItem('geox_admin_tab',id); document.querySelectorAll('.admin-tab').forEach(e=>e.classList.add('hidden')); document.querySelectorAll('.admin-tab-btn').forEach(e=>e.classList.remove('active')); document.getElementById(id).classList.remove('hidden'); const btn=document.getElementById('btn-'+id); if(btn) btn.classList.add('active'); }
-function updateCoverUnitDropdown(){ const g=document.getElementById('coverGrade').value; const sel=document.getElementById('coverUnitId'); sel.innerHTML=`<option value="">-- الوحدة (سيبها للسنة) --</option>`; CURRICULUM.filter(u=>u.grade===g).forEach(u=>sel.innerHTML+=`<option value="${u.id}">📖 ${u.title.split(':')[0]}</option>`); }
-function handleCoverUpload(e){ e.preventDefault(); const g=document.getElementById('coverGrade').value; const uId=document.getElementById('coverUnitId').value; let tId='STAGE_COVER_'+g; if(uId) tId=uId; const f=document.getElementById('coverImage').files[0]; const r=new FileReader(); r.onload=ev=>{ const img=new Image(); img.onload=()=>{ const cvs=document.createElement('canvas'); const W=600,H=337; cvs.width=W; cvs.height=H; cvs.getContext('2d').drawImage(img,0,0,W,H); database.ref('covers/'+tId).set(cvs.toDataURL('image/jpeg',0.6)).then(()=>{ alert('✅ تم الحفظ!'); updateCoverUnitDropdown(); }); }; img.src=ev.target.result; }; r.readAsDataURL(f); }
-function updateContentUnitDropdown(){ const g=document.getElementById('contentGrade').value; const sel=document.getElementById('contentUnitId'); sel.innerHTML='<option value="" disabled selected>الوحدة</option>'; CURRICULUM.filter(u=>u.grade===g).forEach(u=>sel.innerHTML+=`<option value="${u.id}">${u.title.split(':')[0]}</option>`); document.getElementById('contentLessonId').innerHTML='<option value="" disabled selected>الدرس</option>'; document.getElementById('admin-current-content').classList.add('hidden'); }
-function updateContentLessonDropdown(){ const uId=document.getElementById('contentUnitId').value; const sel=document.getElementById('contentLessonId'); sel.innerHTML='<option value="" disabled selected>الدرس</option>'; const u=CURRICULUM.find(x=>x.id===uId); if(u){ u.lessons.forEach(l=>sel.innerHTML+=`<option value="${l.id}">${l.t}</option>`); sel.innerHTML+=`<option value="${u.id}_review">🌟 المراجعة الشاملة</option>`; } document.getElementById('admin-current-content').classList.add('hidden'); }
-function loadLessonData(){ const id=document.getElementById('contentLessonId').value; const data=lessonsDataCache[id]||{}; document.getElementById('lessonYoutube').value=data.yt||''; document.getElementById('lessonExamText').value=data.exam?JSON.stringify(data.exam,null,2):''; document.getElementById('pdfStatus').innerText=data.pdf?'✅ ملزمة مرفوعة':''; const st=analyticsDataCache[id]||{yt:0,pdf:0}; document.getElementById('stat-yt').innerText=`مشاهدات: ${st.yt||0}`; document.getElementById('stat-pdf').innerText=`تحميلات: ${st.pdf||0}`; const b=document.getElementById('admin-content-badges'); b.innerHTML=''; if(data.yt) b.innerHTML+=`<div class="bg-white px-2 py-1 rounded shadow-sm text-xs font-black text-red-600 border border-red-100 flex items-center gap-1">📺 فيديو <button onclick="deleteLessonContent('yt')" class="text-red-500 px-1 hover:bg-red-50 rounded">❌</button></div>`; if(data.pdf) b.innerHTML+=`<div class="bg-white px-2 py-1 rounded shadow-sm text-xs font-black text-blue-600 border border-blue-100 flex items-center gap-1">📄 ملزمة <button onclick="deleteLessonContent('pdf')" class="text-blue-500 px-1 hover:bg-blue-50 rounded">❌</button></div>`; if(data.exam) b.innerHTML+=`<div class="bg-white px-2 py-1 rounded shadow-sm text-xs font-black text-emerald-600 border border-emerald-100 flex items-center gap-1">⏱️ امتحان <button onclick="deleteLessonContent('exam')" class="text-emerald-500 px-1 hover:bg-emerald-50 rounded">❌</button></div>`; if(data.yt||data.pdf||data.exam) document.getElementById('admin-current-content').classList.remove('hidden'); else document.getElementById('admin-current-content').classList.add('hidden'); }
-function deleteLessonContent(type){ const id=document.getElementById('contentLessonId').value; if(!id)return; if(confirm('متأكد من مسح المحتوى ده؟')){ database.ref('lessons_data/'+id+'/'+type).remove().then(()=>{ alert('تم المسح! 🗑️'); if(type==='yt') document.getElementById('lessonYoutube').value=''; if(type==='exam') document.getElementById('lessonExamText').value=''; if(type==='pdf') document.getElementById('pdfStatus').innerText=''; loadLessonData(); }); } }
-function handleContentUpload(e){ e.preventDefault(); const id=document.getElementById('contentLessonId').value; if(!id)return alert('اختار الدرس'); let data=lessonsDataCache[id]||{yt:'',pdf:null,exam:null}; data.yt=document.getElementById('lessonYoutube').value; try{ const j=document.getElementById('lessonExamText').value.trim(); data.exam=j?JSON.parse(j):null; }catch(err){ return alert('❌ كود JSON غير صحيح'); } const f=document.getElementById('lessonPdf').files[0]; const save=()=>database.ref('lessons_data/'+id).set(data).then(()=>{ alert('✅ تم الحفظ'); loadLessonData(); document.getElementById('lessonPdf').value=''; }); if(f){ const r=new FileReader(); r.onload=ev=>{ data.pdf=ev.target.result; save(); }; r.readAsDataURL(f); }else save(); }
-function renderStudentsTable(){ document.getElementById('studentsListTbody').innerHTML=allStudents.map(s=>`<tr class="hover:bg-slate-50 border-b"><td class="p-3 font-bold">${s.name}</td><td class="p-3 font-bold text-indigo-600" dir="ltr">${s.phone||s.email}</td><td class="p-3 text-center"><button onclick="deleteStudent('${s.uid}')" class="bg-red-50 text-red-600 px-2 py-1 rounded text-xs font-bold">مسح 🗑️</button></td></tr>`).join(''); }
-function deleteStudent(uid){ if(confirm("تحذير: سيتم مسح الطالب وكل امتحاناته نهائياً!")){ database.ref('students/'+uid).remove(); examResultsCache.filter(e=>e.uid===uid).forEach(e=>database.ref('exam_results/'+e.key).remove()); alert('تم التصفير بنجاح!'); } }
-function filterStudents(){ const v=document.getElementById('searchStudent').value.toLowerCase(); Array.from(document.getElementById('studentsListTbody').rows).forEach(r=>r.style.display=r.cells[0].innerText.includes(v)?'':'none'); }
-function updateLbUnitDropdown(){ const g=document.getElementById('lbGrade').value; const sel=document.getElementById('lbUnitId'); sel.innerHTML='<option value="">الوحدة</option>'; CURRICULUM.filter(u=>u.grade===g).forEach(u=>sel.innerHTML+=`<option value="${u.id}">${u.title.split(':')[0]}</option>`); }
-function updateLbLessonDropdown(){ const uId=document.getElementById('lbUnitId').value; const sel=document.getElementById('lbLessonId'); sel.innerHTML='<option value="">الدرس</option>'; const u=CURRICULUM.find(x=>x.id===uId); if(u){ sel.innerHTML+=`<option value="ALL_${u.id}">📊 المجموع</option>`; u.lessons.forEach(l=>sel.innerHTML+=`<option value="${l.id}">${l.t}</option>`); } }
-function renderLeaderboardAdmin(){ const id=document.getElementById('lbLessonId').value; if(!id)return; let res=[]; if(id.startsWith('ALL_')){ const u=CURRICULUM.find(x=>x.id===id.replace('ALL_','')); const vIds=u?u.lessons.map(l=>l.id).concat([u.id+'_review']):[]; let g={}; examResultsCache.filter(r=>vIds.includes(r.lessonId)).forEach(r=>{ const i=r.uid||r.phone; if(!g[i]) g[i]={name:r.name, phone:r.phone, score:0, total:0, time:0, keys:[], uid:r.uid}; g[i].score+=r.score; g[i].total+=r.total; g[i].time+=r.time; g[i].keys.push(r.key); }); res=Object.values(g); }else{ res=examResultsCache.filter(r=>r.lessonId===id); } res.sort((a,b)=>b.score!==a.score?b.score-a.score:a.time-b.time); document.getElementById('leaderboardTbody').innerHTML=res.map((r,i)=>{ let rN=getStudentRealName(r.uid, r.name); const w=`https://wa.me/20${r.phone}?text=`+encodeURIComponent(`أهلاً ولي أمر البطل ${rN}\nامتحن [${getLessonNameById(id.replace('ALL_',''))}] وجاب (${r.score} من ${r.total}).\nGeo X 🌍`); let del=!id.startsWith('ALL_')?`<button onclick="deleteExamResult('${r.key}')" class="bg-red-50 text-red-600 px-2 py-1 rounded text-xs font-bold mr-1 border border-red-200">مسح امتحانه ❌</button>`:''; return `<tr class="hover:bg-slate-50 border-b"><td class="p-3 font-bold">${rN}</td><td class="p-3 font-black text-indigo-700">${r.score}/${r.total} <br><span class="text-[10px] text-slate-500">${r.time} ث</span></td><td class="p-3 text-center"><a href="${w}" target="_blank" class="bg-green-50 text-green-600 px-2 py-1 rounded text-xs font-bold">تقرير 📱</a> ${del}</td></tr>`; }).join(''); }
-function deleteExamResult(key){ if(confirm("مسح الامتحان ده للطالب؟ (هيقدر يعيده وأخطاؤه هتتمسح)")){ database.ref('exam_results/'+key).remove().then(()=>{ alert('تم المسح!'); renderLeaderboardAdmin(); }); } }
-function exportExcel(id, name){ const wb=XLSX.utils.table_to_book(document.getElementById(id)); XLSX.writeFile(wb, name+'.xlsx'); }
-function saveAnnouncementText(){ const t=document.getElementById('adminAnnouncementInput').value.trim(); database.ref('announcement').set(t).then(()=>alert('تم النشر!')); }
-function clearAnnouncementText(){ database.ref('announcement').set('').then(()=>{ document.getElementById('adminAnnouncementInput').value=''; alert('تم الإيقاف!'); }); }
+        function openYT(url) { 
+            if(!url) return; recordAnalytics(currentLesson, 'yt'); 
+            let m = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent); 
+            if(m && url.includes('youtube.com/watch?v=')) { let v = url.split('v=')[1].split('&')[0]; window.location.href = 'vnd.youtube://'+v; setTimeout(() => { window.open(url,'_blank'); }, 1500); } 
+            else if(m && url.includes('youtu.be/')) { let v = url.split('youtu.be/')[1].split('?')[0]; window.location.href = 'vnd.youtube://'+v; setTimeout(() => { window.open(url,'_blank'); }, 1500); } 
+            else { window.open(url,'_blank'); } 
+        }
 
-let deferredPrompt; window.addEventListener('beforeinstallprompt', (e)=>{ e.preventDefault(); deferredPrompt=e; const b=document.getElementById('install-app-btn'); if(b) b.classList.remove('hidden'); });
-function installPWA(){ if(deferredPrompt){ deferredPrompt.prompt(); deferredPrompt.userChoice.then((c)=>{ if(c.outcome==='accepted'){ const b=document.getElementById('install-app-btn'); if(b) b.classList.add('hidden'); } deferredPrompt=null; }); }else{ alert('لتنزيل التطبيق:\n- آيفون: زر المشاركة (Share) ثم "Add to Home Screen".\n- أندرويد: من قائمة المتصفح (⋮) اختر "Install app".'); } }
-if('serviceWorker' in navigator){ window.addEventListener('load', ()=>{ navigator.serviceWorker.register('sw.js').catch(err=>console.log(err)); }); }
-</script></body></html>
+        function openLessonContent(id, title, f=false) { 
+            if(!f) history.pushState({view:'lesson', l:id, t:title, u:currentUnit, g:currentGrade}, '', '#lesson'); 
+            currentLesson = id; 
+            document.getElementById('student-lessons-container').classList.add('hidden'); 
+            document.getElementById('student-content-container').classList.remove('hidden'); 
+            document.getElementById('content-title').innerText = '📄 ' + title; 
+            
+            const data = lessonsDataCache[id] || {}; 
+            currentExamData = data.exam; 
+            
+            const bYt = document.getElementById('btn-yt'), bPdf = document.getElementById('btn-pdf'), cPdf = document.getElementById('card-pdf'), bEx = document.getElementById('btn-exam'), bFc = document.getElementById('btn-flashcards'); 
+            
+            if(data.yt) { 
+                bYt.setAttribute('onclick', `openYT('${data.yt}')`); 
+                bYt.className = "block w-full bg-red-500 hover:bg-red-600 text-white font-bold py-3 rounded-xl text-sm transition-colors mt-4 cursor-pointer"; 
+                bYt.innerText = "اتفرج دلوقتي ▶️"; 
+            } else { 
+                bYt.removeAttribute('onclick'); 
+                bYt.className = "block w-full bg-slate-200 text-slate-400 font-bold py-3 rounded-xl text-sm pointer-events-none mt-4"; 
+                bYt.innerText = "مش متاح ❌"; 
+            } 
+            
+            // إخفاء كارت الملزمة لو مفيش ملزمة مرفوعة
+            if(data.pdf) { 
+                cPdf.classList.remove('hidden'); 
+                bPdf.className = "w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 rounded-xl text-sm mt-4"; 
+                bPdf.innerText = "حملها من هنا 📥"; 
+                bPdf.onclick = () => { recordAnalytics(id, 'pdf'); const a = document.createElement('a'); a.href = data.pdf; a.download = title+'.pdf'; a.click(); }; 
+            } else { 
+                cPdf.classList.add('hidden'); 
+            } 
+            
+            let sData = getSafeExamData(currentExamData); 
+            let hEx = sData.length > 0; 
+            
+            if(hEx) { 
+                bFc.className = "w-full bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 rounded-xl text-sm mt-4"; 
+                bFc.innerText = "راجع معلوماتك 🔄"; 
+                bFc.onclick = openFlashcards; 
+            } else { 
+                bFc.className = "w-full bg-slate-200 text-slate-400 font-bold py-3 rounded-xl text-sm pointer-events-none mt-4"; 
+                bFc.innerText = "مش متاح ❌"; 
+                bFc.onclick = null; 
+            } 
+            
+            const st = JSON.parse(localStorage.getItem('geox_student_user')); 
+            
+            if(st && examResultsCache.find(r => r.uid === st.uid && r.lessonId === id)) { 
+                bEx.className = "w-full bg-slate-700 text-slate-400 font-black py-3 rounded-xl text-sm mt-4 pointer-events-none"; 
+                bEx.innerText = "امتحنته خلاص 🔒"; 
+                bEx.onclick = null; 
+            } else if(hEx) { 
+                bEx.className = "w-full bg-emerald-500 hover:bg-emerald-400 text-white font-black py-3 rounded-xl text-sm mt-4 shadow-lg"; 
+                bEx.innerText = st ? "ابتدى الامتحان 🚀" : "سجل للامتحان 🚀"; 
+                bEx.onclick = st ? () => startExam(title) : () => auth.signInWithPopup(googleProvider); 
+            } else { 
+                bEx.className = "w-full bg-slate-700 text-slate-400 font-black py-3 rounded-xl text-sm pointer-events-none mt-4 border border-slate-600"; 
+                bEx.innerText = "مفيش امتحان ❌"; 
+                bEx.onclick = null; 
+            } 
+        }
+
+        function getSafeExamData(e) { if(!e) return []; let a = []; if(Array.isArray(e)) a = [...e]; else if(typeof e === 'object') a = Object.values(e); return a.filter(i => i && typeof i === 'object' && i.q); }
+        function getLessonNameById(id) { if(id.includes('_review')) return "مراجعة شاملة"; for(let u of CURRICULUM) { let l = u.lessons.find(x => x.id === id); if(l) return l.t; } return id; }
+
+        // إعدادات الحساب وتحديث البيانات
+        function updateSettingsTabUI() { 
+            const st = JSON.parse(localStorage.getItem('geox_student_user')); 
+            if(st) { 
+                let pic = st.profilePic ? `<img src="${st.profilePic}" class="w-full h-full object-cover">` : `𓂀`; 
+                document.getElementById('settings-avatar').innerHTML = pic; 
+            } 
+        }
+
+        function showSettingsEditForm(type) { 
+            const st = JSON.parse(localStorage.getItem('geox_student_user')); 
+            if(type === 'name') { 
+                if(st.nameEdited) return alert('عدلت اسمك قبل كده ومينفعش تاني!'); 
+                document.getElementById('settings-edit-title').innerText = 'تعديل الاسم الثلاثي'; 
+                document.getElementById('settings-edit-inputs').innerHTML = `<input type="text" id="edit-fname" placeholder="الاسم الأول" class="w-full p-3 border rounded-xl text-sm mb-2"><input type="text" id="edit-mname" placeholder="الاسم الثاني" class="w-full p-3 border rounded-xl text-sm mb-2"><input type="text" id="edit-lname" placeholder="الاسم الثالث" class="w-full p-3 border rounded-xl text-sm">`; 
+                document.getElementById('settings-edit-modal').setAttribute('data-edit-type', 'name'); 
+            } else if(type === 'phone') { 
+                if(st.phoneEdited) return alert('عدلت الرقم قبل كده ومينفعش تاني!'); 
+                document.getElementById('settings-edit-title').innerText = 'تعديل رقم الموبايل'; 
+                document.getElementById('settings-edit-inputs').innerHTML = `<input type="tel" id="edit-phone" placeholder="010..." class="w-full p-3 border rounded-xl text-center" dir="ltr" maxlength="11">`; 
+                document.getElementById('settings-edit-modal').setAttribute('data-edit-type', 'phone'); 
+            } 
+            document.getElementById('settings-edit-modal').classList.remove('hidden'); 
+        }
+
+        function saveSettingsEdit() { 
+            const type = document.getElementById('settings-edit-modal').getAttribute('data-edit-type'); 
+            const st = JSON.parse(localStorage.getItem('geox_student_user')); 
+            let up = {}; 
+            if(type === 'name') { 
+                const f = document.getElementById('edit-fname').value.trim(), m = document.getElementById('edit-mname').value.trim(), l = document.getElementById('edit-lname').value.trim(); 
+                if(!f || !m || !l) return alert('اكتب الاسم الثلاثي'); 
+                up = {name: `${f} ${m} ${l}`, nameEdited: true}; 
+            } else if(type === 'phone') { 
+                const p = document.getElementById('edit-phone').value.trim(); 
+                if(p.length < 10) return alert('رقم غير صحيح'); 
+                up = {phone: p, phoneEdited: true}; 
+            } 
+            database.ref('students/' + st.uid).update(up).then(() => { 
+                Object.assign(st, up); 
+                localStorage.setItem('geox_student_user', JSON.stringify(st)); 
+                updateStudentUI(st); 
+                document.getElementById('settings-edit-modal').classList.add('hidden'); 
+                alert('تم الحفظ بنجاح!'); 
+            }); 
+        }
+
+        function openProfileModal() { 
+            const st = JSON.parse(localStorage.getItem('geox_student_user')); 
+            if(!st) return; 
+            document.getElementById('profile-name').innerText = getStudentRealName(st.uid, st.name); 
+            let rc = getUserRankClass(st.uid); 
+            document.getElementById('profile-modal-avatar').className = `w-full h-full bg-white/10 rounded-full flex items-center justify-center text-4xl text-emerald-400 overflow-hidden shadow-lg border border-white/20 ${rc}`; 
+            document.getElementById('profile-modal-avatar').innerHTML = st.profilePic ? `<img src="${st.profilePic}" class="w-full h-full object-cover">` : `𓂀`; 
+            
+            const mSc = examResultsCache.filter(r => r.uid === st.uid).sort((a,b) => new Date(b.date) - new Date(a.date)); 
+            let totalSc = 0, totalMax = 0; 
+            mSc.forEach(s => { totalSc += s.score; totalMax += s.total; }); 
+            let perc = Math.round((totalSc / totalMax) * 100) || 0; 
+            
+            let bH = ''; 
+            if(mSc.length > 0) { 
+                if(mSc.length === 1) { 
+                    bH = perc >= 50 ? '<span class="bg-amber-100 text-amber-700 px-2 py-1 rounded text-[10px] font-bold shadow-sm">بداية مبشرة 🚶</span>' : '<span class="bg-slate-100 text-slate-700 px-2 py-1 rounded text-[10px] font-bold shadow-sm">محاولة أولى 🎯</span>'; 
+                } else { 
+                    if(perc >= 90) bH = '<span class="bg-yellow-100 text-yellow-700 px-2 py-1 rounded text-[10px] font-bold shadow-sm">أسطورة الجغرافيا 👑</span>'; 
+                    else if(perc >= 75) bH = '<span class="bg-emerald-100 text-emerald-700 px-2 py-1 rounded text-[10px] font-bold shadow-sm">بطل صاعد 🌟</span>'; 
+                    else bH = '<span class="bg-blue-100 text-blue-700 px-2 py-1 rounded text-[10px] font-bold shadow-sm">طالب مكافح 📚</span>'; 
+                } 
+                if(mSc.some(s => s.score === s.total && s.total > 0)) bH += ' <span class="bg-purple-100 text-purple-700 px-2 py-1 rounded text-[10px] font-bold shadow-sm">قناص الدرجات 🎯</span>'; 
+            } 
+            document.getElementById('student-badges').innerHTML = bH; 
+            
+            if(mSc.length > 0) { 
+                const uLs = [...new Set(mSc.map(s => s.lessonId))]; 
+                let gC = {prep1: 0, prep2: 0, prep3: 0}; 
+                uLs.forEach(lId => { const u = CURRICULUM.find(x => x.lessons.some(l => l.id === lId) || lId === x.id + '_review'); if(u) gC[u.grade]++; }); 
+                const dG = Object.keys(gC).reduce((a,b) => gC[a] > gC[b] ? a : b); 
+                const tI = CURRICULUM.filter(x => x.grade === dG).reduce((acc, curr) => acc + curr.lessons.length + 1, 0); 
+                const p = Math.min(100, Math.round((uLs.length / tI) * 100)); 
+                document.getElementById('profile-progress').style.width = p + '%'; 
+                document.getElementById('profile-progress-text').innerText = `إنجازك: ${p}%`; 
+            } else { 
+                document.getElementById('profile-progress').style.width = '0%'; 
+                document.getElementById('profile-progress-text').innerText = `إنجازك: 0%`; 
+            } 
+            
+            let lH = mSc.length === 0 ? '<p class="text-slate-400 text-center text-xs py-4">لم تمتحن بعد.</p>' : ''; 
+            mSc.forEach(s => { 
+                let p = Math.round((s.score / s.total) * 100) || 0; 
+                let c = p >= 85 ? 'text-emerald-600 bg-emerald-50 border-emerald-100' : (p >= 50 ? 'text-amber-600 bg-amber-50 border-amber-100' : 'text-red-600 bg-red-50 border-red-100'); 
+                lH += `<div class="bg-white p-3 rounded-xl border shadow-sm flex items-center justify-between"><div class="text-right w-2/3"><div class="font-bold text-slate-800 text-[11px] truncate">${getLessonNameById(s.lessonId)}</div></div><div class="px-2 py-1 rounded border font-black text-[10px] shrink-0 ${c}">${s.score}/${s.total}</div></div>`; 
+            }); 
+            document.getElementById('student-scores-list').innerHTML = lH; 
+            document.getElementById('profile-modal').classList.remove('hidden'); 
+        }
+
+        function openMistakesBank() { 
+            const st = JSON.parse(localStorage.getItem('geox_student_user')); 
+            const mSc = examResultsCache.filter(r => r.uid === st.uid && r.mistakes && r.mistakes.length > 0); 
+            let h = ''; 
+            if(mSc.length === 0) { 
+                h = '<p class="text-slate-400 text-center text-xs py-8 font-bold">رائع! ليس لديك أخطاء مسجلة.</p>'; 
+            } else { 
+                mSc.forEach(s => { 
+                    h += `<h4 class="font-black text-slate-700 bg-slate-200 p-2 rounded-lg mt-3 mb-2 text-[11px]">${getLessonNameById(s.lessonId)}</h4><div class="space-y-2">`; 
+                    s.mistakes.forEach(m => { 
+                        h += `<div class="bg-white p-3 rounded-xl border border-red-100 shadow-sm"><p class="font-bold text-slate-800 text-[10px] mb-1">س: ${m.q}</p><p class="text-[9px] text-red-600 font-bold">إجابتك: <span class="line-through">${m.ans}</span></p><p class="text-[9px] text-emerald-600 font-bold">الصحيحة: ${m.corr}</p></div>`; 
+                    }); 
+                    h += `</div>`; 
+                }); 
+            } 
+            document.getElementById('mistakes-list').innerHTML = h; 
+            document.getElementById('mistakes-modal').classList.remove('hidden'); 
+        }
+
+        function openFlashcards() { 
+            let s = getSafeExamData(currentExamData); 
+            flashcardsList = s.filter(q => q.type !== 'essay' && q.answer); 
+            if(flashcardsList.length === 0) return alert('لا توجد كروت هنا.'); 
+            currentFlashcardIndex = 0; 
+            renderFlashcard(); 
+            document.getElementById('flashcards-modal').classList.remove('hidden'); 
+        }
+
+        function renderFlashcard() { 
+            const q = flashcardsList[currentFlashcardIndex]; 
+            document.getElementById('flashcard-counter').innerText = `${currentFlashcardIndex + 1} / ${flashcardsList.length}`; 
+            document.getElementById('flashcard-container').innerHTML = `<div class="flip-card" onclick="this.classList.toggle('flipped')"><div class="flip-card-inner"><div class="flip-card-front"><p class="text-sm">${q.q}</p></div><div class="flip-card-back"><p class="text-sm">${q.answer}</p></div></div></div>`; 
+        }
+
+        function nextFlashcard() { if(currentFlashcardIndex < flashcardsList.length - 1) { currentFlashcardIndex++; renderFlashcard(); } }
+        function prevFlashcard() { if(currentFlashcardIndex > 0) { currentFlashcardIndex--; renderFlashcard(); } }
+        function openSocialModal() { document.getElementById('social-modal').classList.remove('hidden'); }
+
+        // نظام أبطال المنصة وتحديد المراكز
+        function openGlobalLeaderboard(grade = 'prep3') { 
+            document.getElementById('gl-prep1-btn').className = `px-4 py-2 text-sm font-bold rounded-lg transition-colors ${grade === 'prep1' ? 'bg-indigo-600 text-white shadow-sm' : 'bg-slate-200 text-slate-600'}`; 
+            document.getElementById('gl-prep2-btn').className = `px-4 py-2 text-sm font-bold rounded-lg transition-colors ${grade === 'prep2' ? 'bg-indigo-600 text-white shadow-sm' : 'bg-slate-200 text-slate-600'}`; 
+            document.getElementById('gl-prep3-btn').className = `px-4 py-2 text-sm font-bold rounded-lg transition-colors ${grade === 'prep3' ? 'bg-indigo-600 text-white shadow-sm' : 'bg-slate-200 text-slate-600'}`; 
+            
+            const uF = document.getElementById('gl-unit-filter'); 
+            uF.innerHTML = '<option value="ALL">🌟 الترتيب التراكمي (كل المنهج)</option>'; 
+            CURRICULUM.filter(x => x.grade === grade).forEach(u => { uF.innerHTML += `<option value="${u.id}">📖 ${u.title.split(':')[0]}</option>`; }); 
+            uF.setAttribute('data-grade', grade); 
+            filterLeaderboardUnit(); 
+        }
+
+        function filterLeaderboardUnit() { 
+            const grade = document.getElementById('gl-unit-filter').getAttribute('data-grade'); 
+            const unitId = document.getElementById('gl-unit-filter').value; 
+            let vIds = []; 
+            if(unitId === 'ALL') { 
+                CURRICULUM.filter(x => x.grade === grade).forEach(u => { u.lessons.forEach(l => vIds.push(l.id)); vIds.push(u.id+'_review'); }); 
+            } else { 
+                const u = CURRICULUM.find(x => x.id === unitId); 
+                if(u) { u.lessons.forEach(l => vIds.push(l.id)); vIds.push(u.id+'_review'); } 
+            } 
+            let g = {}; 
+            examResultsCache.filter(r => vIds.includes(r.lessonId)).forEach(r => { 
+                const i = r.uid || r.phone; 
+                if(!g[i]) g[i] = {name: r.name, score: 0, time: 0, uid: r.uid, phone: r.phone}; 
+                g[i].score += r.score; g[i].time += r.time; 
+            }); 
+            
+            const sorted = Object.values(g).sort((a,b) => b.score !== a.score ? b.score - a.score : a.time - b.time); 
+            const top10 = sorted.slice(0, 10); 
+            const cSt = JSON.parse(localStorage.getItem('geox_student_user')); 
+            
+            let h = top10.map((r, i) => { 
+                let m = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `<span class="text-slate-400 font-black text-sm w-5 text-center">#${i+1}</span>`; 
+                let st = allStudents.find(s => s.uid === r.uid || (r.phone && s.phone === r.phone)); 
+                let rN = st ? st.name : r.name; 
+                let rc = i === 0 ? 'ring-2 ring-yellow-400 shadow-[0_0_10px_rgba(250,204,21,0.6)]' : i === 1 ? 'ring-2 ring-gray-300 shadow-[0_0_10px_rgba(209,213,219,0.6)]' : i === 2 ? 'ring-2 ring-amber-700 shadow-[0_0_10px_rgba(180,83,9,0.6)]' : 'border border-slate-300'; 
+                let av = (st && st.profilePic) ? `<img src="${st.profilePic}" loading="lazy" class="w-8 h-8 rounded-full object-cover shrink-0 ${rc}">` : `<div class="w-8 h-8 rounded-full bg-slate-200 flex justify-center items-center text-xs shrink-0 ${rc}">👤</div>`; 
+                let isM = (cSt && (r.uid === cSt.uid || r.phone === cSt.phone)); 
+                let b = isM ? 'bg-indigo-50 border-indigo-300 shadow-md' : (i < 3 ? 'border-amber-300 bg-amber-50' : 'border-slate-100'); 
+                
+                return `<div class="flex justify-between items-center bg-white p-2 rounded-xl border ${b}"><div class="flex items-center gap-2 w-full pr-1 overflow-hidden"><div class="shrink-0 flex items-center justify-center">${m}</div>${av}<span class="font-black ${isM ? 'text-indigo-700' : 'text-slate-800'} text-[11px] md:text-sm truncate w-full">${rN} ${isM ? '<span class="text-[9px] text-indigo-400">(أنت)</span>' : ''}</span></div><span class="font-black text-indigo-600 bg-indigo-50 px-2 py-1 rounded text-[10px] md:text-xs shrink-0 text-center leading-tight min-w-[55px]">${r.score} نقطة<br><span class="text-[8px] text-slate-500">${r.time} ث</span></span></div>`; 
+            }).join(''); 
+            
+            if(!h) h = '<p class="text-center text-slate-500 font-bold text-xs py-8">لا توجد بيانات هنا بعد.</p>'; 
+            
+            if(cSt) { 
+                const myIdx = sorted.findIndex(r => r.uid === cSt.uid || r.phone === cSt.phone); 
+                if(myIdx !== -1) { 
+                    h += `<div class="mt-3 p-3 bg-indigo-600 rounded-xl text-center text-white font-black text-xs shadow-md">ترتيبك هنا: المركز الـ ${myIdx+1} 🚀</div>`; 
+                } else { 
+                    h += `<div class="mt-3 p-2 bg-slate-200 rounded-xl text-center text-slate-600 font-bold text-[10px]">لم تمتحن هنا بعد لتحديد ترتيبك.</div>`; 
+                } 
+            } 
+            document.getElementById('global-leaderboard-list').innerHTML = h; 
+        }
+
+        // حماية الامتحان الصارمة (Anti-Cheat 3 Warnings)
+        let isExamActive = false;
+        
+        document.addEventListener("visibilitychange", () => { 
+            if(isExamActive && document.visibilityState === 'hidden') { 
+                document.getElementById('cheat-overlay').classList.remove('hidden'); 
+                cheatWarnings++; 
+                if(cheatWarnings >= 3) { 
+                    alert('🚨 تم سحب الامتحان وتصفير نتيجتك بسبب الخروج المتكرر!'); 
+                    submitExam(true); 
+                } 
+            } 
+        });
+        
+        document.addEventListener('contextmenu', e => { if(isExamActive) e.preventDefault(); });
+        document.addEventListener('keyup', e => { 
+            if(isExamActive && e.key === 'PrintScreen') { 
+                navigator.clipboard.writeText(''); 
+                alert('ممنوع تصوير الشاشة أثناء الامتحان!'); 
+            } 
+        });
+
+        function startExam(title) { 
+            document.querySelector('.bottom-nav').classList.add('hidden'); 
+            document.getElementById('ai-fab').classList.add('hidden'); 
+            history.pushState({view: 'exam'}, '', '#exam'); 
+            
+            document.getElementById('exam-header-title').innerText = title; 
+            document.getElementById('exam-actions').classList.remove('hidden'); 
+            document.getElementById('exam-results-actions').classList.add('hidden'); 
+            document.getElementById('exam-questions').innerHTML = ''; 
+            
+            const tD = document.getElementById('timer-display'); 
+            if(tD) { 
+                tD.innerText = '10:00'; 
+                tD.parentElement.classList.remove('bg-red-100', 'text-red-600', 'animate-pulse'); 
+            } 
+            document.getElementById('exam-screen').classList.remove('hidden'); 
+            cheatWarnings = 0; 
+            let c = 3; 
+            document.getElementById('countdown-number').innerText = c; 
+            document.getElementById('exam-countdown').classList.remove('hidden'); 
+            
+            const iv = setInterval(() => { 
+                c--; 
+                if(c > 0) document.getElementById('countdown-number').innerText = c; 
+                else { 
+                    clearInterval(iv); 
+                    document.getElementById('exam-countdown').classList.add('hidden'); 
+                    isExamActive = true; 
+                    try { 
+                        let s = getSafeExamData(currentExamData); 
+                        let sh = [...s]; 
+                        for(let i = sh.length - 1; i > 0; i--) { 
+                            const j = Math.floor(Math.random() * (i + 1)); 
+                            const t = sh[i]; sh[i] = sh[j]; sh[j] = t; 
+                        } 
+                        currentQuestions = sh.slice(0, 20); 
+                        renderQuestionsSafe(); startTimer(); 
+                    } catch(e) { 
+                        alert('خطأ تحميل الأسئلة'); closeExam(); 
+                    } 
+                } 
+            }, 1000); 
+        }
+
+        function renderQuestionsSafe() { 
+            let h = ''; 
+            currentQuestions.forEach((q, i) => { 
+                let inp = ''; 
+                if(q.type === 'essay') { 
+                    inp = `<textarea id="e_q_${i}" rows="3" class="w-full p-3 border rounded-xl bg-slate-50 text-sm" placeholder="إجابتك..."></textarea>`; 
+                } else if(q.type === 'tf') { 
+                    let o = ['صح', 'خطأ']; 
+                    inp = `<div class="space-y-2">` + o.map(x => `<label class="flex items-center gap-2 p-3 bg-slate-50 border rounded-xl cursor-pointer hover:bg-indigo-50"><input type="radio" name="q_${i}" value="${x}" class="w-4 h-4 accent-indigo-600"><span class="font-bold text-sm text-slate-700">${x}</span></label>`).join('') + `</div>`; 
+                } else { 
+                    let o = []; 
+                    if(Array.isArray(q.options)) o = [...q.options]; 
+                    else if(q.options && typeof q.options === 'object') o = Object.values(q.options); 
+                    for(let k = o.length - 1; k > 0; k--) { 
+                        const j = Math.floor(Math.random() * (k + 1)); 
+                        const t = o[k]; o[k] = o[j]; o[j] = t; 
+                    } 
+                    inp = `<div class="space-y-2">` + o.map(x => `<label class="flex items-center gap-2 p-3 bg-slate-50 border rounded-xl cursor-pointer hover:bg-indigo-50"><input type="radio" name="q_${i}" value="${x}" class="w-4 h-4 accent-indigo-600"><span class="font-bold text-sm text-slate-700">${x}</span></label>`).join('') + `</div>`; 
+                } 
+                h += `<div class="bg-white p-5 rounded-2xl shadow-sm border question-block" data-index="${i}" data-ans="${q.answer || ''}"><h3 class="font-black mb-3 flex gap-2 text-sm leading-relaxed text-slate-800"><span class="bg-indigo-100 text-indigo-700 px-2 py-1 rounded-lg text-xs h-fit shrink-0">${i+1}</span> ${q.q}</h3>${inp}<div class="result-feedback hidden mt-3 p-2 rounded-lg text-xs font-bold"></div></div>`; 
+            }); 
+            document.getElementById('exam-questions').innerHTML = h; 
+        }
+
+        function startTimer() { 
+            timeLeft = 600; 
+            const d = document.getElementById('timer-display'); 
+            if(d) { d.parentElement.classList.remove('bg-red-100', 'text-red-600', 'animate-pulse'); d.innerText = '10:00'; } 
+            clearInterval(examTimer); 
+            examTimer = setInterval(() => { 
+                timeLeft--; let m = Math.floor(timeLeft / 60), s = timeLeft % 60; 
+                if(d) d.innerText = `${m<10?'0'+m:m}:${s<10?'0'+s:s}`; 
+                if(timeLeft <= 60 && d) d.parentElement.classList.add('bg-red-100', 'text-red-600', 'animate-pulse'); 
+                if(timeLeft <= 0) { clearInterval(examTimer); alert('انتهى الوقت! ⏳'); submitExam(false); } 
+            }, 1000); 
+        }
+
+        function submitExam(forceZero = false) { 
+            isExamActive = false; 
+            clearInterval(examTimer); 
+            document.getElementById('cheat-overlay').classList.add('hidden'); 
+            const blocks = document.querySelectorAll('.question-block'); 
+            let sc = 0, t = 0, ec = 0, mb = []; 
+            
+            blocks.forEach(b => { 
+                const i = b.getAttribute('data-index'); 
+                const q = currentQuestions[i]; 
+                const fb = b.querySelector('.result-feedback'); 
+                fb.classList.remove('hidden'); 
+                
+                if(q.type === 'essay') { 
+                    ec++; const v = document.getElementById(`e_q_${i}`).value.trim(); 
+                    fb.className = 'result-feedback mt-3 p-2 rounded-lg text-xs font-bold bg-blue-50 text-blue-700 border border-blue-200'; 
+                    fb.innerHTML = v ? '📝 مقالي مسجل للتقييم.' : '⚠️ لم تقم بكتابة إجابة.'; 
+                } else { 
+                    t++; const sel = b.querySelector(`input[name="q_${i}"]:checked`); 
+                    const cAns = b.getAttribute('data-ans'); 
+                    b.querySelectorAll('label').forEach(l => { 
+                        l.classList.add('opacity-50', 'pointer-events-none'); 
+                        const inp = l.querySelector('input'); 
+                        if(inp.value === cAns) { l.classList.remove('opacity-50', 'bg-slate-50'); l.classList.add('correct-answer'); } 
+                    }); 
+                    
+                    if(!forceZero && sel && sel.value === cAns) { 
+                        sc++; fb.className = 'result-feedback mt-3 p-2 rounded-lg text-xs font-bold bg-emerald-100 text-emerald-700'; fb.innerText = '✅ صح!'; 
+                    } else { 
+                        let sAns = sel ? sel.value : "لم يجب"; 
+                        if(!forceZero) mb.push({q: q.q, ans: sAns, corr: cAns}); 
+                        if(sel) { sel.parentElement.classList.remove('opacity-50', 'bg-slate-50'); sel.parentElement.classList.add('wrong-answer'); } 
+                        fb.className = 'result-feedback mt-3 p-2 rounded-lg text-xs font-bold bg-red-100 text-red-700'; fb.innerText = `❌ خطأ! الإجابة: ${cAns}`; 
+                    } 
+                } 
+            }); 
+            
+            const tt = 600 - timeLeft; 
+            const st = JSON.parse(localStorage.getItem('geox_student_user')); 
+            document.getElementById('exam-actions').classList.add('hidden'); 
+            const rb = document.getElementById('exam-score-display'); 
+            let rT = `<h3 class="text-xl font-black mb-1 ${sc >= t/2 ? 'text-emerald-600' : 'text-red-600'}">النتيجة: ${sc} / ${t}</h3>`; 
+            if(ec > 0) rT += `<p class="text-xs text-slate-500">${ec} مقالي بانتظار التقييم.</p>`; 
+            rb.innerHTML = rT; 
+            document.getElementById('exam-results-actions').classList.remove('hidden'); 
+            window.scrollTo(0,0); 
+            database.ref('exam_results').push({ lessonId: currentLesson, uid: st.uid, name: st.name, phone: st.phone || st.email, score: forceZero ? 0 : sc, total: t, time: tt, date: new Date().toLocaleString('ar-EG'), mistakes: forceZero ? [] : mb }); 
+        }
+
+        function closeExam() { 
+            document.querySelector('.bottom-nav').classList.remove('hidden'); 
+            document.getElementById('ai-fab').classList.remove('hidden'); 
+            history.back(); 
+        }
+
+        // ================= الذكاء الاصطناعي الخاص بالمنصة (Geo AI) =================
+        function openAiChat() { 
+            const st = JSON.parse(localStorage.getItem('geox_student_user')); 
+            if(!st) return alert('لازم تسجل دخول الأول عشان تستخدم Geo AI 🤖'); 
+            document.getElementById('ai-chat-modal').classList.remove('hidden'); 
+            document.querySelector('.bottom-nav').classList.add('hidden'); 
+        }
+        function closeAiChat() { 
+            document.getElementById('ai-chat-modal').classList.add('hidden'); 
+            document.querySelector('.bottom-nav').classList.remove('hidden'); 
+        }
+        function saveAiKnowledge() { 
+            const k = document.getElementById('admin-ai-knowledge').value.trim(); 
+            database.ref('ai_knowledge').set(k).then(() => alert('تم تغذية الـ AI بنجاح 🧠')); 
+        }
+        function sendAiMessage() { 
+            const inp = document.getElementById('ai-chat-input'); 
+            const v = inp.value.trim(); if(!v) return; 
+            inp.value = ''; 
+            const box = document.getElementById('ai-chat-box'); 
+            box.innerHTML += `<div class="flex gap-2 flex-row-reverse"><div class="bg-indigo-600 text-white p-3 rounded-2xl rounded-tl-none shadow-sm text-sm max-w-[85%] leading-relaxed">${v}</div></div>`; 
+            box.scrollTop = box.scrollHeight;
+            
+            setTimeout(() => { 
+                const ans = simulateAISearch(v); 
+                box.innerHTML += `<div class="flex gap-2"><div class="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-lg shrink-0">🤖</div><div class="bg-white dark:bg-slate-800 p-3 rounded-2xl rounded-tr-none shadow-sm text-sm text-slate-700 dark:text-slate-200 border border-slate-100 dark:border-slate-700 max-w-[85%] leading-relaxed">${ans}</div></div>`; 
+                box.scrollTop = box.scrollHeight; 
+            }, 600); 
+        }
+        function simulateAISearch(query) { 
+            if(!aiKnowledgeData) return "عذراً يا بطل، لسه مستر چو ومستر فتحي مغذونيش بالمنهج، أنا في انتظارهم!"; 
+            const words = query.split(' ').filter(w => w.length > 2); 
+            if(words.length === 0) return "ممكن توضح سؤالك أكتر بشكل مباشر؟"; 
+            const sentences = aiKnowledgeData.split(/[.\n]/).filter(s => s.trim().length > 10); 
+            let bestM = "", maxSc = 0; 
+            sentences.forEach(s => { 
+                let sc = 0; words.forEach(w => { if(s.includes(w)) sc++; }); 
+                if(sc > maxSc) { maxSc = sc; bestM = s; } 
+            }); 
+            if(maxSc > 0) return bestM.trim() + " بناءً على المنهج اللي درسته."; 
+            return "عذراً، مش قادر ألاقي إجابة لسؤالك في محتوى المنهج اللي اتبرمجت عليه. جرب تسأل بصيغة تانية."; 
+        }
+
+        // ================= لوحة تحكم الإدارة (Teacher View) =================
+        function showAdminTab(id, f=false) { 
+            if(!f) localStorage.setItem('geox_admin_tab', id); 
+            document.querySelectorAll('.admin-tab').forEach(e => e.classList.add('hidden')); 
+            document.querySelectorAll('.admin-tab-btn').forEach(e => { e.classList.remove('active'); }); 
+            document.getElementById(id).classList.remove('hidden'); 
+            const btn = document.getElementById('btn-'+id); if(btn) { btn.classList.add('active'); } 
+        }
+        function updateCoverUnitDropdown() { 
+            const g = document.getElementById('coverGrade').value; const sel = document.getElementById('coverUnitId'); 
+            sel.innerHTML = `<option value="">-- اختار الوحدة (أو سيبها للسنة) --</option>`; 
+            CURRICULUM.filter(u => u.grade === g).forEach(u => sel.innerHTML += `<option value="${u.id}">📖 ${u.title.split(':')[0]}</option>`); 
+        }
+        function handleCoverUpload(e) { 
+            e.preventDefault(); const g = document.getElementById('coverGrade').value; const uId = document.getElementById('coverUnitId').value; 
+            let targetId = 'STAGE_COVER_' + g; if(uId && uId !== '') targetId = uId; 
+            const file = document.getElementById('coverImage').files[0]; const reader = new FileReader(); 
+            reader.onload = ev => { 
+                const img = new Image(); 
+                img.onload = () => { 
+                    const cvs = document.createElement('canvas'); const W=800, H=450; 
+                    cvs.width = W; cvs.height = H; cvs.getContext('2d').drawImage(img,0,0,W,H); 
+                    database.ref('covers/'+targetId).set(cvs.toDataURL('image/jpeg', 0.6)).then(() => { alert('✅ تم الحفظ!'); updateCoverUnitDropdown(); }); 
+                }; 
+                img.src = ev.target.result; 
+            }; 
+            reader.readAsDataURL(file); 
+        }
+        function updateContentUnitDropdown() { 
+            const g = document.getElementById('contentGrade').value; const sel = document.getElementById('contentUnitId'); 
+            sel.innerHTML = '<option value="" disabled selected>الوحدة</option>'; 
+            CURRICULUM.filter(u => u.grade === g).forEach(u => sel.innerHTML += `<option value="${u.id}">${u.title.split(':')[0]}</option>`); 
+            document.getElementById('contentLessonId').innerHTML = '<option value="" disabled selected>الدرس</option>'; 
+            document.getElementById('admin-current-content').classList.add('hidden'); 
+        }
+        function updateContentLessonDropdown() { 
+            const uId = document.getElementById('contentUnitId').value; const sel = document.getElementById('contentLessonId'); 
+            sel.innerHTML = '<option value="" disabled selected>الدرس</option>'; 
+            const u = CURRICULUM.find(x => x.id === uId); 
+            if(u) { u.lessons.forEach(l => sel.innerHTML += `<option value="${l.id}">${l.t}</option>`); sel.innerHTML += `<option value="${u.id}_review">🌟 المراجعة الشاملة</option>`; } 
+            document.getElementById('admin-current-content').classList.add('hidden'); 
+        }
+        function loadLessonData() { 
+            const id = document.getElementById('contentLessonId').value; const data = lessonsDataCache[id] || {}; 
+            document.getElementById('lessonYoutube').value = data.yt || ''; document.getElementById('lessonExamText').value = data.exam ? JSON.stringify(data.exam,null,2) : ''; document.getElementById('pdfStatus').innerText = data.pdf ? '✅ ملزمة مرفوعة' : ''; 
+            const st = analyticsDataCache[id] || {yt:0, pdf:0}; document.getElementById('stat-yt').innerText = `مشاهدات: ${st.yt||0}`; document.getElementById('stat-pdf').innerText = `تحميلات: ${st.pdf||0}`; 
+            const b = document.getElementById('admin-content-badges'); b.innerHTML = ''; 
+            if(data.yt) b.innerHTML += `<div class="bg-white px-2 py-1 rounded shadow-sm text-xs font-black text-red-600 border border-red-100 flex items-center gap-1">📺 فيديو <button onclick="deleteLessonContent('yt')" class="text-red-500 px-1 hover:bg-red-50 rounded">❌</button></div>`; 
+            if(data.pdf) b.innerHTML += `<div class="bg-white px-2 py-1 rounded shadow-sm text-xs font-black text-blue-600 border border-blue-100 flex items-center gap-1">📄 ملزمة <button onclick="deleteLessonContent('pdf')" class="text-blue-500 px-1 hover:bg-blue-50 rounded">❌</button></div>`; 
+            if(data.exam) b.innerHTML += `<div class="bg-white px-2 py-1 rounded shadow-sm text-xs font-black text-emerald-600 border border-emerald-100 flex items-center gap-1">⏱️ امتحان <button onclick="deleteLessonContent('exam')" class="text-emerald-500 px-1 hover:bg-emerald-50 rounded">❌</button></div>`; 
+            if(data.yt || data.pdf || data.exam) document.getElementById('admin-current-content').classList.remove('hidden'); else document.getElementById('admin-current-content').classList.add('hidden'); 
+        }
+        function deleteLessonContent(type) { 
+            const id = document.getElementById('contentLessonId').value; if(!id) return; 
+            if(confirm('متأكد من مسح المحتوى ده؟')) { 
+                database.ref('lessons_data/' + id + '/' + type).remove().then(() => { alert('تم المسح! 🗑️'); if(type === 'yt') document.getElementById('lessonYoutube').value = ''; if(type === 'exam') document.getElementById('lessonExamText').value = ''; if(type === 'pdf') document.getElementById('pdfStatus').innerText = ''; loadLessonData(); }); 
+            } 
+        }
+        function handleContentUpload(e) { 
+            e.preventDefault(); const id = document.getElementById('contentLessonId').value; if(!id) return alert('اختار الدرس'); 
+            let data = lessonsDataCache[id] || {yt:'', pdf:null, exam:null}; data.yt = document.getElementById('lessonYoutube').value; 
+            try { const j = document.getElementById('lessonExamText').value.trim(); data.exam = j ? JSON.parse(j) : null; } catch(err) { return alert('❌ كود JSON غير صحيح'); } 
+            const f = document.getElementById('lessonPdf').files[0]; 
+            const save = () => database.ref('lessons_data/'+id).set(data).then(() => { alert('✅ تم الحفظ'); loadLessonData(); document.getElementById('lessonPdf').value = ''; }); 
+            if(f) { const r = new FileReader(); r.onload = ev => { data.pdf = ev.target.result; save(); }; r.readAsDataURL(f); } else save(); 
+        }
+        function renderStudentsTable() { document.getElementById('studentsListTbody').innerHTML = allStudents.map(s => `<tr class="hover:bg-slate-50 border-b"><td class="p-3 font-bold">${s.name}</td><td class="p-3 font-bold text-indigo-600" dir="ltr">${s.phone||s.email}</td><td class="p-3 text-center"><button onclick="deleteStudent('${s.uid}')" class="bg-red-50 text-red-600 px-2 py-1 rounded text-xs font-bold">مسح 🗑️</button></td></tr>`).join(''); }
+        
+        // المسح الجذري للطالب وحسابه
+        function deleteStudent(uid) { 
+            if(confirm("تحذير: سيتم مسح الطالب وكل امتحاناته نهائياً!")) { 
+                database.ref('students/'+uid).remove(); 
+                examResultsCache.filter(e => e.uid === uid).forEach(e => database.ref('exam_results/'+e.key).remove()); 
+                alert('تم التصفير بنجاح!'); 
+            } 
+        }
+        function filterStudents() { const v = document.getElementById('searchStudent').value.toLowerCase(); Array.from(document.getElementById('studentsListTbody').rows).forEach(r => r.style.display = r.cells[0].innerText.includes(v) ? '' : 'none'); }
+        function updateLbUnitDropdown() { const g = document.getElementById('lbGrade').value; const sel = document.getElementById('lbUnitId'); sel.innerHTML = '<option value="">الوحدة</option>'; CURRICULUM.filter(u => u.grade === g).forEach(u => sel.innerHTML += `<option value="${u.id}">${u.title.split(':')[0]}</option>`); }
+        function updateLbLessonDropdown() { const uId = document.getElementById('lbUnitId').value; const sel = document.getElementById('lbLessonId'); sel.innerHTML = '<option value="">الدرس</option>'; const u = CURRICULUM.find(x => x.id === uId); if(u) { sel.innerHTML += `<option value="ALL_${u.id}">📊 المجموع</option>`; u.lessons.forEach(l => sel.innerHTML += `<option value="${l.id}">${l.t}</option>`); } }
+        function renderLeaderboardAdmin() { 
+            const id = document.getElementById('lbLessonId').value; if(!id) return; let res = []; 
+            if(id.startsWith('ALL_')) { 
+                const u = CURRICULUM.find(x => x.id === id.replace('ALL_','')); 
+                const vIds = u ? u.lessons.map(l => l.id).concat([u.id+'_review']) : []; 
+                let g = {}; 
+                examResultsCache.filter(r => vIds.includes(r.lessonId)).forEach(r => { const i = r.uid || r.phone; if(!g[i]) g[i] = {name:r.name, phone:r.phone, score:0, total:0, time:0, keys:[], uid:r.uid}; g[i].score+=r.score; g[i].total+=r.total; g[i].time+=r.time; g[i].keys.push(r.key); }); res = Object.values(g); 
+            } else { res = examResultsCache.filter(r => r.lessonId === id); } 
+            res.sort((a,b) => b.score !== a.score ? b.score - a.score : a.time - b.time); 
+            document.getElementById('leaderboardTbody').innerHTML = res.map((r,i) => { 
+                let rN = getStudentRealName(r.uid, r.name); 
+                const w = `https://wa.me/20${r.phone}?text=` + encodeURIComponent(`أهلاً ولي أمر البطل ${rN}\nامتحن [${getLessonNameById(id.replace('ALL_',''))}] وجاب (${r.score} من ${r.total}).\nGeo X 🌍`); 
+                let del = !id.startsWith('ALL_') ? `<button onclick="deleteExamResult('${r.key}')" class="bg-red-50 text-red-600 px-2 py-1 rounded text-xs font-bold mr-1 border border-red-200">مسح امتحانه ❌</button>` : ''; 
+                return `<tr class="hover:bg-slate-50 border-b"><td class="p-3 font-bold">${rN}</td><td class="p-3 font-black text-indigo-700">${r.score}/${r.total} <br><span class="text-[10px] text-slate-500">${r.time} ث</span></td><td class="p-3 text-center"><a href="${w}" target="_blank" class="bg-green-50 text-green-600 px-2 py-1 rounded text-xs font-bold">تقرير 📱</a> ${del}</td></tr>`; 
+            }).join(''); 
+        }
+        
+        // مسح امتحان مخصص للطالب لكي يعيده
+        function deleteExamResult(key) { 
+            if(confirm("هل تريد مسح هذا الامتحان؟ (الطالب سيتمكن من إعادته وسيتم مسح أخطائه من بنك الأخطاء)")) { 
+                database.ref('exam_results/'+key).remove().then(() => { alert('تم مسح الامتحان بنجاح!'); renderLeaderboardAdmin(); }); 
+            } 
+        }
+        
+        function exportExcel(id, name) { const wb = XLSX.utils.table_to_book(document.getElementById(id)); XLSX.writeFile(wb, name+'.xlsx'); }
+        function saveAnnouncementText() { const t = document.getElementById('adminAnnouncementInput').value.trim(); database.ref('announcement').set(t).then(() => alert('تم النشر!')); }
+        function clearAnnouncementText() { database.ref('announcement').set('').then(() => { document.getElementById('adminAnnouncementInput').value=''; alert('تم الإيقاف!'); }); }
+
+        let deferredPrompt; 
+        window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredPrompt = e; const b = document.getElementById('install-app-btn'); if(b) b.classList.remove('hidden'); });
+        function installPWA() { 
+            if(deferredPrompt) { deferredPrompt.prompt(); deferredPrompt.userChoice.then((c) => { if(c.outcome === 'accepted') { const b = document.getElementById('install-app-btn'); if(b) b.classList.add('hidden'); } deferredPrompt = null; }); } 
+            else { alert('لتنزيل التطبيق:\n- آيفون: زر المشاركة (Share) ثم "Add to Home Screen".\n- أندرويد: من القائمة (⋮) اختر "Install app".'); } 
+        }
+        if('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js').catch(err => console.log(err)); }); }
+    </script>
+</body>
+</html>
 
