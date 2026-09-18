@@ -61,23 +61,40 @@
         .cropper-view-box, .cropper-face { border-radius: 50%; }
         .cropper-modal { background-color: rgba(15, 23, 42, 0.8); }
 
-        /* تعديلات الوضع الليلي المخصصة للحفاظ على التناسق */
-        .dark body { background-color: #020617; color: #f8fafc; }
-        .dark .bg-white { background-color: #0f172a !important; border-color: #1e293b !important; color: #f8fafc !important; }
-        .dark .text-slate-800 { color: #f1f5f9 !important; }
-        .dark .bg-slate-50 { background-color: #1e293b !important; border-color: #334155 !important; color: #f8fafc !important; }
-        .dark .text-slate-500 { color: #94a3b8 !important; }
-        .dark .border-slate-100, .dark .border-slate-200 { border-color: #1e293b !important; }
-        .dark .shadow-sm { box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.5) !important; }
-        .dark .ui-card:hover { border-color: #475569 !important; }
-
-        /* شريط التنقل السفلي */
-        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-top: 1px solid #e2e8f0; z-index: 50; display: flex; justify-content: space-around; padding: 10px 0; box-shadow: 0 -4px 10px rgba(0,0,0,0.05); transition: background-color 0.3s, border-color 0.3s; }
-        .dark .bottom-nav { background: rgba(15, 23, 42, 0.95); border-top: 1px solid #1e293b; box-shadow: 0 -4px 10px rgba(0,0,0,0.5); }
-        .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 33%; color: #64748b; font-size: 11px; font-weight: 800; cursor: pointer; transition: all 0.3s ease; }
+        /* ================== الوضع الليلي (Dark Mode) الاحترافي ================== */
+        .dark body { background-color: #0f172a; color: #f8fafc; }
+        .dark .bg-white { background-color: #1e293b !important; border-color: #334155 !important; color: #f8fafc !important; }
+        
+        /* ضبط خلفيات الكروت والإعدادات لتباين أفضل */
+        .dark .bg-slate-50, .dark .bg-slate-100 { background-color: #0f172a !important; border-color: #334155 !important; color: #f8fafc !important; }
+        .dark .hover\:bg-slate-100:hover { background-color: #334155 !important; }
+        .dark .hover\:bg-slate-200:hover { background-color: #475569 !important; }
+        
+        /* تلوين النصوص لتكون بيضاء وواضحة جداً */
+        .dark .text-slate-800, .dark .text-slate-700, .dark .text-slate-600 { color: #f8fafc !important; }
+        .dark .text-slate-500, .dark .text-slate-400 { color: #94a3b8 !important; }
+        
+        /* الحدود والظلال في الوضع الليلي */
+        .dark .border-slate-100, .dark .border-slate-200 { border-color: #334155 !important; }
+        .dark .shadow-sm, .dark .shadow-md, .dark .shadow-lg { box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5) !important; }
+        .dark .ui-card:hover { border-color: #64748b !important; }
+        
+        /* شريط التنقل السفلي في الوضع الليلي */
+        .dark .bottom-nav { background: rgba(15, 23, 42, 0.95) !important; border-top: 1px solid #334155 !important; box-shadow: 0 -4px 10px rgba(0,0,0,0.5); }
         .dark .nav-item { color: #94a3b8; }
+        .dark .nav-item.active { color: #38bdf8; text-shadow: 0 0 8px rgba(56, 189, 248, 0.3); }
+        
+        /* الحقول والإدخالات */
+        .dark input, .dark select, .dark textarea { background-color: #1e293b !important; color: #f8fafc !important; border-color: #334155 !important; }
+        
+        /* العناصر الملونة الخفيفة */
+        .dark .bg-indigo-50, .dark .bg-indigo-100 { background-color: rgba(79, 70, 229, 0.15) !important; border-color: rgba(79, 70, 229, 0.3) !important; }
+        .dark .text-indigo-700, .dark .text-indigo-600 { color: #818cf8 !important; }
+
+        /* شريط التنقل السفلي الأساسي */
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-top: 1px solid #e2e8f0; z-index: 50; display: flex; justify-content: space-around; padding: 10px 0; box-shadow: 0 -4px 10px rgba(0,0,0,0.05); transition: background-color 0.3s, border-color 0.3s; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 33%; color: #64748b; font-size: 11px; font-weight: 800; cursor: pointer; transition: all 0.3s ease; }
         .nav-item.active { color: #4F46E5; transform: translateY(-2px); }
-        .dark .nav-item.active { color: #818cf8; }
         .nav-icon { font-size: 20px; margin-bottom: 2px; }
 
         /* زر الذكاء الاصطناعي العائم */
@@ -266,7 +283,7 @@
                     
                     <div class="p-6 space-y-6">
                         <!-- الوضع الليلي -->
-                        <div class="flex items-center justify-between p-4 bg-slate-50 rounded-xl border border-slate-100">
+                        <div class="flex items-center justify-between p-4 bg-slate-50 rounded-xl border border-slate-100 transition-colors">
                             <div class="flex items-center gap-3">
                                 <span class="text-2xl">🌙</span>
                                 <span class="font-black text-slate-700">الوضع الليلي (Dark Mode)</span>
@@ -566,7 +583,7 @@
         </div>
     </div>
 
-    <!-- الشهادة وبنك الأخطاء والكروت (كما هي مع تعديلات بسيطة للـ Z-index) -->
+    <!-- الشهادة وبنك الأخطاء والكروت -->
     <div id="certificate-modal" class="hidden fixed inset-0 bg-[#0B1437]/90 backdrop-blur-md z-[700] flex items-center justify-center p-4">
         <div class="bg-white rounded-none w-full max-w-2xl relative shadow-2xl border-[12px] border-amber-500 p-2 text-center" style="background-image: url('data:image/svg+xml;utf8,<svg width=\"100\" height=\"100\" xmlns=\"http://www.w3.org/2000/svg\"><text x=\"10\" y=\"40\" font-size=\"20\" opacity=\"0.05\">𓂀</text></svg>');">
             <button onclick="document.getElementById('certificate-modal').classList.add('hidden')" class="absolute top-2 right-2 text-slate-400 hover:text-red-500 text-2xl font-bold z-10 bg-white rounded-full w-8 h-8 flex items-center justify-center border shadow-sm transition-colors">✖</button>
@@ -710,7 +727,9 @@
         const cachedStudent = JSON.parse(localStorage.getItem('geox_student_user'));
         const isAdminCached = localStorage.getItem('geox_admin_logged');
         const savedAdminTab = localStorage.getItem('geox_admin_tab') || 'tab-covers';
-        const lastView = JSON.parse(sessionStorage.getItem('geox_current_view'));
+
+        // حل مشكلة الجليتش بتفريغ التوجيه العميق وقت فتح الصفحة (Refresh Fix)
+        sessionStorage.removeItem('geox_current_view');
 
         // نظام التوجيه السفلي
         function switchBottomTab(tabName, fromHistory=false) {
@@ -726,7 +745,12 @@
             document.getElementById('student-settings-content').classList.add('hidden');
 
             // إظهار المطلوب
-            if(tabName === 'home') document.getElementById('student-main-content').classList.remove('hidden');
+            if(tabName === 'home') {
+                document.getElementById('student-main-content').classList.remove('hidden');
+                // حل الجليتش: عند التنقل للرئيسية يتم إعادة ضبطها للعرض الأولي
+                hideAllHomeContainers();
+                document.getElementById('student-stages').classList.remove('hidden');
+            }
             if(tabName === 'leaderboard') { document.getElementById('student-leaderboard-content').classList.remove('hidden'); updateLeaderboardTabUnits(); }
             if(tabName === 'settings') { document.getElementById('student-settings-content').classList.remove('hidden'); updateSettingsTabVisibility(); }
 
@@ -749,24 +773,15 @@
 
             if (cachedStudent) { 
                 updateStudentUI(cachedStudent); 
-                if(savedBottomTab === 'home' && lastView) { 
-                    if(lastView.view === 'grade') openGrade(lastView.g, true); 
-                    else if(lastView.view === 'unit') { currentGrade = lastView.g; openUnit(lastView.u, true); } 
-                    else if(lastView.view === 'lesson') { currentUnit = lastView.u; currentGrade = lastView.g; openLessonContent(lastView.l, lastView.t, true); } 
-                    else document.getElementById('student-stages').classList.remove('hidden'); 
-                } else if (savedBottomTab === 'home') { 
-                    document.getElementById('student-stages').classList.remove('hidden'); 
-                }
             } else { 
                 updateStudentUI(null); 
-                if(savedBottomTab === 'home') document.getElementById('student-stages').classList.remove('hidden');
             }
         }
 
         // استماع للبيانات بسلاسة وسرعة
         database.ref('covers').on('value', s => { 
             coversData = s.val() || {}; 
-            if (currentGrade === '' && !isAdminCached && currentBottomTab === 'home' && (!lastView || lastView.view === 'home')) renderStagesGrid(); 
+            if (currentGrade === '' && !isAdminCached && currentBottomTab === 'home') renderStagesGrid(); 
         });
         database.ref('lessons_data').on('value', s => lessonsDataCache = s.val() || {});
         database.ref('analytics').on('value', s => analyticsDataCache = s.val() || {});
@@ -817,8 +832,6 @@
                             localStorage.setItem('geox_student_user', JSON.stringify(snap.val())); 
                             updateStudentUI(snap.val()); 
                             updateSettingsTabVisibility();
-                            if(currentLesson && !document.getElementById('student-content-container').classList.contains('hidden')) 
-                                openLessonContent(currentLesson, document.getElementById('content-title').innerText.replace('📄 ',''), true); 
                         } else { 
                             pendingGoogleUser = user; document.getElementById('phone-modal').classList.remove('hidden'); 
                         } 
@@ -946,7 +959,7 @@
             }); 
         }
 
-        // نظام التوجيه
+        // نظام التوجيه - حلول متقدمة للجلتيش
         function hideAllHomeContainers() {
             ['student-stages', 'student-units-container', 'student-lessons-container', 'student-content-container', 'exam-screen'].forEach(id => {
                 document.getElementById(id).classList.add('hidden');
@@ -964,15 +977,23 @@
             const st = e.state; 
             hideAllModals();
             
+            // تحديث التاب المرئي دون الإضافة للتاريخ
             if(st && st.tab && st.tab !== currentBottomTab) {
-                switchBottomTab(st.tab, true);
-                if(st.tab !== 'home') return;
+                currentBottomTab = st.tab;
+                document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+                document.getElementById('nav-' + st.tab).classList.add('active');
+                document.getElementById('student-main-content').classList.add('hidden');
+                document.getElementById('student-leaderboard-content').classList.add('hidden');
+                document.getElementById('student-settings-content').classList.add('hidden');
+
+                if(st.tab === 'home') document.getElementById('student-main-content').classList.remove('hidden');
+                else if(st.tab === 'leaderboard') document.getElementById('student-leaderboard-content').classList.remove('hidden');
+                else if(st.tab === 'settings') document.getElementById('student-settings-content').classList.remove('hidden');
             }
 
             if(currentBottomTab === 'home') {
                 hideAllHomeContainers();
                 if(!st || st.view === 'home' || st.view === 'bottom_tab') { 
-                    sessionStorage.setItem('geox_current_view', JSON.stringify({view:'home'}));
                     currentGrade = '';
                     if(!isAdminCached) document.getElementById('student-stages').classList.remove('hidden'); 
                 } else if(st.view === 'grade') { 
@@ -1351,7 +1372,7 @@
                         if(inp.value === correctAns) { lbl.classList.remove('opacity-50', 'bg-slate-50', 'border-slate-200'); lbl.classList.add('correct-answer'); } 
                     }); 
                     if (sel && sel.value === correctAns) { 
-                        sc++; feedbackDiv.classList.add('bg-emerald-100', 'text-emerald-700'); feedbackDiv.innerText = '✅ إجابة صحيحة!'; 
+                        sc++; feedbackDiv.classList.add('bg-emerald-100', 'textemerald-700'); feedbackDiv.innerText = '✅ إجابة صحيحة!'; 
                     } else { 
                         let studentAns = sel ? sel.value : "لم يجب"; mistakesBank.push({ q: q.q, ans: studentAns, corr: correctAns }); 
                         if(sel) { sel.parentElement.classList.remove('opacity-50', 'bg-slate-50'); sel.parentElement.classList.add('wrong-answer'); } 
@@ -1440,7 +1461,6 @@
                 let st = allStudents.find(s => s.uid === r.uid || (r.phone && s.phone === r.phone));
                 let pPic = (st && st.profilePic) ? `<img src="${st.profilePic}" loading="lazy" decoding="async" class="w-8 h-8 rounded-full object-cover border border-slate-200 shrink-0">` : `<div class="w-8 h-8 rounded-full bg-indigo-50 text-indigo-500 flex items-center justify-center text-sm shrink-0">👤</div>`;
                 
-                // زر مسح الامتحان موجود هنا ويعمل بكفاءة
                 let deleteExamBtn = !id.startsWith('ALL_') ? `<button onclick="deleteExamResult('${r.key}')" class="bg-red-50 hover:bg-red-500 text-red-600 hover:text-white px-3 py-1.5 rounded-lg text-xs font-bold transition-colors inline-block mt-2 md:mt-0 shadow-sm mr-1">مسح الامتحان ❌</button>` : '';
 
                 return `<tr class="hover:bg-slate-50"><td class="p-4 font-black text-slate-500">#${i+1}</td><td class="p-4 font-bold text-slate-800"><div class="flex items-center gap-2">${pPic}<span class="truncate">${realName}</span></div></td><td class="p-4 font-black text-indigo-700">${r.score} / ${r.total}</td><td class="p-4 text-slate-600 text-xs">${r.time} ثانية</td><td class="p-4 text-center space-x-2 space-x-reverse"><a href="${waLink}" target="_blank" class="bg-green-50 hover:bg-green-500 text-green-600 hover:text-white px-3 py-1.5 rounded-lg text-xs font-bold transition-colors inline-block shadow-sm">تقرير 📱</a> ${deleteExamBtn}</td></tr>`; 
