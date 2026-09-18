@@ -32,30 +32,23 @@
         .btn-premium:hover { background: linear-gradient(135deg, #4338CA 0%, #2563EB 100%); transform: translateY(-1px); box-shadow: 0 10px 25px -5px rgba(79, 70, 229, 0.4); }
         @keyframes popIn { 0% { transform: scale(0.5); opacity: 0; } 50% { transform: scale(1.2); opacity: 1; } 100% { transform: scale(1); opacity: 0; } }
         .countdown-text { animation: popIn 1s ease-in-out infinite; }
-        
         .admin-tab-btn { background-color: #f1f5f9; color: #64748b; border: 1px solid #e2e8f0; transition: all 0.3s ease; }
         .admin-tab-btn:hover { background-color: #e2e8f0; color: #0f172a; }
         .admin-tab-btn.active { background-color: #4F46E5 !important; color: white !important; border-color: transparent !important; transform: scale(1.05); box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.3); z-index: 10; }
-        
         input, select, textarea { transition: all 0.3s ease; }
         input:focus, select:focus, textarea:focus { box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1); outline: none; border-color: #4F46E5; }
         input[type="radio"]:checked + span { color: #4F46E5; }
-        
         .correct-answer { background-color: #d1fae5 !important; border-color: #10b981 !important; color: #065f46; }
         .wrong-answer { background-color: #fee2e2 !important; border-color: #ef4444 !important; color: #991b1b; }
         .no-select { -webkit-user-select: none; user-select: none; }
-        
         .flip-card { background-color: transparent; height: 300px; perspective: 1000px; cursor: pointer; }
         .flip-card-inner { position: relative; width: 100%; height: 100%; text-align: center; transition: transform 0.6s; transform-style: preserve-3d; }
         .flip-card.flipped .flip-card-inner { transform: rotateY(180deg); }
         .flip-card-front, .flip-card-back { position: absolute; width: 100%; height: 100%; -webkit-backface-visibility: hidden; backface-visibility: hidden; display: flex; align-items: center; justify-content: center; padding: 24px; border-radius: 1.5rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
         .flip-card-front { background-color: #ffffff; border: 2px solid #e2e8f0; color: #1e293b; font-weight: 900; font-size: 1.125rem; }
         .flip-card-back { background-color: #4f46e5; border: 2px solid #4338ca; color: white; transform: rotateY(180deg); font-weight: 900; font-size: 1.125rem; }
-        
         .marquee-rtl { display: inline-block; white-space: nowrap; animation: marquee-rtl 25s linear infinite; }
         @keyframes marquee-rtl { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
-        
-        /* Cropper CSS */
         .cropper-view-box, .cropper-face { border-radius: 50%; }
         .cropper-modal { background-color: rgba(15, 23, 42, 0.8); }
     </style>
@@ -68,24 +61,23 @@
 
     <!-- ================= NAVBAR ================= -->
     <nav class="bg-[#0B1437] text-white sticky top-0 z-40 border-b border-indigo-900/50 shadow-lg backdrop-blur-md bg-opacity-95">
-        <div class="container mx-auto px-2 md:px-4 py-2 md:py-3 flex justify-between items-center relative h-14 md:h-16">
+        <div class="container mx-auto px-2 md:px-4 py-2 md:py-3 flex justify-between items-center relative h-16 md:h-20">
             
             <div class="flex items-center gap-1 md:gap-3 cursor-pointer group z-10 shrink-0" onclick="openSocialModal()">
-                <img src="./logo-transparent.png" loading="lazy" decoding="async" alt="Geo X Logo" class="h-10 md:h-12 w-auto object-contain drop-shadow-[0_0_8px_rgba(255,255,255,0.2)] group-hover:scale-110 transition-transform">
+                <img src="./logo-transparent.png" loading="lazy" decoding="async" alt="Geo X Logo" class="h-12 md:h-16 w-auto object-contain drop-shadow-[0_0_8px_rgba(255,255,255,0.2)] group-hover:scale-110 transition-transform">
                 <div class="hidden sm:block">
                     <h1 class="text-xl font-black tracking-tight text-white group-hover:text-emerald-400 transition-colors">Geo X</h1>
                 </div>
             </div>
 
-            <!-- الكلمة المتوسطة المظبوطة بدون تداخل -->
-            <div class="absolute left-1/2 transform -translate-x-1/2 flex items-center justify-center z-10 pointer-events-none w-full max-w-[150px] md:max-w-xs overflow-hidden px-1" dir="ltr">
-                <span class="text-white font-black text-[10px] md:text-[14px] uppercase tracking-wider drop-shadow-md whitespace-nowrap">PLATFORM FOR</span>
-                <span class="text-emerald-400 font-black text-[10px] md:text-[14px] uppercase tracking-wider drop-shadow-md whitespace-nowrap ml-1 md:ml-1.5">GEN Z</span>
+            <!-- الكلمة الكبيرة الواضحة والممتدة -->
+            <div class="absolute left-1/2 transform -translate-x-1/2 flex items-center justify-center z-10 pointer-events-none w-[60%] md:w-auto overflow-hidden" dir="ltr">
+                <span class="text-white font-black text-[16px] sm:text-[20px] md:text-[26px] lg:text-[28px] uppercase tracking-widest drop-shadow-md whitespace-nowrap">PLATFORM FOR</span>
+                <span class="text-emerald-400 font-black text-[16px] sm:text-[20px] md:text-[26px] lg:text-[28px] uppercase tracking-widest drop-shadow-md whitespace-nowrap ml-1.5 md:ml-2.5">GEN Z</span>
             </div>
 
             <div id="nav-actions" class="flex items-center gap-2 z-10 shrink-0">
-                <!-- زرار التسجيل الأصغر حجماً -->
-                <button id="student-greeting" class="px-2 md:px-3 py-1.5 rounded-xl font-bold bg-white/10 hover:bg-white/20 text-white border border-white/10 transition-all text-[11px] md:text-sm flex items-center gap-1.5 shadow-sm whitespace-nowrap">
+                <button id="student-greeting" class="px-3 py-2 rounded-xl font-bold bg-white/10 hover:bg-white/20 text-white border border-white/10 transition-all text-xs md:text-sm flex items-center gap-1.5 shadow-sm whitespace-nowrap">
                     التسجيل
                 </button>
             </div>
@@ -160,7 +152,6 @@
                 </div>
             </div>
 
-            <!-- Exam Screen -->
             <div id="exam-screen" class="hidden fixed inset-0 bg-[#F4F7FE] z-[100] overflow-y-auto no-select" oncontextmenu="return false;">
                 <div class="container mx-auto max-w-3xl py-8 px-4 relative">
                     <div id="exam-active-header" class="sticky top-4 bg-white/95 backdrop-blur-lg p-4 rounded-2xl shadow-sm border border-slate-200 flex justify-between items-center z-50 mb-8 gap-3">
@@ -201,10 +192,8 @@
                 <button onclick="showAdminTab('tab-announcements')" id="btn-tab-announcements" class="admin-tab-btn font-bold py-3.5 rounded-2xl text-sm md:col-span-1 col-span-2">📣 الإعلانات</button>
             </div>
 
-            <!-- إدارة الغلاف -->
             <div id="tab-covers" class="admin-tab hidden bg-white p-6 md:p-8 rounded-[2rem] shadow-sm border border-slate-100">
                 <h3 class="text-lg font-black text-slate-800 mb-5 border-b border-slate-100 pb-4">إدارة صور الغلاف (للسنين والوحدات)</h3>
-                
                 <form onsubmit="handleCoverUpload(event)" class="grid grid-cols-1 md:grid-cols-2 gap-5">
                     <div><select id="coverGrade" onchange="updateCoverUnitDropdown()" required class="w-full p-3.5 border border-slate-200 rounded-xl bg-slate-50 text-sm font-bold"><option value="" disabled selected>-- السنة الدراسية --</option><option value="prep1">أولى إعدادي</option><option value="prep2">تانية إعدادي</option><option value="prep3">تالتة إعدادي</option></select></div>
                     <div><select id="coverUnitId" class="w-full p-3.5 border border-slate-200 rounded-xl bg-slate-50 text-sm font-bold"><option value="">-- اختار الوحدة (أو سيبها للسنة كاملة) --</option></select></div>
@@ -213,7 +202,6 @@
                 </form>
             </div>
 
-            <!-- إدارة المحتوى -->
             <div id="tab-content" class="admin-tab hidden bg-white p-6 md:p-8 rounded-[2rem] shadow-sm border border-slate-100">
                 <h3 class="text-lg font-black text-slate-800 mb-5 border-b border-slate-100 pb-4">محتوى الدروس</h3>
                 <form onsubmit="handleContentUpload(event)" class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-5">
@@ -297,7 +285,7 @@
         </div>
     </div>
 
-    <!-- نافذة قص الصورة (Cropper.js) -->
+    <!-- نافذة قص الصورة الاحترافية (Cropper.js) -->
     <div id="crop-modal" class="hidden fixed inset-0 bg-[#0B1437]/95 backdrop-blur-md z-[600] flex items-center justify-center p-4">
         <div class="bg-white p-6 rounded-[2rem] w-full max-w-sm text-center shadow-2xl border border-slate-100">
             <h3 class="text-xl font-black text-slate-800 mb-2">ضبط الصورة الشخصية 🖼️</h3>
@@ -503,32 +491,29 @@
             { id: 'p3_u4', grade: 'prep3', title: 'الوحدة الرابعة: مصر والزحف الاستعماري ومحاولات التحرر الوطني', lessons: [{id: 'p3_u4_l1', t: 'خلفاء محمد علي وازدياد النفوذ الأجنبي.'}, {id: 'p3_u4_l2', t: 'الحركة الوطنية والثورة العرابية.'}, {id: 'p3_u4_l3', t: 'الكفاح الوطني ضد الاحتلال البريطاني.'}, {id: 'p3_u4_l4', t: 'مصر من الحماية البريطانية حتى ثورة يوليو 1952م.'}] }
         ];
         const DEFAULT_COVER = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNjAwIiBoZWlnaHQ9IjkwMCI+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0iIzBCOTE0MzciLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZm9udC1mYW1pbHk9IkNhaXJvLCBzYW5zLXNlcmlmIiBmb250LXdlaWdodD0iOTAwIiBmb250LXNpemU9IjYwIiBmaWxsPSIjMzQ4MkVCIiBkb21pbmFudC1iYXNlbGluZT0ibWlkZGxlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5HZW8gWDwvdGV4dD48L3N2Zz4='; 
+        
+        let coversData = {}, lessonsDataCache = {}, examResultsCache = [], allStudents = [], analyticsDataCache = {};
+        let currentGrade = '', currentUnit = '', currentLesson = null, currentExamData = null, pendingGoogleUser = null, cheatWarnings = 0, currentFlashcardIndex = 0, flashcardsList = []; 
+        let cropperInstance = null;
 
-        let coversData = {}, lessonsDataCache = {}, examResultsCache = [], allStudents = [];
-        let analyticsDataCache = {};
-        let currentGrade = '', currentUnit = '', currentLesson = null, currentExamData = null;
-        let pendingGoogleUser = null;
-        let cheatWarnings = 0; 
-        let currentFlashcardIndex = 0, flashcardsList = []; 
-        let isViewRestored = false;
-        let cropperInstance = null; // للمكتبة الجديدة للقص
-
-        // 1. نظام الذاكرة الفورية (Zero-Loading Time)
+        // التحميل الاستباقي (Zero Loading Time)
         const cachedStudent = JSON.parse(localStorage.getItem('geox_student_user'));
         const isAdminCached = localStorage.getItem('geox_admin_logged');
         const savedAdminTab = localStorage.getItem('geox_admin_tab') || 'tab-covers';
         const lastView = JSON.parse(sessionStorage.getItem('geox_current_view'));
 
+        // معالجة العرض الفوري
         if(isAdminCached) { 
             document.getElementById('teacher-view').classList.remove('hidden'); 
             showAdminTab(savedAdminTab, true); 
         } else if (cachedStudent) { 
             document.getElementById('student-view').classList.remove('hidden');
             updateStudentUI(cachedStudent); 
-            if(lastView){ 
-                if(lastView.view==='grade') openGrade(lastView.g, true); 
-                else if(lastView.view==='unit'){ currentGrade=lastView.g; openUnit(lastView.u, true);} 
-                else if(lastView.view==='lesson'){ currentUnit=lastView.u; currentGrade=lastView.g; openLessonContent(lastView.l, lastView.t, true);} 
+            if(lastView) { 
+                if(lastView.view === 'grade') openGrade(lastView.g, true); 
+                else if(lastView.view === 'unit') { currentGrade = lastView.g; openUnit(lastView.u, true); } 
+                else if(lastView.view === 'lesson') { currentUnit = lastView.u; currentGrade = lastView.g; openLessonContent(lastView.l, lastView.t, true); } 
+                else document.getElementById('student-stages').classList.remove('hidden'); 
             } else { 
                 document.getElementById('student-stages').classList.remove('hidden'); 
             }
@@ -538,47 +523,50 @@
             document.getElementById('student-stages').classList.remove('hidden');
         }
 
-        // استماع للبيانات بسلاسة بدون إعادة تحميل مزعجة
+        // استماع للبيانات بسلاسة وسرعة
         database.ref('covers').on('value', s => { 
-            coversData = s.val()||{}; 
+            coversData = s.val() || {}; 
             if (currentGrade === '' && !isAdminCached && (!lastView || lastView.view === 'home')) renderStagesGrid(); 
         });
-        database.ref('lessons_data').on('value', s => lessonsDataCache = s.val()||{});
-        database.ref('analytics').on('value', s => analyticsDataCache = s.val()||{});
+        database.ref('lessons_data').on('value', s => lessonsDataCache = s.val() || {});
+        database.ref('analytics').on('value', s => analyticsDataCache = s.val() || {});
         database.ref('exam_results').on('value', s => { 
-            const val = s.val()||{}; examResultsCache = Object.keys(val).map(k => ({...val[k], key: k})); 
+            const val = s.val() || {}; 
+            examResultsCache = Object.keys(val).map(k => ({...val[k], key: k})); 
             if(isAdminCached) renderLeaderboard(); 
             const st = JSON.parse(localStorage.getItem('geox_student_user')); 
             if(st && !isAdminCached) updateStudentUI(st); 
         });
         database.ref('students').on('value', s => { 
-            const val = s.val()||{}; allStudents = Object.keys(val).map(k => ({...val[k], uid: k})); 
+            const val = s.val() || {}; 
+            allStudents = Object.keys(val).map(k => ({...val[k], uid: k})); 
             if(isAdminCached) renderStudentsTable(); 
         });
         database.ref('announcement').on('value', s => { 
-            const text = s.val() || ''; const bar = document.getElementById('announcement-bar'); 
+            const text = s.val() || ''; 
+            const bar = document.getElementById('announcement-bar'); 
             if(text) { bar.classList.remove('hidden'); document.getElementById('announcement-text').innerText = text; } 
             else { bar.classList.add('hidden'); } 
             if(document.getElementById('adminAnnouncementInput')) document.getElementById('adminAnnouncementInput').value = text; 
         });
 
+        // نظام تسجيل الدخول
         auth.onAuthStateChanged(user => {
-            if(user){ 
+            if(user) { 
                 const adminEmails = ['yousef74joe74@gmail.com', 'm.fathy9875@gmail.com']; 
-                if(adminEmails.includes(user.email)){ 
+                if(adminEmails.includes(user.email)) { 
                     localStorage.setItem('geox_admin_logged', 'true'); 
                     document.getElementById('student-view').classList.add('hidden'); 
                     document.getElementById('teacher-view').classList.remove('hidden'); 
                     document.getElementById('student-greeting').innerHTML = `لوحة الإدارة ⚙️`; 
                     document.getElementById('student-greeting').onclick = null; 
-                    renderStudentsTable(); renderLeaderboard(); 
-                    showAdminTab(savedAdminTab, true); 
+                    renderStudentsTable(); renderLeaderboard(); showAdminTab(savedAdminTab, true); 
                 } else { 
                     localStorage.removeItem('geox_admin_logged'); 
                     document.getElementById('teacher-view').classList.add('hidden'); 
                     document.getElementById('student-view').classList.remove('hidden'); 
                     database.ref('students/' + user.uid).once('value', snap => { 
-                        if(snap.exists()){ 
+                        if(snap.exists()) { 
                             localStorage.setItem('geox_student_user', JSON.stringify(snap.val())); 
                             updateStudentUI(snap.val()); 
                             if(currentLesson && !document.getElementById('student-content-container').classList.contains('hidden')) 
@@ -589,7 +577,9 @@
                     }); 
                 } 
             } else { 
-                localStorage.removeItem('geox_admin_logged'); localStorage.removeItem('geox_student_user'); updateStudentUI(null); 
+                localStorage.removeItem('geox_admin_logged'); 
+                localStorage.removeItem('geox_student_user'); 
+                updateStudentUI(null); 
             }
         });
 
@@ -612,9 +602,10 @@
             return 'border border-white/30 shadow-sm'; 
         }
 
-        function getStudentRealName(uid, fallbackName) { let st = allStudents.find(s => s.uid === uid); return st ? st.name : fallbackName; }
+        function getStudentRealName(uid, fallbackName) { 
+            let st = allStudents.find(s => s.uid === uid); return st ? st.name : fallbackName; 
+        }
 
-        // تم التعديل: إظهار الصورة فقط بدون الاسم بجوارها فوق
         function updateStudentUI(st) { 
             const btn = document.getElementById('student-greeting'); 
             const msg = document.getElementById('main-welcome-msg'); 
@@ -622,7 +613,6 @@
                 let realName = getStudentRealName(st.uid, st.name); 
                 let ringClass = getUserRankClass(st.uid); 
                 let avatarHtml = st.profilePic ? `<img src="${st.profilePic}" loading="lazy" decoding="async" class="w-8 h-8 md:w-9 md:h-9 rounded-full object-cover shrink-0 ${ringClass}">` : `<div class="w-8 h-8 md:w-9 md:h-9 rounded-full bg-indigo-50 text-indigo-600 flex items-center justify-center text-sm shrink-0 ${ringClass}">𓂀</div>`; 
-                
                 btn.innerHTML = `${avatarHtml}`; 
                 btn.className = "rounded-full transition-transform hover:scale-105 shadow-md flex items-center justify-center";
                 btn.onclick = openProfileModal; 
@@ -636,10 +626,20 @@
         }
 
         function handleUnifiedLogin() { auth.signInWithPopup(googleProvider).catch(err => alert("حدث خطأ: " + err.message)); }
-        function saveStudentPhone() { const phone = document.getElementById('newStudentPhone').value.trim(); if (phone.length < 10) return alert('برجاء كتابة رقم الموبايل بشكل صحيح!'); const studentData = { uid: pendingGoogleUser.uid, name: pendingGoogleUser.displayName, email: pendingGoogleUser.email, phone: phone, nameEdited: false, profilePic: null, date: new Date().toLocaleString('ar-EG') }; database.ref('students/' + pendingGoogleUser.uid).set(studentData).then(() => { localStorage.setItem('geox_student_user', JSON.stringify(studentData)); document.getElementById('phone-modal').classList.add('hidden'); updateStudentUI(studentData); alert('تم التسجيل بنجاح!'); }); }
+        function saveStudentPhone() { 
+            const phone = document.getElementById('newStudentPhone').value.trim(); 
+            if (phone.length < 10) return alert('برجاء كتابة رقم الموبايل بشكل صحيح!'); 
+            const studentData = { uid: pendingGoogleUser.uid, name: pendingGoogleUser.displayName, email: pendingGoogleUser.email, phone: phone, nameEdited: false, profilePic: null, date: new Date().toLocaleString('ar-EG') }; 
+            database.ref('students/' + pendingGoogleUser.uid).set(studentData).then(() => { 
+                localStorage.setItem('geox_student_user', JSON.stringify(studentData)); 
+                document.getElementById('phone-modal').classList.add('hidden'); 
+                updateStudentUI(studentData); 
+                alert('تم التسجيل بنجاح!'); 
+            }); 
+        }
         function logoutUnified() { localStorage.removeItem('geox_student_user'); auth.signOut().then(() => location.reload()); }
 
-        // نظام القص والتحريك الاحترافي باستخدام Cropper.js
+        // نظام القص والتحريك الاحترافي (Cropper.js)
         function triggerCropModal(e) { 
             const file = e.target.files[0]; if(!file) return; 
             const reader = new FileReader(); 
@@ -675,11 +675,7 @@
         function confirmCropAndUpload() { 
             if (!cropperInstance) return;
             const canvas = cropperInstance.getCroppedCanvas({
-                width: 300,
-                height: 300,
-                fillColor: '#0F172A',
-                imageSmoothingEnabled: true,
-                imageSmoothingQuality: 'high',
+                width: 300, height: 300, fillColor: '#0F172A', imageSmoothingEnabled: true, imageSmoothingQuality: 'high',
             });
             const finalBase64 = canvas.toDataURL('image/jpeg', 0.8); 
             
@@ -694,72 +690,360 @@
             }); 
         }
 
+        // نظام التوجيه الصارم (Strict Router) لمنع تداخل الصفحات في الـ Refresh والرجوع
+        function hideAllContainers() {
+            ['student-stages', 'student-units-container', 'student-lessons-container', 'student-content-container', 'exam-screen', 'profile-modal', 'crop-modal', 'phone-modal', 'social-modal', 'mistakes-modal', 'flashcards-modal', 'certificate-modal', 'global-leaderboard-modal'].forEach(id => {
+                document.getElementById(id).classList.add('hidden');
+            });
+        }
+
+        window.addEventListener('DOMContentLoaded', () => { history.replaceState({view: 'home'}, '', window.location.pathname); });
+        
         window.addEventListener('popstate', (e) => { 
             const st = e.state; 
+            hideAllContainers();
+            
             if(!st || st.view === 'home') { 
+                sessionStorage.setItem('geox_current_view', JSON.stringify({view:'home'}));
+                currentGrade = '';
                 if(!isAdminCached) document.getElementById('student-stages').classList.remove('hidden'); 
-            } 
+            } else if(st.view === 'grade') { 
+                openGrade(st.g, true); 
+            } else if(st.view === 'unit') { 
+                currentGrade = st.g; openUnit(st.u, true); 
+            } else if(st.view === 'lesson') { 
+                currentUnit = st.u; currentGrade = st.g; openLessonContent(st.l, st.t, true); 
+            } else if(st.view === 'exam') {
+                document.getElementById('student-content-container').classList.remove('hidden');
+            }
         });
+        
         function goBackVisually() { history.back(); }
 
         function renderStagesGrid() { document.getElementById('stages-grid').innerHTML = Object.keys(GRADES).map(g => `<div onclick="openGrade('${g}')" class="ui-card cursor-pointer rounded-[2rem] overflow-hidden aspect-video relative bg-[#0B1437]"><img src="${coversData['STAGE_COVER_'+g]||DEFAULT_COVER}" loading="lazy" decoding="async" class="absolute inset-0 w-full h-full object-cover opacity-70 hover:opacity-100 transition-opacity duration-700"><div class="absolute bottom-0 inset-x-0 p-5 bg-gradient-to-t from-[#0B1437] via-[#0B1437]/80 to-transparent z-20 flex items-end"><h3 class="text-2xl md:text-3xl font-black text-white drop-shadow-lg">${GRADES[g]}</h3></div></div>`).join(''); }
-        function openGrade(g, fromHistory=false) { if(!fromHistory){ history.pushState({view:'grade',g:g},'','#grade'); sessionStorage.setItem('geox_current_view',JSON.stringify({view:'grade',g:g})); } currentGrade=g; document.getElementById('student-stages').classList.add('hidden'); document.getElementById('student-units-container').classList.remove('hidden'); document.getElementById('units-title').innerText='📚 وحدات '+GRADES[g]; document.getElementById('student-units-grid').innerHTML=CURRICULUM.filter(u=>u.grade===g).map(u=>`<div onclick="openUnit('${u.id}')" class="ui-card cursor-pointer bg-white rounded-[2rem] overflow-hidden border border-slate-100 shadow-sm hover:shadow-md"><img src="${coversData[u.id]||DEFAULT_COVER}" loading="lazy" decoding="async" class="aspect-video w-full object-cover"><div class="p-5 font-black text-slate-800 text-sm md:text-lg">${u.title.split(':').join(':<br><span class="text-indigo-600 text-sm md:text-base font-bold">')}</span></div></div>`).join(''); }
-        function openUnit(id, fromHistory=false) { if(!fromHistory){ history.pushState({view:'unit',u:id,g:currentGrade},'','#unit'); sessionStorage.setItem('geox_current_view',JSON.stringify({view:'unit',g:currentGrade,u:id})); } currentUnit=id; document.getElementById('student-units-container').classList.add('hidden'); document.getElementById('student-lessons-container').classList.remove('hidden'); const u=CURRICULUM.find(x=>x.id===id); document.getElementById('lesson-unit-badge').innerText=GRADES[u.grade]; document.getElementById('lessons-title').innerText=u.title.split(':')[0]; let html=u.lessons.map((l,i)=>`<div onclick="openLessonContent('${l.id}', '${l.t.replace(/'/g, "\\'")}')" class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 cursor-pointer flex items-center gap-4 hover:border-indigo-200 group"><div class="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 font-black flex items-center justify-center group-hover:bg-indigo-600 group-hover:text-white transition-colors">${i+1}</div><h4 class="font-bold text-slate-800 flex-grow">${l.t}</h4></div>`).join(''); html+=`<div onclick="openLessonContent('${u.id}_review', 'المراجعة الشاملة')" class="bg-amber-50 p-5 rounded-2xl border border-amber-200 cursor-pointer flex items-center gap-4 group mt-6 md:col-span-2"><div class="w-12 h-12 rounded-xl bg-amber-100 text-amber-600 font-black flex items-center justify-center text-xl">🌟</div><h4 class="font-black text-amber-900 flex-grow text-lg">المراجعة الشاملة للوحدة</h4></div>`; document.getElementById('student-lessons-list').innerHTML=html; }
-
-        window.recordAnalytics = function(lessonId, type){ database.ref('analytics/'+lessonId+'/'+type).transaction(val=>(val||0)+1); };
-        function openYouTubeNative(url){ if(!url)return; recordAnalytics(currentLesson,'yt'); let isMobile=/iPhone|iPad|iPod|Android/i.test(navigator.userAgent); if(isMobile&&url.includes('youtube.com/watch?v=')){ let vid=url.split('v=')[1].split('&')[0]; window.location.href='vnd.youtube://'+vid; setTimeout(()=>{window.open(url,'_blank');},1500); } else if(isMobile&&url.includes('youtu.be/')){ let vid=url.split('youtu.be/')[1].split('?')[0]; window.location.href='vnd.youtube://'+vid; setTimeout(()=>{window.open(url,'_blank');},1500); } else { window.open(url,'_blank'); } }
-
-        function getSafeExamData(examData){ if(!examData)return[]; let arr=[]; if(Array.isArray(examData)) arr=[...examData]; else if(typeof examData==='object') arr=Object.values(examData); return arr.filter(item=>item&&typeof item==='object'&&item.q); }
-
-        function openLessonContent(id, title, fromHistory=false){ if(!fromHistory){ history.pushState({view:'lesson',l:id,t:title,u:currentUnit,g:currentGrade},'','#lesson'); sessionStorage.setItem('geox_current_view',JSON.stringify({view:'lesson',g:currentGrade,u:currentUnit,l:id,t:title})); } currentLesson=id; document.getElementById('student-lessons-container').classList.add('hidden'); document.getElementById('student-content-container').classList.remove('hidden'); document.getElementById('content-title').innerText='📄 '+title; const data=lessonsDataCache[id]||{}; currentExamData=data.exam; const bYt=document.getElementById('btn-yt'), bPdf=document.getElementById('btn-pdf'), bEx=document.getElementById('btn-exam'), bFc=document.getElementById('btn-flashcards'); if(data.yt){ bYt.removeAttribute('href'); bYt.setAttribute('onclick', `openYouTubeNative('${data.yt}')`); bYt.className="block w-full bg-red-500 hover:bg-red-600 text-white font-bold py-3 rounded-xl text-sm transition-colors mt-4 shadow-md shadow-red-500/20 cursor-pointer"; bYt.innerText="اتفرج دلوقتي ▶️"; } else { bYt.removeAttribute('href'); bYt.removeAttribute('onclick'); bYt.className="block w-full bg-slate-200 text-slate-400 font-bold py-3 rounded-xl text-sm pointer-events-none mt-4"; bYt.innerText="مش متاح ❌"; } if(data.pdf){ bPdf.className="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 rounded-xl text-sm transition-colors mt-4 shadow-md shadow-blue-500/20"; bPdf.innerText="حملها من هنا 📥"; bPdf.onclick=()=>{ recordAnalytics(id,'pdf'); const a=document.createElement('a');a.href=data.pdf;a.download=title+'.pdf';a.click();}; } else { bPdf.className="w-full bg-slate-200 text-slate-400 font-bold py-3 rounded-xl text-sm pointer-events-none mt-4"; bPdf.innerText="مش متاح ❌"; bPdf.onclick=null; } let safeData=getSafeExamData(currentExamData); let hasValidExam=safeData.length>0; if(hasValidExam){ bFc.className="w-full bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 rounded-xl text-sm transition-colors mt-4 shadow-md shadow-amber-500/20"; bFc.innerText="راجع معلوماتك 🔄"; bFc.onclick=openFlashcards; } else { bFc.className="w-full bg-slate-200 text-slate-400 font-bold py-3 rounded-xl text-sm pointer-events-none mt-4"; bFc.innerText="مش متاح ❌"; bFc.onclick=null; } const st=JSON.parse(localStorage.getItem('geox_student_user')); if(st&&examResultsCache.find(r=>r.uid===st.uid&&r.lessonId===id)){ bEx.className="w-full bg-slate-700 text-slate-400 font-black py-3 rounded-xl text-sm mt-4 border border-slate-600 pointer-events-none cursor-not-allowed"; bEx.innerText="امتحنته خلاص 🔒"; bEx.onclick=null; } else if(hasValidExam){ bEx.className="w-full bg-emerald-500 hover:bg-emerald-400 text-white font-black py-3 rounded-xl text-sm transition-colors mt-4 shadow-lg shadow-emerald-500/30"; bEx.innerText=st?"ابتدى الامتحان 🚀":"التسجيل للامتحان 🚀"; bEx.onclick=st?()=>startExam(title):handleUnifiedLogin; } else { bEx.className="w-full bg-slate-700 text-slate-400 font-black py-3 rounded-xl text-sm pointer-events-none mt-4 border border-slate-600"; bEx.innerText="مفيش امتحان ❌"; bEx.onclick=null; } }
-
-        function getLessonNameById(lessonId){ if(lessonId.includes('_review')) return "مراجعة شاملة"; for(let u of CURRICULUM){ let l=u.lessons.find(x=>x.id===lessonId); if(l) return l.t; } return lessonId; }
         
-        function openProfileModal(){ const st=JSON.parse(localStorage.getItem('geox_student_user')); if(st){ let realName=getStudentRealName(st.uid, st.name); document.getElementById('profile-name').innerText=realName; document.getElementById('profile-name-display').classList.remove('hidden'); document.getElementById('profile-name-edit').classList.add('hidden'); let ringClass=getUserRankClass(st.uid); let avatarHtml=st.profilePic?`<img src="${st.profilePic}" loading="lazy" class="w-full h-full object-cover">`:`𓂀`; document.getElementById('profile-modal-avatar').className=`w-24 h-24 bg-white/10 rounded-full flex items-center justify-center text-5xl text-emerald-400 overflow-hidden shadow-lg ${ringClass}`; document.getElementById('profile-modal-avatar').innerHTML=avatarHtml; const myScores=examResultsCache.filter(r=>r.uid===st.uid); myScores.sort((a,b)=>new Date(b.date)-new Date(a.date)); let totalSc=0, totalMax=0; myScores.forEach(s=>{ totalSc+=s.score; totalMax+=s.total; }); let overallPerc=Math.round((totalSc/totalMax)*100)||0; let badgesHtml=''; if(myScores.length>0){ if(myScores.length===1){ if(overallPerc>=50) badgesHtml='<span class="bg-amber-100 text-amber-700 px-2 py-1 rounded text-xs font-bold shadow-sm border border-amber-200">بداية مبشرة 🚶</span>'; else badgesHtml='<span class="bg-slate-100 text-slate-700 px-2 py-1 rounded text-xs font-bold shadow-sm border border-slate-200">محاولة أولى 🎯</span>'; } else { if(overallPerc>=90) badgesHtml='<span class="bg-yellow-100 text-yellow-700 px-2 py-1 rounded text-xs font-bold shadow-sm border border-yellow-300">أسطورة الجغرافيا 👑</span>'; else if(overallPerc>=75) badgesHtml='<span class="bg-emerald-100 text-emerald-700 px-2 py-1 rounded text-xs font-bold shadow-sm border border-emerald-200">بطل صاعد 🌟</span>'; else badgesHtml='<span class="bg-blue-100 text-blue-700 px-2 py-1 rounded text-xs font-bold shadow-sm border border-blue-200">طالب مكافح 📚</span>'; } if(myScores.some(s=>s.score===s.total&&s.total>0)){ badgesHtml+=' <span class="bg-purple-100 text-purple-700 px-2 py-1 rounded text-xs font-bold shadow-sm border border-purple-200">قناص الدرجات 🎯</span>'; } } document.getElementById('student-badges').innerHTML=badgesHtml; if(myScores.length>0){ const uniqueLessons=[...new Set(myScores.map(s=>s.lessonId))]; let gCounts={prep1:0,prep2:0,prep3:0}; uniqueLessons.forEach(lId=>{ const u=CURRICULUM.find(x=>x.lessons.some(l=>l.id===lId)||lId===x.id+'_review'); if(u) gCounts[u.grade]++; }); const domGrade=Object.keys(gCounts).reduce((a,b)=>gCounts[a]>gCounts[b]?a:b); const unitsInGrade=CURRICULUM.filter(x=>x.grade===domGrade); const totalItems=unitsInGrade.reduce((acc,curr)=>acc+curr.lessons.length+1,0); const percentage=Math.min(100,Math.round((uniqueLessons.length/totalItems)*100)); document.getElementById('profile-progress').style.width=percentage+'%'; document.getElementById('profile-progress-text').innerText=`إنجازك في منهج ${GRADES[domGrade]}: ${percentage}%`; } else { document.getElementById('profile-progress').style.width='0%'; document.getElementById('profile-progress-text').innerText=`إنجازك في المنهج: 0%`; } let listHtml=myScores.length===0?'<p class="text-slate-400 text-center text-sm py-4">لم تمتحن أي درس بعد.</p>':''; myScores.forEach(s=>{ let perc=Math.round((s.score/s.total)*100)||0; let color=perc>=85?'text-emerald-600 bg-emerald-50 border-emerald-100':(perc>=50?'text-amber-600 bg-amber-50 border-amber-100':'text-red-600 bg-red-50 border-red-100'); listHtml+=`<div class="bg-white p-4 rounded-xl border border-slate-100 shadow-sm flex flex-col gap-2"><div class="flex justify-between items-center gap-3"><div class="text-right"><div class="font-bold text-slate-800 text-sm mb-1">${getLessonNameById(s.lessonId)}</div><div class="text-[10px] text-slate-400">${s.date}</div></div><div class="px-3 py-2 rounded-lg border font-black text-sm shrink-0 ${color}">${s.score} / ${s.total}</div></div>`; if(perc>=90||s.lessonId.includes('_review')){ listHtml+=`<button onclick="generateCertificate('${realName}', '${getLessonNameById(s.lessonId)}')" class="bg-gradient-to-r from-amber-100 to-orange-50 hover:from-amber-200 hover:to-orange-100 text-amber-700 px-3 py-1.5 rounded-lg text-xs font-black border border-amber-200 w-full transition-colors shadow-sm text-center mt-2">استلم شهادة التقدير 🎁</button>`; } listHtml+=`</div>`; }); document.getElementById('student-scores-list').innerHTML=listHtml; document.getElementById('profile-modal').classList.remove('hidden'); } else handleUnifiedLogin(); }
-        function showEditNameForm(){ const st=JSON.parse(localStorage.getItem('geox_student_user')); if(st.nameEdited) return alert('عفواً، لقد قمت بتعديل اسمك من قبل ولا يمكن تعديله مرة أخرى.'); document.getElementById('profile-name-display').classList.add('hidden'); document.getElementById('profile-name-edit').classList.remove('hidden'); const parts=st.name.split(' '); document.getElementById('edit-fname').value=parts[0]||''; document.getElementById('edit-mname').value=parts[1]||''; document.getElementById('edit-lname').value=parts.slice(2).join(' ')||''; }
-        function cancelEditName(){ document.getElementById('profile-name-display').classList.remove('hidden'); document.getElementById('profile-name-edit').classList.add('hidden'); }
-        function saveEditedName(){ const f=document.getElementById('edit-fname').value.trim(), m=document.getElementById('edit-mname').value.trim(), l=document.getElementById('edit-lname').value.trim(); if(!f||!m||!l) return alert('برجاء كتابة الاسم الثلاثي كاملاً.'); const newName=`${f} ${m} ${l}`; const st=JSON.parse(localStorage.getItem('geox_student_user')); st.name=newName; st.nameEdited=true; database.ref('students/'+st.uid).update({name:newName, nameEdited:true}).then(()=>{ localStorage.setItem('geox_student_user', JSON.stringify(st)); document.getElementById('profile-name').innerText=newName; updateStudentUI(st); cancelEditName(); alert('تم تحديث الاسم بنجاح!'); }); }
-        function generateCertificate(name, lesson){ document.getElementById('cert-name').innerText=name; document.getElementById('cert-lesson').innerText=lesson; document.getElementById('certificate-modal').classList.remove('hidden'); }
-        function openMistakesBank(){ const st=JSON.parse(localStorage.getItem('geox_student_user')); const myScores=examResultsCache.filter(r=>r.uid===st.uid&&r.mistakes&&r.mistakes.length>0); let html=''; if(myScores.length===0){ html='<p class="text-slate-400 text-center text-sm py-10 font-bold">ممتاز! ليس لديك أي أخطاء مسجلة حتى الآن 🎉</p>'; } else { myScores.forEach(s=>{ html+=`<h4 class="font-black text-slate-700 bg-slate-200 p-2 rounded-lg mt-4 mb-2 text-sm">${getLessonNameById(s.lessonId)}</h4><div class="space-y-3">`; s.mistakes.forEach(m=>{ html+=`<div class="bg-white p-4 rounded-xl border border-red-100 shadow-sm"><p class="font-bold text-slate-800 text-sm mb-2">س: ${m.q}</p><p class="text-xs text-red-600 font-bold mb-1">إجابتك: <span class="line-through text-slate-500">${m.ans}</span></p><p class="text-xs text-emerald-600 font-bold">الصحيحة: ${m.corr}</p></div>`; }); html+=`</div>`; }); } document.getElementById('mistakes-list').innerHTML=html; document.getElementById('mistakes-modal').classList.remove('hidden'); }
+        function openGrade(g, fromHistory=false) { 
+            if(!fromHistory) { history.pushState({view:'grade',g:g},'','#grade'); sessionStorage.setItem('geox_current_view',JSON.stringify({view:'grade',g:g})); } 
+            currentGrade = g; 
+            hideAllContainers();
+            document.getElementById('student-units-container').classList.remove('hidden'); 
+            document.getElementById('units-title').innerText = '📚 وحدات ' + GRADES[g]; 
+            document.getElementById('student-units-grid').innerHTML = CURRICULUM.filter(u=>u.grade===g).map(u => `<div onclick="openUnit('${u.id}')" class="ui-card cursor-pointer bg-white rounded-[2rem] overflow-hidden border border-slate-100 shadow-sm hover:shadow-md"><img src="${coversData[u.id]||DEFAULT_COVER}" loading="lazy" decoding="async" class="aspect-video w-full object-cover"><div class="p-5 font-black text-slate-800 text-sm md:text-lg">${u.title.split(':').join(':<br><span class="text-indigo-600 text-sm md:text-base font-bold">')}</span></div></div>`).join(''); 
+        }
         
-        function openFlashcards(){ let safeData=getSafeExamData(currentExamData); flashcardsList=safeData.filter(q=>q.type!=='essay'&&q.answer); if(flashcardsList.length===0) return alert('لا يوجد كروت مراجعة لهذا الدرس.'); currentFlashcardIndex=0; renderFlashcard(); document.getElementById('flashcards-modal').classList.remove('hidden'); }
-        function renderFlashcard(){ const q=flashcardsList[currentFlashcardIndex]; document.getElementById('flashcard-counter').innerText=`${currentFlashcardIndex+1} / ${flashcardsList.length}`; document.getElementById('flashcard-container').innerHTML=`<div class="flip-card" onclick="this.classList.toggle('flipped')"><div class="flip-card-inner"><div class="flip-card-front"><p>${q.q}</p></div><div class="flip-card-back"><p>${q.answer}</p></div></div></div>`; }
-        function nextFlashcard(){ if(currentFlashcardIndex<flashcardsList.length-1){ currentFlashcardIndex++; renderFlashcard(); } }
-        function prevFlashcard(){ if(currentFlashcardIndex>0){ currentFlashcardIndex--; renderFlashcard(); } }
-        function openSocialModal(){ document.getElementById('social-modal').classList.remove('hidden'); }
+        function openUnit(id, fromHistory=false) { 
+            if(!fromHistory) { history.pushState({view:'unit',u:id,g:currentGrade},'','#unit'); sessionStorage.setItem('geox_current_view',JSON.stringify({view:'unit',g:currentGrade,u:id})); } 
+            currentUnit = id; 
+            hideAllContainers();
+            document.getElementById('student-lessons-container').classList.remove('hidden'); 
+            const u = CURRICULUM.find(x=>x.id===id); 
+            document.getElementById('lesson-unit-badge').innerText = GRADES[u.grade]; 
+            document.getElementById('lessons-title').innerText = u.title.split(':')[0]; 
+            let html = u.lessons.map((l,i) => `<div onclick="openLessonContent('${l.id}', '${l.t.replace(/'/g, "\\'")}')" class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 cursor-pointer flex items-center gap-4 hover:border-indigo-200 group"><div class="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 font-black flex items-center justify-center group-hover:bg-indigo-600 group-hover:text-white transition-colors">${i+1}</div><h4 class="font-bold text-slate-800 flex-grow">${l.t}</h4></div>`).join(''); 
+            html += `<div onclick="openLessonContent('${u.id}_review', 'المراجعة الشاملة')" class="bg-amber-50 p-5 rounded-2xl border border-amber-200 cursor-pointer flex items-center gap-4 group mt-6 md:col-span-2"><div class="w-12 h-12 rounded-xl bg-amber-100 text-amber-600 font-black flex items-center justify-center text-xl">🌟</div><h4 class="font-black text-amber-900 flex-grow text-lg">المراجعة الشاملة للوحدة</h4></div>`; 
+            document.getElementById('student-lessons-list').innerHTML = html; 
+        }
+
+        window.recordAnalytics = function(lessonId, type) { database.ref('analytics/' + lessonId + '/' + type).transaction(val => (val || 0) + 1); };
+
+        function openYouTubeNative(url) {
+            if (!url) return;
+            recordAnalytics(currentLesson, 'yt');
+            let isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+            if (isMobile && url.includes('youtube.com/watch?v=')) { let vid = url.split('v=')[1].split('&')[0]; window.location.href = 'vnd.youtube://' + vid; setTimeout(() => { window.open(url, '_blank'); }, 1500);
+            } else if (isMobile && url.includes('youtu.be/')) { let vid = url.split('youtu.be/')[1].split('?')[0]; window.location.href = 'vnd.youtube://' + vid; setTimeout(() => { window.open(url, '_blank'); }, 1500);
+            } else { window.open(url, '_blank'); }
+        }
+
+        function getSafeExamData(examData) {
+            if (!examData) return [];
+            let arr = [];
+            if (Array.isArray(examData)) { arr = [...examData]; } 
+            else if (typeof examData === 'object') { arr = Object.values(examData); }
+            return arr.filter(item => item && typeof item === 'object' && item.q);
+        }
+
+        function openLessonContent(id, title, fromHistory=false) {
+            if(!fromHistory) { history.pushState({view:'lesson',l:id,t:title,u:currentUnit,g:currentGrade},'','#lesson'); sessionStorage.setItem('geox_current_view',JSON.stringify({view:'lesson',g:currentGrade,u:currentUnit,l:id,t:title})); }
+            currentLesson = id; 
+            hideAllContainers();
+            document.getElementById('student-content-container').classList.remove('hidden'); 
+            document.getElementById('content-title').innerText = '📄 ' + title;
+            const data = lessonsDataCache[id] || {}; currentExamData = data.exam;
+            const bYt = document.getElementById('btn-yt'), bPdf = document.getElementById('btn-pdf'), bEx = document.getElementById('btn-exam'), bFc = document.getElementById('btn-flashcards');
+            
+            if(data.yt) { bYt.removeAttribute('href'); bYt.setAttribute('onclick', `openYouTubeNative('${data.yt}')`); bYt.className="block w-full bg-red-500 hover:bg-red-600 text-white font-bold py-3 rounded-xl text-sm transition-colors mt-4 shadow-md shadow-red-500/20 cursor-pointer"; bYt.innerText="اتفرج دلوقتي ▶️"; } else { bYt.removeAttribute('href'); bYt.removeAttribute('onclick'); bYt.className="block w-full bg-slate-200 text-slate-400 font-bold py-3 rounded-xl text-sm pointer-events-none mt-4"; bYt.innerText="مش متاح ❌"; }
+            if(data.pdf) { bPdf.className="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 rounded-xl text-sm transition-colors mt-4 shadow-md shadow-blue-500/20"; bPdf.innerText="حملها من هنا 📥"; bPdf.onclick=()=>{ recordAnalytics(id, 'pdf'); const a=document.createElement('a');a.href=data.pdf;a.download=title+'.pdf';a.click();}; } else { bPdf.className="w-full bg-slate-200 text-slate-400 font-bold py-3 rounded-xl text-sm pointer-events-none mt-4"; bPdf.innerText="مش متاح ❌"; bPdf.onclick=null; }
+            
+            let safeData = getSafeExamData(currentExamData);
+            let hasValidExam = safeData.length > 0;
+
+            if(hasValidExam) { bFc.className="w-full bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 rounded-xl text-sm transition-colors mt-4 shadow-md shadow-amber-500/20"; bFc.innerText="راجع معلوماتك 🔄"; bFc.onclick = openFlashcards; } else { bFc.className="w-full bg-slate-200 text-slate-400 font-bold py-3 rounded-xl text-sm pointer-events-none mt-4"; bFc.innerText="مش متاح ❌"; bFc.onclick=null; }
+            
+            const st = JSON.parse(localStorage.getItem('geox_student_user'));
+            if(st && examResultsCache.find(r=>r.uid===st.uid && r.lessonId===id)) { bEx.className="w-full bg-slate-700 text-slate-400 font-black py-3 rounded-xl text-sm mt-4 border border-slate-600 pointer-events-none cursor-not-allowed"; bEx.innerText="امتحنته خلاص 🔒"; bEx.onclick = null; } 
+            else if(hasValidExam) { bEx.className="w-full bg-emerald-500 hover:bg-emerald-400 text-white font-black py-3 rounded-xl text-sm transition-colors mt-4 shadow-lg shadow-emerald-500/30"; bEx.innerText=st ? "ابتدى الامتحان 🚀" : "التسجيل للامتحان 🚀"; bEx.onclick = st ? ()=>startExam(title) : handleUnifiedLogin; } 
+            else { bEx.className="w-full bg-slate-700 text-slate-400 font-black py-3 rounded-xl text-sm pointer-events-none mt-4 border border-slate-600"; bEx.innerText="مفيش امتحان ❌"; bEx.onclick=null; }
+        }
+
+        function getLessonNameById(lessonId) { if (lessonId.includes('_review')) return "مراجعة شاملة"; for (let u of CURRICULUM) { let l = u.lessons.find(x => x.id === lessonId); if (l) return l.t; } return lessonId; }
+
+        function openProfileModal() {
+            const st = JSON.parse(localStorage.getItem('geox_student_user'));
+            if(st) { 
+                let realName = getStudentRealName(st.uid, st.name);
+                document.getElementById('profile-name').innerText = realName; 
+                document.getElementById('profile-name-display').classList.remove('hidden'); document.getElementById('profile-name-edit').classList.add('hidden');
+                
+                let ringClass = getUserRankClass(st.uid);
+                let avatarHtml = st.profilePic ? `<img src="${st.profilePic}" loading="lazy" class="w-full h-full object-cover">` : `𓂀`;
+                document.getElementById('profile-modal-avatar').className = `w-24 h-24 bg-white/10 rounded-full flex items-center justify-center text-5xl text-emerald-400 overflow-hidden shadow-lg ${ringClass}`;
+                document.getElementById('profile-modal-avatar').innerHTML = avatarHtml;
+
+                const myScores = examResultsCache.filter(r => r.uid === st.uid); myScores.sort((a,b) => new Date(b.date) - new Date(a.date)); 
+                
+                let totalSc = 0, totalMax = 0;
+                myScores.forEach(s => { totalSc += s.score; totalMax += s.total; });
+                let overallPerc = Math.round((totalSc / totalMax) * 100) || 0;
+
+                let badgesHtml = ''; 
+                if(myScores.length > 0) {
+                    if (myScores.length === 1) {
+                        if (overallPerc >= 50) badgesHtml = '<span class="bg-amber-100 text-amber-700 px-2 py-1 rounded text-xs font-bold shadow-sm border border-amber-200">بداية مبشرة 🚶</span>';
+                        else badgesHtml = '<span class="bg-slate-100 text-slate-700 px-2 py-1 rounded text-xs font-bold shadow-sm border border-slate-200">محاولة أولى 🎯</span>';
+                    } else {
+                        if (overallPerc >= 90) badgesHtml = '<span class="bg-yellow-100 text-yellow-700 px-2 py-1 rounded text-xs font-bold shadow-sm border border-yellow-300">أسطورة الجغرافيا 👑</span>';
+                        else if (overallPerc >= 75) badgesHtml = '<span class="bg-emerald-100 text-emerald-700 px-2 py-1 rounded text-xs font-bold shadow-sm border border-emerald-200">بطل صاعد 🌟</span>';
+                        else badgesHtml = '<span class="bg-blue-100 text-blue-700 px-2 py-1 rounded text-xs font-bold shadow-sm border border-blue-200">طالب مكافح 📚</span>';
+                    }
+                    if(myScores.some(s => s.score === s.total && s.total > 0)) {
+                        badgesHtml += ' <span class="bg-purple-100 text-purple-700 px-2 py-1 rounded text-xs font-bold shadow-sm border border-purple-200">قناص الدرجات 🎯</span>';
+                    }
+                }
+                document.getElementById('student-badges').innerHTML = badgesHtml;
+
+                if(myScores.length > 0) {
+                    const uniqueLessons = [...new Set(myScores.map(s => s.lessonId))]; let gCounts = {prep1:0, prep2:0, prep3:0}; uniqueLessons.forEach(lId => { const u = CURRICULUM.find(x => x.lessons.some(l => l.id === lId) || lId === x.id+'_review'); if(u) gCounts[u.grade]++; }); const domGrade = Object.keys(gCounts).reduce((a,b) => gCounts[a] > gCounts[b] ? a : b); const unitsInGrade = CURRICULUM.filter(x => x.grade === domGrade); const totalItems = unitsInGrade.reduce((acc, curr) => acc + curr.lessons.length + 1, 0); const percentage = Math.min(100, Math.round((uniqueLessons.length / totalItems) * 100)); document.getElementById('profile-progress').style.width = percentage + '%'; document.getElementById('profile-progress-text').innerText = `إنجازك في منهج ${GRADES[domGrade]}: ${percentage}%`;
+                } else { document.getElementById('profile-progress').style.width = '0%'; document.getElementById('profile-progress-text').innerText = `إنجازك في المنهج: 0%`; }
+
+                let listHtml = myScores.length === 0 ? '<p class="text-slate-400 text-center text-sm py-4">لم تمتحن أي درس بعد.</p>' : '';
+                myScores.forEach(s => { let perc = Math.round((s.score / s.total) * 100) || 0; let color = perc >= 85 ? 'text-emerald-600 bg-emerald-50 border-emerald-100' : (perc >= 50 ? 'text-amber-600 bg-amber-50 border-amber-100' : 'text-red-600 bg-red-50 border-red-100'); listHtml += `<div class="bg-white p-4 rounded-xl border border-slate-100 shadow-sm flex flex-col gap-2"><div class="flex justify-between items-center gap-3"><div class="text-right"><div class="font-bold text-slate-800 text-sm mb-1">${getLessonNameById(s.lessonId)}</div><div class="text-[10px] text-slate-400">${s.date}</div></div><div class="px-3 py-2 rounded-lg border font-black text-sm shrink-0 ${color}">${s.score} / ${s.total}</div></div>`; if(perc >= 90 || s.lessonId.includes('_review')) { listHtml += `<button onclick="generateCertificate('${realName}', '${getLessonNameById(s.lessonId)}')" class="bg-gradient-to-r from-amber-100 to-orange-50 hover:from-amber-200 hover:to-orange-100 text-amber-700 px-3 py-1.5 rounded-lg text-xs font-black border border-amber-200 w-full transition-colors shadow-sm text-center mt-2">استلم شهادة التقدير 🎁</button>`; } listHtml += `</div>`; }); document.getElementById('student-scores-list').innerHTML = listHtml; document.getElementById('profile-modal').classList.remove('hidden'); 
+            } else handleUnifiedLogin();
+        }
+
+        function showEditNameForm() { const st = JSON.parse(localStorage.getItem('geox_student_user')); if (st.nameEdited) return alert('عفواً، لقد قمت بتعديل اسمك من قبل ولا يمكن تعديله مرة واحدة.'); document.getElementById('profile-name-display').classList.add('hidden'); document.getElementById('profile-name-edit').classList.remove('hidden'); const parts = st.name.split(' '); document.getElementById('edit-fname').value = parts[0] || ''; document.getElementById('edit-mname').value = parts[1] || ''; document.getElementById('edit-lname').value = parts.slice(2).join(' ') || ''; }
+        function cancelEditName() { document.getElementById('profile-name-display').classList.remove('hidden'); document.getElementById('profile-name-edit').classList.add('hidden'); }
+        function saveEditedName() { const f = document.getElementById('edit-fname').value.trim(), m = document.getElementById('edit-mname').value.trim(), l = document.getElementById('edit-lname').value.trim(); if(!f || !m || !l) return alert('برجاء كتابة الاسم الثلاثي كاملاً.'); const newName = `${f} ${m} ${l}`; const st = JSON.parse(localStorage.getItem('geox_student_user')); st.name = newName; st.nameEdited = true; database.ref('students/' + st.uid).update({name: newName, nameEdited: true}).then(() => { localStorage.setItem('geox_student_user', JSON.stringify(st)); document.getElementById('profile-name').innerText = newName; updateStudentUI(st); cancelEditName(); alert('تم تحديث الاسم بنجاح!'); }); }
+
+        function generateCertificate(name, lesson) { document.getElementById('cert-name').innerText = name; document.getElementById('cert-lesson').innerText = lesson; document.getElementById('certificate-modal').classList.remove('hidden'); }
+        function openMistakesBank() { const st = JSON.parse(localStorage.getItem('geox_student_user')); const myScores = examResultsCache.filter(r => r.uid === st.uid && r.mistakes && r.mistakes.length > 0); let html = ''; if(myScores.length === 0) { html = '<p class="text-slate-400 text-center text-sm py-10 font-bold">ممتاز! ليس لديك أي أخطاء مسجلة حتى الآن 🎉</p>'; } else { myScores.forEach(s => { html += `<h4 class="font-black text-slate-700 bg-slate-200 p-2 rounded-lg mt-4 mb-2 text-sm">${getLessonNameById(s.lessonId)}</h4><div class="space-y-3">`; s.mistakes.forEach(m => { html += `<div class="bg-white p-4 rounded-xl border border-red-100 shadow-sm"><p class="font-bold text-slate-800 text-sm mb-2">س: ${m.q}</p><p class="text-xs text-red-600 font-bold mb-1">إجابتك: <span class="line-through text-slate-500">${m.ans}</span></p><p class="text-xs text-emerald-600 font-bold">الصحيحة: ${m.corr}</p></div>`; }); html += `</div>`; }); } document.getElementById('mistakes-list').innerHTML = html; document.getElementById('mistakes-modal').classList.remove('hidden'); }
         
-        // أبطال المنصة واسم مبين وكامل للموبايل
-        function openGlobalLeaderboard(grade='prep3'){ document.getElementById('gl-prep1-btn').className=`flex-1 py-2 text-sm md:text-base font-bold rounded-lg transition-colors ${grade==='prep1'?'bg-indigo-600 text-white shadow-sm':'bg-slate-200 text-slate-600 hover:bg-slate-300'}`; document.getElementById('gl-prep2-btn').className=`flex-1 py-2 text-sm md:text-base font-bold rounded-lg transition-colors ${grade==='prep2'?'bg-indigo-600 text-white shadow-sm':'bg-slate-200 text-slate-600 hover:bg-slate-300'}`; document.getElementById('gl-prep3-btn').className=`flex-1 py-2 text-sm md:text-base font-bold rounded-lg transition-colors ${grade==='prep3'?'bg-indigo-600 text-white shadow-sm':'bg-slate-200 text-slate-600 hover:bg-slate-300'}`; const units=CURRICULUM.filter(u=>u.grade===grade); const validIds=[]; units.forEach(u=>{ u.lessons.forEach(l=>validIds.push(l.id)); validIds.push(u.id+'_review'); }); let g={}; examResultsCache.filter(r=>validIds.includes(r.lessonId)).forEach(r=>{ const iden=r.uid||r.phone; if(!g[iden]) g[iden]={name:r.name, score:0, time:0, uid:r.uid, phone:r.phone}; g[iden].score+=r.score; g[iden].time+=r.time; }); const sorted=Object.values(g).sort((a,b)=>b.score!==a.score?b.score-a.score:a.time-b.time); const top10=sorted.slice(0,10); const currentSt=JSON.parse(localStorage.getItem('geox_student_user')); let html=top10.map((r,i)=>{ let medal=i===0?'🥇':i===1?'🥈':i===2?'🥉':`<span class="text-slate-400 font-black text-lg w-6 shrink-0 text-center">#${i+1}</span>`; let st=allStudents.find(s=>s.uid===r.uid||(r.phone&&s.phone===r.phone)); let realName=st?st.name:r.name; let ringClass=i===0?'ring-2 ring-yellow-400 shadow-[0_0_15px_rgba(250,204,21,0.6)]':i===1?'ring-2 ring-gray-300 shadow-[0_0_15px_rgba(209,213,219,0.6)]':i===2?'ring-2 ring-amber-700 shadow-[0_0_15px_rgba(180,83,9,0.6)]':'border border-slate-300 shadow-sm'; let avatar=(st&&st.profilePic)?`<img src="${st.profilePic}" loading="lazy" decoding="async" class="w-10 h-10 rounded-full object-cover shrink-0 ${ringClass}">`:`<div class="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center text-lg shrink-0 ${ringClass}">👤</div>`; let isCurrentUser=(currentSt&&(r.uid===currentSt.uid||r.phone===currentSt.phone)); let rowBg=isCurrentUser?'bg-indigo-50 border-indigo-300 shadow-md':(i<3?'border-amber-300 shadow-md bg-amber-50':'border-slate-100'); return `<div class="flex justify-between items-center bg-white p-3 rounded-xl border ${rowBg}"><div class="flex items-center gap-3 w-full pr-2 overflow-hidden"><div class="shrink-0 flex items-center justify-center">${medal}</div>${avatar}<span class="font-black ${isCurrentUser?'text-indigo-700':'text-slate-800'} text-xs md:text-sm leading-tight line-clamp-2 w-full ml-2">${realName} ${isCurrentUser?'<br><span class="text-[10px] text-indigo-400">(أنت)</span>':''}</span></div><span class="font-black text-indigo-600 bg-indigo-50 px-3 py-1 rounded-lg text-[11px] md:text-xs shrink-0 shadow-inner text-center leading-tight min-w-[65px]">${r.score} نقطة<br><span class="text-[9px] text-slate-500">${r.time} ث</span></span></div>`; }).join(''); if(!html) html='<p class="text-center text-slate-500 font-bold py-8">لا توجد بيانات لهذه المرحلة بعد.</p>'; if(currentSt){ const myRankIndex=sorted.findIndex(r=>r.uid===currentSt.uid||r.phone===currentSt.phone); if(myRankIndex!==-1){ html+=`<div class="mt-4 p-4 bg-indigo-600 rounded-xl text-center text-white font-black shadow-lg border-2 border-indigo-300">ترتيبك الحالي في هذه المرحلة: المركز الـ ${myRankIndex+1} 🚀</div>`; } else { html+=`<div class="mt-4 p-3 bg-slate-200 rounded-xl text-center text-slate-600 font-bold text-sm border border-slate-300">لم تمتحن في هذه المرحلة بعد لتحديد ترتيبك.</div>`; } } document.getElementById('global-leaderboard-list').innerHTML=html; document.getElementById('global-leaderboard-modal').classList.remove('hidden'); }
+        function openFlashcards() { 
+            let safeData = getSafeExamData(currentExamData);
+            flashcardsList = safeData.filter(q => q.type !== 'essay' && q.answer); 
+            if(flashcardsList.length === 0) return alert('لا يوجد كروت مراجعة لهذا الدرس.'); currentFlashcardIndex = 0; renderFlashcard(); document.getElementById('flashcards-modal').classList.remove('hidden'); 
+        }
+        function renderFlashcard() { const q = flashcardsList[currentFlashcardIndex]; document.getElementById('flashcard-counter').innerText = `${currentFlashcardIndex + 1} / ${flashcardsList.length}`; document.getElementById('flashcard-container').innerHTML = `<div class="flip-card" onclick="this.classList.toggle('flipped')"><div class="flip-card-inner"><div class="flip-card-front"><p>${q.q}</p></div><div class="flip-card-back"><p>${q.answer}</p></div></div></div>`; }
+        function nextFlashcard() { if(currentFlashcardIndex < flashcardsList.length - 1) { currentFlashcardIndex++; renderFlashcard(); } }
+        function prevFlashcard() { if(currentFlashcardIndex > 0) { currentFlashcardIndex--; renderFlashcard(); } }
+        function openSocialModal() { document.getElementById('social-modal').classList.remove('hidden'); }
 
-        let examTimer=null, timeLeft=600, currentQuestions=[]; document.addEventListener("visibilitychange", ()=>{ const examScreen=document.getElementById('exam-screen'); const examActions=document.getElementById('exam-actions'); if(document.visibilityState==='hidden'&&!examScreen.classList.contains('hidden')&&!examActions.classList.contains('hidden')){ cheatWarnings++; if(cheatWarnings>=2){ alert('🚨 تم سحب الامتحان وتسليمه تلقائياً بسبب محاولة الخروج من الصفحة للغش!'); submitExam(); } else { alert('⚠️ تحذير شديد: يمنع الخروج من صفحة الامتحان أو فتح تطبيقات أخرى. المرة القادمة سيتم سحب الامتحان فوراً!'); } } });
-        function startExam(title, fromHistory=false){ if(!fromHistory) history.pushState({view:'exam'},'','#exam'); document.getElementById('exam-header-title').innerText=title; document.getElementById('exam-actions').classList.remove('hidden'); document.getElementById('exam-results-actions').classList.add('hidden'); document.getElementById('exam-questions').innerHTML=''; const timerDisplay=document.getElementById('timer-display'); if(timerDisplay){ timerDisplay.innerText='10:00'; timerDisplay.parentElement.classList.remove('bg-red-100','text-red-600','animate-pulse'); } document.getElementById('exam-screen').classList.remove('hidden'); cheatWarnings=0; let c=3; document.getElementById('countdown-number').innerText=c; document.getElementById('exam-countdown').classList.remove('hidden'); const iv=setInterval(()=>{ c--; if(c>0){ document.getElementById('countdown-number').innerText=c; } else { clearInterval(iv); document.getElementById('exam-countdown').classList.add('hidden'); try{ let safeData=getSafeExamData(currentExamData); let shuff=[...safeData]; for(let i=shuff.length-1; i>0; i--){ const j=Math.floor(Math.random()*(i+1)); const temp=shuff[i]; shuff[i]=shuff[j]; shuff[j]=temp; } currentQuestions=shuff.slice(0,20); renderQuestionsSafe(); startTimer(); } catch(err){ alert('حدث خطأ أثناء تحميل الأسئلة. حاول مرة أخرى.'); console.error(err); closeExam(); } } }, 1000); }
-        function renderQuestionsSafe(){ let html=''; currentQuestions.forEach((q,i)=>{ let inputsHtml=''; if(q.type==='essay'){ inputsHtml=`<textarea id="essay_q_${i}" rows="3" class="w-full p-3 border border-slate-300 rounded-xl bg-slate-50 focus:bg-white" placeholder="اكتب إجابتك هنا..."></textarea>`; } else if(q.type==='tf'){ let opts=['صح','خطأ']; inputsHtml=`<div class="space-y-3">`+opts.map(o=>`<label class="flex items-center gap-3 p-4 bg-slate-50 border border-slate-200 rounded-xl cursor-pointer hover:bg-indigo-50 transition-colors"><input type="radio" name="q_${i}" value="${o}" class="w-5 h-5 accent-indigo-600"><span class="font-bold text-slate-700">${o}</span></label>`).join('')+`</div>`; } else { let opts=[]; if(Array.isArray(q.options)){ opts=[...q.options]; } else if(q.options&&typeof q.options==='object'){ opts=Object.values(q.options); } for(let k=opts.length-1; k>0; k--){ const j=Math.floor(Math.random()*(k+1)); const temp=opts[k]; opts[k]=opts[j]; opts[j]=temp; } inputsHtml=`<div class="space-y-3">`+opts.map(o=>`<label class="flex items-center gap-3 p-4 bg-slate-50 border border-slate-200 rounded-xl cursor-pointer hover:bg-indigo-50 transition-colors"><input type="radio" name="q_${i}" value="${o}" class="w-5 h-5 accent-indigo-600"><span class="font-bold text-slate-700">${o}</span></label>`).join('')+`</div>`; } html+=`<div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 question-block" data-index="${i}" data-ans="${q.answer||''}"><h3 class="font-black mb-4 flex gap-2 text-lg leading-relaxed text-slate-800"><span class="bg-indigo-100 text-indigo-700 px-3 py-1 rounded-xl text-sm h-fit shrink-0">${i+1}</span> ${q.q}</h3>${inputsHtml}<div class="result-feedback hidden mt-4 p-3 rounded-xl text-sm font-bold"></div></div>`; }); document.getElementById('exam-questions').innerHTML=html; }
-        function startTimer(){ timeLeft=600; const d=document.getElementById('timer-display'); if(d){ d.parentElement.classList.remove('bg-red-100','text-red-600','animate-pulse'); d.innerText='10:00'; } clearInterval(examTimer); examTimer=setInterval(()=>{ timeLeft--; let m=Math.floor(timeLeft/60), s=timeLeft%60; if(d) d.innerText=`${m<10?'0'+m:m}:${s<10?'0'+s:s}`; if(timeLeft<=60&&d) d.parentElement.classList.add('bg-red-100','text-red-600','animate-pulse'); if(timeLeft<=0){ clearInterval(examTimer); alert('انتهى الوقت! ⏳'); submitExam(); } }, 1000); }
-        function submitExam(){ clearInterval(examTimer); const blocks=document.querySelectorAll('.question-block'); let sc=0, autoGradedTotal=0, essayCount=0; let mistakesBank=[]; blocks.forEach((block)=>{ const i=block.getAttribute('data-index'); const q=currentQuestions[i]; const feedbackDiv=block.querySelector('.result-feedback'); feedbackDiv.classList.remove('hidden'); if(q.type==='essay'){ essayCount++; const textVal=document.getElementById(`essay_q_${i}`).value.trim(); feedbackDiv.classList.add('bg-blue-50','text-blue-700','border','border-blue-200'); feedbackDiv.innerHTML=textVal?'📝 سيتم مراجعة الإجابة المقالية من قبل المدرس.':'⚠️ لم تقم بكتابة إجابة.'; } else { autoGradedTotal++; const sel=block.querySelector(`input[name="q_${i}"]:checked`); const correctAns=block.getAttribute('data-ans'); block.querySelectorAll('label').forEach(lbl=>{ lbl.classList.add('opacity-50','pointer-events-none'); const inp=lbl.querySelector('input'); if(inp.value===correctAns){ lbl.classList.remove('opacity-50','bg-slate-50','border-slate-200'); lbl.classList.add('correct-answer'); } }); if(sel&&sel.value===correctAns){ sc++; feedbackDiv.classList.add('bg-emerald-100','text-emerald-700'); feedbackDiv.innerText='✅ إجابة صحيحة!'; } else { let studentAns=sel?sel.value:"لم يجب"; mistakesBank.push({q:q.q, ans:studentAns, corr:correctAns}); if(sel){ sel.parentElement.classList.remove('opacity-50','bg-slate-50'); sel.parentElement.classList.add('wrong-answer'); } feedbackDiv.classList.add('bg-red-100','text-red-700'); feedbackDiv.innerText=`❌ إجابة خاطئة! الإجابة الصحيحة هي: ${correctAns}`; } } }); const timeTaken=600-timeLeft; const st=JSON.parse(localStorage.getItem('geox_student_user')); document.getElementById('exam-actions').classList.add('hidden'); const resBox=document.getElementById('exam-score-display'); let resText=`<h3 class="text-2xl font-black mb-2 ${sc>=autoGradedTotal/2?'text-emerald-600':'text-red-600'}">نتيجتك: ${sc} / ${autoGradedTotal}</h3>`; if(essayCount>0) resText+=`<p class="text-sm font-bold text-slate-500 mt-2">يوجد ${essayCount} سؤال مقالي بانتظار التقييم.</p>`; resBox.innerHTML=resText; document.getElementById('exam-results-actions').classList.remove('hidden'); window.scrollTo(0,0); database.ref('exam_results').push({ lessonId:currentLesson, uid:st.uid, name:st.name, phone:st.phone||st.email, score:sc, total:autoGradedTotal, time:timeTaken, date:new Date().toLocaleString('ar-EG'), mistakes:mistakesBank }); }
-        function closeExam(){ history.back(); }
+        function openGlobalLeaderboard(grade = 'prep3') {
+            document.getElementById('gl-prep1-btn').className = `flex-1 py-2 text-sm md:text-base font-bold rounded-lg transition-colors ${grade==='prep1'?'bg-indigo-600 text-white shadow-sm':'bg-slate-200 text-slate-600 hover:bg-slate-300'}`; document.getElementById('gl-prep2-btn').className = `flex-1 py-2 text-sm md:text-base font-bold rounded-lg transition-colors ${grade==='prep2'?'bg-indigo-600 text-white shadow-sm':'bg-slate-200 text-slate-600 hover:bg-slate-300'}`; document.getElementById('gl-prep3-btn').className = `flex-1 py-2 text-sm md:text-base font-bold rounded-lg transition-colors ${grade==='prep3'?'bg-indigo-600 text-white shadow-sm':'bg-slate-200 text-slate-600 hover:bg-slate-300'}`;
+            const units = CURRICULUM.filter(u => u.grade === grade); const validIds = []; units.forEach(u => { u.lessons.forEach(l => validIds.push(l.id)); validIds.push(u.id+'_review'); });
+            
+            let g = {}; 
+            examResultsCache.filter(r => validIds.includes(r.lessonId)).forEach(r => { 
+                const iden = r.uid || r.phone; 
+                if(!g[iden]) g[iden] = {name: r.name, score: 0, time: 0, uid: r.uid, phone: r.phone}; 
+                g[iden].score += r.score; g[iden].time += r.time; 
+            });
+            
+            const sorted = Object.values(g).sort((a,b) => b.score !== a.score ? b.score - a.score : a.time - b.time);
+            const top10 = sorted.slice(0,10);
+            const currentSt = JSON.parse(localStorage.getItem('geox_student_user'));
+            
+            let html = top10.map((r, i) => { 
+                let medal = i===0?'🥇':i===1?'🥈':i===2?'🥉':`<span class="text-slate-400 font-black text-lg w-6 shrink-0 text-center">#${i+1}</span>`; 
+                let st = allStudents.find(s => s.uid === r.uid || (r.phone && s.phone === r.phone));
+                let realName = st ? st.name : r.name;
+                
+                let ringClass = i===0 ? 'ring-2 ring-yellow-400 shadow-[0_0_15px_rgba(250,204,21,0.6)]' : i===1 ? 'ring-2 ring-gray-300 shadow-[0_0_15px_rgba(209,213,219,0.6)]' : i===2 ? 'ring-2 ring-amber-700 shadow-[0_0_15px_rgba(180,83,9,0.6)]' : 'border border-slate-300 shadow-sm';
+                let avatar = (st && st.profilePic) ? `<img src="${st.profilePic}" loading="lazy" decoding="async" class="w-10 h-10 rounded-full object-cover shrink-0 ${ringClass}">` : `<div class="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center text-lg shrink-0 ${ringClass}">👤</div>`;
+                
+                let isCurrentUser = (currentSt && (r.uid === currentSt.uid || r.phone === currentSt.phone));
+                let rowBg = isCurrentUser ? 'bg-indigo-50 border-indigo-300 shadow-md' : (i<3?'border-amber-300 shadow-md bg-amber-50':'border-slate-100');
+                
+                return `<div class="flex justify-between items-center bg-white p-3 rounded-xl border ${rowBg}"><div class="flex items-center gap-3 w-full pr-2 overflow-hidden"><div class="shrink-0 flex items-center justify-center">${medal}</div>${avatar}<span class="font-black ${isCurrentUser?'text-indigo-700':'text-slate-800'} text-xs md:text-sm leading-tight line-clamp-2 w-full ml-2">${realName} ${isCurrentUser?'<br><span class="text-[10px] text-indigo-400">(أنت)</span>':''}</span></div><span class="font-black text-indigo-600 bg-indigo-50 px-3 py-1 rounded-lg text-[11px] md:text-xs shrink-0 shadow-inner text-center leading-tight min-w-[65px]">${r.score} نقطة<br><span class="text-[9px] text-slate-500">${r.time} ث</span></span></div>`; 
+            }).join('');
+            
+            if(!html) html = '<p class="text-center text-slate-500 font-bold py-8">لا توجد بيانات لهذه المرحلة بعد.</p>'; 
+            
+            if(currentSt) {
+                const myRankIndex = sorted.findIndex(r => r.uid === currentSt.uid || r.phone === currentSt.phone);
+                if(myRankIndex !== -1) {
+                    html += `<div class="mt-4 p-4 bg-indigo-600 rounded-xl text-center text-white font-black shadow-lg border-2 border-indigo-300">ترتيبك الحالي في هذه المرحلة: المركز الـ ${myRankIndex + 1} 🚀</div>`;
+                } else {
+                    html += `<div class="mt-4 p-3 bg-slate-200 rounded-xl text-center text-slate-600 font-bold text-sm border border-slate-300">لم تمتحن في هذه المرحلة بعد لتحديد ترتيبك.</div>`;
+                }
+            }
+            document.getElementById('global-leaderboard-list').innerHTML = html; document.getElementById('global-leaderboard-modal').classList.remove('hidden');
+        }
 
-        function showAdminTab(id, fromHistory=false){ if(!fromHistory) localStorage.setItem('geox_admin_tab', id); document.querySelectorAll('.admin-tab').forEach(e=>e.classList.add('hidden')); document.querySelectorAll('.admin-tab-btn').forEach(e=>{e.classList.remove('active');}); document.getElementById(id).classList.remove('hidden'); const btn=document.getElementById('btn-'+id); if(btn){btn.classList.add('active');} }
-        function updateCoverUnitDropdown(){ const g=document.getElementById('coverGrade').value; const sel=document.getElementById('coverUnitId'); sel.innerHTML=`<option value="">-- اختار الوحدة (أو سيبها للسنة) --</option>`; CURRICULUM.filter(u=>u.grade===g).forEach(u=>sel.innerHTML+=`<option value="${u.id}">📖 ${u.title.split(':')[0]}</option>`); }
-        function handleCoverUpload(e){ e.preventDefault(); const g=document.getElementById('coverGrade').value; const uId=document.getElementById('coverUnitId').value; let targetId='STAGE_COVER_'+g; if(uId&&uId!=='') targetId=uId; const file=document.getElementById('coverImage').files[0]; const reader=new FileReader(); reader.onload=e=>{ const img=new Image(); img.onload=()=>{ const cvs=document.createElement('canvas'); const W=800, H=450; let w=img.width, h=img.height; if(w>h){h*=W/w;w=W;}else{w*=H/h;h=H;} cvs.width=w; cvs.height=h; cvs.getContext('2d').drawImage(img,0,0,w,h); database.ref('covers/'+targetId).set(cvs.toDataURL('image/jpeg',0.6)).then(()=>{ alert('✅ تم الرفع والتحديث بنجاح!'); updateCoverUnitDropdown(); }); }; img.src=e.target.result; }; reader.readAsDataURL(file); }
-        function updateContentUnitDropdown(){ const g=document.getElementById('contentGrade').value; const sel=document.getElementById('contentUnitId'); sel.innerHTML='<option value="" disabled selected>-- الوحدة --</option>'; CURRICULUM.filter(u=>u.grade===g).forEach(u=>sel.innerHTML+=`<option value="${u.id}">${u.title.split(':')[0]}</option>`); document.getElementById('contentLessonId').innerHTML='<option value="" disabled selected>-- الدرس --</option>'; document.getElementById('lessonYoutube').value=''; document.getElementById('lessonExamText').value=''; document.getElementById('pdfStatus').innerText=''; document.getElementById('admin-current-content').classList.add('hidden'); }
-        function updateContentLessonDropdown(){ const uId=document.getElementById('contentUnitId').value; const sel=document.getElementById('contentLessonId'); sel.innerHTML='<option value="" disabled selected>-- الدرس --</option>'; const u=CURRICULUM.find(x=>x.id===uId); if(u){ u.lessons.forEach(l=>sel.innerHTML+=`<option value="${l.id}">${l.t}</option>`); sel.innerHTML+=`<option value="${u.id}_review">🌟 المراجعة الشاملة</option>`; } document.getElementById('lessonYoutube').value=''; document.getElementById('lessonExamText').value=''; document.getElementById('pdfStatus').innerText=''; document.getElementById('admin-current-content').classList.add('hidden'); }
-        function loadLessonData(){ const id=document.getElementById('contentLessonId').value; const data=lessonsDataCache[id]||{}; document.getElementById('lessonYoutube').value=data.yt||''; document.getElementById('lessonExamText').value=data.exam?JSON.stringify(data.exam,null,2):''; document.getElementById('pdfStatus').innerText=data.pdf?'✅ ملزمة مرفوعة مسبقاً':''; const stats=analyticsDataCache[id]||{yt:0,pdf:0}; document.getElementById('stat-yt').innerText=`👁️ مشاهدات الفيديو: ${stats.yt||0}`; document.getElementById('stat-pdf').innerText=`📥 تحميل الملزمة: ${stats.pdf||0}`; const badges=document.getElementById('admin-content-badges'); badges.innerHTML=''; if(data.yt) badges.innerHTML+=`<div class="bg-white px-3 py-1.5 rounded-lg shadow-sm flex items-center gap-2 text-sm font-black text-red-600 border border-red-100">📺 فيديو الشرح <button onclick="deleteLessonContent('yt')" class="bg-red-50 hover:bg-red-500 hover:text-white text-red-600 p-1.5 rounded-md transition-colors border border-red-200">مسح 🗑️</button></div>`; if(data.pdf) badges.innerHTML+=`<div class="bg-white px-3 py-1.5 rounded-lg shadow-sm flex items-center gap-2 text-sm font-black text-blue-600 border border-blue-100">📄 الملزمة <button onclick="deleteLessonContent('pdf')" class="bg-blue-50 hover:bg-blue-500 hover:text-white text-blue-600 p-1.5 rounded-md transition-colors border border-blue-200">مسح 🗑️</button></div>`; if(data.exam) badges.innerHTML+=`<div class="bg-white px-3 py-1.5 rounded-lg shadow-sm flex items-center gap-2 text-sm font-black text-emerald-600 border border-emerald-100">⏱️ الامتحان <button onclick="deleteLessonContent('exam')" class="bg-emerald-50 hover:bg-emerald-500 hover:text-white text-emerald-600 p-1.5 rounded-md transition-colors border border-emerald-200">مسح 🗑️</button></div>`; if(data.yt||data.pdf||data.exam) document.getElementById('admin-current-content').classList.remove('hidden'); else document.getElementById('admin-current-content').classList.add('hidden'); }
-        function deleteLessonContent(type){ const id=document.getElementById('contentLessonId').value; if(!id)return; if(confirm('هل أنت متأكد من مسح هذا المحتوى؟')){ database.ref('lessons_data/'+id+'/'+type).remove().then(()=>{ alert('تم المسح بنجاح! 🗑️'); if(type==='yt') document.getElementById('lessonYoutube').value=''; if(type==='exam') document.getElementById('lessonExamText').value=''; if(type==='pdf') document.getElementById('pdfStatus').innerText=''; loadLessonData(); }); } }
-        function handleContentUpload(e){ e.preventDefault(); const id=document.getElementById('contentLessonId').value; if(!id) return alert('برجاء اختيار الدرس'); let data=lessonsDataCache[id]||{yt:'',pdf:null,exam:null}; data.yt=document.getElementById('lessonYoutube').value; try{ const json=document.getElementById('lessonExamText').value.trim(); data.exam=json?JSON.parse(json):null; }catch(err){ return alert('❌ كود JSON غير صحيح'); } const file=document.getElementById('lessonPdf').files[0]; const save=()=>database.ref('lessons_data/'+id).set(data).then(()=>{ alert('✅ تم حفظ بيانات الدرس'); loadLessonData(); document.getElementById('lessonPdf').value=''; }); if(file){ const r=new FileReader(); r.onload=e=>{ data.pdf=e.target.result; save(); }; r.readAsDataURL(file); } else save(); }
-        function renderStudentsTable(){ document.getElementById('studentsListTbody').innerHTML=allStudents.map(s=>`<tr class="hover:bg-slate-50"><td class="p-4 font-bold text-slate-800">${s.name}</td><td class="p-4 font-bold text-indigo-600" dir="ltr">${s.phone||s.email}</td><td class="p-4 text-slate-500 text-xs">${s.date||'غير محدد'}</td><td class="p-4 text-center space-x-2 space-x-reverse"><button onclick="editStudentData('${s.uid}', '${s.name}', '${s.phone||''}')" class="bg-blue-50 hover:bg-blue-500 text-blue-600 hover:text-white px-3 py-1.5 rounded-lg text-xs font-bold transition-colors">تعديل ✏️</button><button onclick="deleteStudent('${s.uid}')" class="bg-red-50 hover:bg-red-500 text-red-600 hover:text-white px-3 py-1.5 rounded-lg text-xs font-bold transition-colors mt-2 md:mt-0">حذف 🗑️</button></td></tr>`).join(''); }
-        function editStudentData(uid, oldName, oldPhone){ const newName=prompt("أدخل الاسم الجديد للطالب:", oldName); const newPhone=prompt("أدخل رقم موبايل ولي الأمر الجديد:", oldPhone); let updates={}; if(newName&&newName!==oldName) updates['name']=newName; if(newPhone&&newPhone!==oldPhone&&newPhone.length>=10) updates['phone']=newPhone; if(Object.keys(updates).length>0){ database.ref('students/'+uid).update(updates).then(()=>alert('تم تحديث بيانات الطالب بنجاح.')); } }
-        function deleteStudent(uid){ if(confirm("تحذير: هل أنت متأكد من مسح هذا الطالب وكل امتحاناته نهائياً؟ سيتم تصفير حسابه بالكامل!")){ database.ref('students/'+uid).remove(); const examsToDelete=examResultsCache.filter(e=>e.uid===uid); examsToDelete.forEach(e=>database.ref('exam_results/'+e.key).remove()); alert('تم مسح الطالب وتصفير حسابه بنجاح!'); } }
-        function filterStudents(){ const v=document.getElementById('searchStudent').value.toLowerCase(); Array.from(document.getElementById('studentsListTbody').rows).forEach(r=>r.style.display=r.cells[0].innerText.includes(v)?'':'none'); }
-        function updateLbUnitDropdown(){ const g=document.getElementById('lbGrade').value; const sel=document.getElementById('lbUnitId'); sel.innerHTML='<option value="">-- الوحدة --</option>'; CURRICULUM.filter(u=>u.grade===g).forEach(u=>sel.innerHTML+=`<option value="${u.id}">${u.title.split(':')[0]}</option>`); }
-        function updateLbLessonDropdown(){ const uId=document.getElementById('lbUnitId').value; const sel=document.getElementById('lbLessonId'); sel.innerHTML='<option value="">-- الدرس أو المجموع --</option>'; const u=CURRICULUM.find(x=>x.id===uId); if(u){ sel.innerHTML+=`<option value="ALL_${u.id}">📊 مجموع الوحدة</option>`; u.lessons.forEach(l=>sel.innerHTML+=`<option value="${l.id}">${l.t}</option>`); } }
-        function renderLeaderboard(){ const id=document.getElementById('lbLessonId').value; if(!id)return; let res=[]; if(id.startsWith('ALL_')){ const uId=id.replace('ALL_',''); const u=CURRICULUM.find(x=>x.id===uId); const validIds=u?u.lessons.map(l=>l.id).concat([u.id+'_review']):[]; let g={}; examResultsCache.filter(r=>validIds.includes(r.lessonId)).forEach(r=>{ const iden=r.uid||r.phone; if(!g[iden]) g[iden]={name:r.name, phone:r.phone, score:0, total:0, time:0, keys:[], uid:r.uid}; g[iden].score+=r.score; g[iden].total+=r.total; g[iden].time+=r.time; g[iden].keys.push(r.key); }); res=Object.values(g); } else { res=examResultsCache.filter(r=>r.lessonId===id); } res.sort((a,b)=>b.score!==a.score?b.score-a.score:a.time-b.time); document.getElementById('leaderboardTbody').innerHTML=res.map((r,i)=>{ let realName=getStudentRealName(r.uid, r.name); const waText=encodeURIComponent(`أهلاً ولي أمر البطل ${realName} 🎓\nنحيطكم علماً بأن الطالب أتم اختبار [${getLessonNameById(id.replace('ALL_',''))}] وحصل على درجة (${r.score} من ${r.total}).\nمع تحيات منصة Geo X 🌍`); const waLink=`https://wa.me/20${r.phone}?text=${waText}`; let st=allStudents.find(s=>s.uid===r.uid||(r.phone&&s.phone===r.phone)); let pPic=(st&&st.profilePic)?`<img src="${st.profilePic}" loading="lazy" decoding="async" class="w-8 h-8 rounded-full object-cover border border-slate-200 shrink-0">`:`<div class="w-8 h-8 rounded-full bg-indigo-50 text-indigo-500 flex items-center justify-center text-sm shrink-0">👤</div>`; let deleteExamBtn=!id.startsWith('ALL_')?`<button onclick="deleteExamResult('${r.key}')" class="bg-red-50 hover:bg-red-500 text-red-600 hover:text-white px-3 py-1.5 rounded-lg text-xs font-bold transition-colors inline-block mt-2 md:mt-0 shadow-sm mr-1">مسح الامتحان ❌</button>`:''; return `<tr class="hover:bg-slate-50"><td class="p-4 font-black text-slate-500">#${i+1}</td><td class="p-4 font-bold text-slate-800"><div class="flex items-center gap-2">${pPic}<span class="truncate">${realName}</span></div></td><td class="p-4 font-black text-indigo-700">${r.score} / ${r.total}</td><td class="p-4 text-slate-600 text-xs">${r.time} ثانية</td><td class="p-4 text-center space-x-2 space-x-reverse"><a href="${waLink}" target="_blank" class="bg-green-50 hover:bg-green-500 text-green-600 hover:text-white px-3 py-1.5 rounded-lg text-xs font-bold transition-colors inline-block shadow-sm">تقرير 📱</a> ${deleteExamBtn}</td></tr>`; }).join(''); }
-        function deleteExamResult(key){ if(confirm("مسح نتيجة هذا الامتحان فعلاً؟ (سيتمكن الطالب من إعادته وسيتم مسح أخطائه من بنك الأخطاء تلقائياً)")){ database.ref('exam_results/'+key).remove().then(()=>{ alert('تم مسح الامتحان!'); renderLeaderboard(); }); } }
-        function exportExcel(id, name){ const wb=XLSX.utils.table_to_book(document.getElementById(id)); XLSX.writeFile(wb, name+'.xlsx'); }
-        function saveAnnouncementText(){ const txt=document.getElementById('adminAnnouncementInput').value.trim(); database.ref('announcement').set(txt).then(()=>alert('تم النشر!')); }
-        function clearAnnouncementText(){ database.ref('announcement').set('').then(()=>{ document.getElementById('adminAnnouncementInput').value=''; alert('تم إيقاف الإعلان!'); }); }
-        let deferredPrompt; window.addEventListener('beforeinstallprompt', (e)=>{ e.preventDefault(); deferredPrompt=e; const installBtn=document.getElementById('install-app-btn'); if(installBtn) installBtn.classList.remove('hidden'); });
-        function installPWA(){ if(deferredPrompt){ deferredPrompt.prompt(); deferredPrompt.userChoice.then((choiceResult)=>{ if(choiceResult.outcome==='accepted'){ const installBtn=document.getElementById('install-app-btn'); if(installBtn) installBtn.classList.add('hidden'); } deferredPrompt=null; }); } else { alert('لتنزيل التطبيق:\n- للآيفون: اضغط زر المشاركة (Share) ثم "Add to Home Screen".\n- للأندرويد: من قائمة المتصفح (⋮) اختر "Install app" أو "Add to Home Screen".'); } }
-        if('serviceWorker' in navigator){ window.addEventListener('load', ()=>{ navigator.serviceWorker.register('sw.js').then(reg=>console.log('PWA Service Worker Registered', reg)).catch(err=>console.log('Service Worker Error', err)); }); }
+        let examTimer = null, timeLeft = 600, currentQuestions = [];
+        document.addEventListener("visibilitychange", () => { const examScreen = document.getElementById('exam-screen'); const examActions = document.getElementById('exam-actions'); if (document.visibilityState === 'hidden' && !examScreen.classList.contains('hidden') && !examActions.classList.contains('hidden')) { cheatWarnings++; if (cheatWarnings >= 2) { alert('🚨 تم سحب الامتحان وتسليمه تلقائياً بسبب محاولة الخروج من الصفحة للغش!'); submitExam(); } else { alert('⚠️ تحذير شديد: يمنع الخروج من صفحة الامتحان أو فتح تطبيقات أخرى. المرة القادمة سيتم سحب الامتحان فوراً!'); } } });
+
+        function startExam(title, fromHistory=false) { 
+            if(!fromHistory) history.pushState({view: 'exam'}, '', '#exam'); 
+            document.getElementById('exam-header-title').innerText = title; 
+            document.getElementById('exam-actions').classList.remove('hidden'); 
+            document.getElementById('exam-results-actions').classList.add('hidden'); 
+            document.getElementById('exam-questions').innerHTML = '';
+            
+            const timerDisplay = document.getElementById('timer-display');
+            if(timerDisplay) { timerDisplay.innerText = '10:00'; timerDisplay.parentElement.classList.remove('bg-red-100','text-red-600','animate-pulse'); }
+            
+            document.getElementById('exam-screen').classList.remove('hidden'); 
+            cheatWarnings = 0; let c = 3; document.getElementById('countdown-number').innerText = c; document.getElementById('exam-countdown').classList.remove('hidden'); 
+            
+            const iv = setInterval(()=>{ 
+                c--; if(c>0) { document.getElementById('countdown-number').innerText = c; } else { 
+                    clearInterval(iv); document.getElementById('exam-countdown').classList.add('hidden'); 
+                    try {
+                        let safeData = getSafeExamData(currentExamData);
+                        let shuff = [...safeData];
+                        for(let i = shuff.length - 1; i > 0; i--){ const j = Math.floor(Math.random() * (i + 1)); const temp = shuff[i]; shuff[i] = shuff[j]; shuff[j] = temp; }
+                        currentQuestions = shuff.slice(0, 20); 
+                        renderQuestionsSafe(); startTimer(); 
+                    } catch(err) { alert('حدث خطأ أثناء تحميل الأسئلة. حاول مرة أخرى.'); console.error(err); closeExam(); }
+                } 
+            }, 1000); 
+        }
+
+        function renderQuestionsSafe() { 
+            let html = '';
+            currentQuestions.forEach((q, i) => { 
+                let inputsHtml = ''; 
+                if (q.type === 'essay') { inputsHtml = `<textarea id="essay_q_${i}" rows="3" class="w-full p-3 border border-slate-300 rounded-xl bg-slate-50 focus:bg-white" placeholder="اكتب إجابتك هنا..."></textarea>`; 
+                } else if (q.type === 'tf') { let opts = ['صح', 'خطأ']; inputsHtml = `<div class="space-y-3">` + opts.map(o=>`<label class="flex items-center gap-3 p-4 bg-slate-50 border border-slate-200 rounded-xl cursor-pointer hover:bg-indigo-50 transition-colors"><input type="radio" name="q_${i}" value="${o}" class="w-5 h-5 accent-indigo-600"><span class="font-bold text-slate-700">${o}</span></label>`).join('') + `</div>`; 
+                } else {
+                    let opts = [];
+                    if (Array.isArray(q.options)) { opts = [...q.options]; } else if (q.options && typeof q.options === 'object') { opts = Object.values(q.options); }
+                    for (let k = opts.length - 1; k > 0; k--) { const j = Math.floor(Math.random() * (k + 1)); const temp = opts[k]; opts[k] = opts[j]; opts[j] = temp; }
+                    inputsHtml = `<div class="space-y-3">` + opts.map(o=>`<label class="flex items-center gap-3 p-4 bg-slate-50 border border-slate-200 rounded-xl cursor-pointer hover:bg-indigo-50 transition-colors"><input type="radio" name="q_${i}" value="${o}" class="w-5 h-5 accent-indigo-600"><span class="font-bold text-slate-700">${o}</span></label>`).join('') + `</div>`; 
+                } 
+                html += `<div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 question-block" data-index="${i}" data-ans="${q.answer || ''}"><h3 class="font-black mb-4 flex gap-2 text-lg leading-relaxed text-slate-800"><span class="bg-indigo-100 text-indigo-700 px-3 py-1 rounded-xl text-sm h-fit shrink-0">${i+1}</span> ${q.q}</h3>${inputsHtml}<div class="result-feedback hidden mt-4 p-3 rounded-xl text-sm font-bold"></div></div>`; 
+            });
+            document.getElementById('exam-questions').innerHTML = html;
+        }
+
+        function startTimer() { 
+            timeLeft = 600; const d = document.getElementById('timer-display'); 
+            if(d) { d.parentElement.classList.remove('bg-red-100','text-red-600','animate-pulse'); d.innerText = '10:00'; }
+            clearInterval(examTimer); 
+            examTimer = setInterval(()=>{ 
+                timeLeft--; let m=Math.floor(timeLeft/60), s=timeLeft%60; 
+                if(d) d.innerText=`${m<10?'0'+m:m}:${s<10?'0'+s:s}`; 
+                if(timeLeft<=60 && d) d.parentElement.classList.add('bg-red-100','text-red-600','animate-pulse'); 
+                if(timeLeft<=0){ clearInterval(examTimer); alert('انتهى الوقت! ⏳'); submitExam(); } 
+            }, 1000); 
+        }
+
+        function submitExam() { clearInterval(examTimer); const blocks = document.querySelectorAll('.question-block'); let sc = 0, autoGradedTotal = 0, essayCount = 0; let mistakesBank = []; blocks.forEach((block) => { const i = block.getAttribute('data-index'); const q = currentQuestions[i]; const feedbackDiv = block.querySelector('.result-feedback'); feedbackDiv.classList.remove('hidden'); if (q.type === 'essay') { essayCount++; const textVal = document.getElementById(`essay_q_${i}`).value.trim(); feedbackDiv.classList.add('bg-blue-50', 'text-blue-700', 'border', 'border-blue-200'); feedbackDiv.innerHTML = textVal ? '📝 سيتم مراجعة الإجابة المقالية من قبل المدرس.' : '⚠️ لم تقم بكتابة إجابة.'; } else { autoGradedTotal++; const sel = block.querySelector(`input[name="q_${i}"]:checked`); const correctAns = block.getAttribute('data-ans'); block.querySelectorAll('label').forEach(lbl => { lbl.classList.add('opacity-50', 'pointer-events-none'); const inp = lbl.querySelector('input'); if(inp.value === correctAns) { lbl.classList.remove('opacity-50', 'bg-slate-50', 'border-slate-200'); lbl.classList.add('correct-answer'); } }); if (sel && sel.value === correctAns) { sc++; feedbackDiv.classList.add('bg-emerald-100', 'text-emerald-700'); feedbackDiv.innerText = '✅ إجابة صحيحة!'; } else { let studentAns = sel ? sel.value : "لم يجب"; mistakesBank.push({ q: q.q, ans: studentAns, corr: correctAns }); if(sel) { sel.parentElement.classList.remove('opacity-50', 'bg-slate-50'); sel.parentElement.classList.add('wrong-answer'); } feedbackDiv.classList.add('bg-red-100', 'text-red-700'); feedbackDiv.innerText = `❌ إجابة خاطئة! الإجابة الصحيحة هي: ${correctAns}`; } } }); const timeTaken = 600 - timeLeft; const st = JSON.parse(localStorage.getItem('geox_student_user')); document.getElementById('exam-actions').classList.add('hidden'); const resBox = document.getElementById('exam-score-display'); let resText = `<h3 class="text-2xl font-black mb-2 ${sc >= autoGradedTotal/2 ? 'text-emerald-600' : 'text-red-600'}">نتيجتك: ${sc} / ${autoGradedTotal}</h3>`; if(essayCount > 0) resText += `<p class="text-sm font-bold text-slate-500 mt-2">يوجد ${essayCount} سؤال مقالي بانتظار التقييم.</p>`; resBox.innerHTML = resText; document.getElementById('exam-results-actions').classList.remove('hidden'); window.scrollTo(0,0); database.ref('exam_results').push({ lessonId: currentLesson, uid: st.uid, name: st.name, phone: st.phone || st.email, score: sc, total: autoGradedTotal, time: timeTaken, date: new Date().toLocaleString('ar-EG'), mistakes: mistakesBank }); }
+        function closeExam() { history.back(); }
+
+        function showAdminTab(id, fromHistory=false) { if(!fromHistory) localStorage.setItem('geox_admin_tab', id); document.querySelectorAll('.admin-tab').forEach(e => e.classList.add('hidden')); document.querySelectorAll('.admin-tab-btn').forEach(e => { e.classList.remove('active'); }); document.getElementById(id).classList.remove('hidden'); const btn = document.getElementById('btn-'+id); if(btn) { btn.classList.add('active'); } }
+        
+        function updateCoverUnitDropdown() { 
+            const g = document.getElementById('coverGrade').value; const sel = document.getElementById('coverUnitId'); 
+            sel.innerHTML = `<option value="">-- اختار الوحدة (أو سيبها للسنة) --</option>`; 
+            CURRICULUM.filter(u=>u.grade===g).forEach(u => sel.innerHTML+=`<option value="${u.id}">📖 ${u.title.split(':')[0]}</option>`); 
+        }
+        function handleCoverUpload(e) { e.preventDefault(); const g = document.getElementById('coverGrade').value; const uId = document.getElementById('coverUnitId').value; let targetId = 'STAGE_COVER_' + g; if (uId && uId !== '') targetId = uId; const file = document.getElementById('coverImage').files[0]; const reader = new FileReader(); reader.onload = e => { const img = new Image(); img.onload = () => { const cvs = document.createElement('canvas'); const W=800, H=450; let w=img.width, h=img.height; if(w>h){h*=W/w;w=W;}else{w*=H/h;h=H;} cvs.width=w; cvs.height=h; cvs.getContext('2d').drawImage(img,0,0,w,h); database.ref('covers/'+targetId).set(cvs.toDataURL('image/jpeg', 0.6)).then(()=>{ alert('✅ تم الرفع والتحديث بنجاح!'); updateCoverUnitDropdown(); }); }; img.src = e.target.result; }; reader.readAsDataURL(file); }
+        
+        function updateContentUnitDropdown() { const g = document.getElementById('contentGrade').value; const sel = document.getElementById('contentUnitId'); sel.innerHTML = '<option value="" disabled selected>-- الوحدة --</option>'; CURRICULUM.filter(u=>u.grade===g).forEach(u => sel.innerHTML+=`<option value="${u.id}">${u.title.split(':')[0]}</option>`); document.getElementById('contentLessonId').innerHTML = '<option value="" disabled selected>-- الدرس --</option>'; document.getElementById('lessonYoutube').value=''; document.getElementById('lessonExamText').value=''; document.getElementById('pdfStatus').innerText=''; document.getElementById('admin-current-content').classList.add('hidden'); }
+        function updateContentLessonDropdown() { const uId = document.getElementById('contentUnitId').value; const sel = document.getElementById('contentLessonId'); sel.innerHTML = '<option value="" disabled selected>-- الدرس --</option>'; const u = CURRICULUM.find(x=>x.id===uId); if(u) { u.lessons.forEach(l => sel.innerHTML+=`<option value="${l.id}">${l.t}</option>`); sel.innerHTML+=`<option value="${u.id}_review">🌟 المراجعة الشاملة</option>`; } document.getElementById('lessonYoutube').value=''; document.getElementById('lessonExamText').value=''; document.getElementById('pdfStatus').innerText=''; document.getElementById('admin-current-content').classList.add('hidden'); }
+        function loadLessonData() { 
+            const id = document.getElementById('contentLessonId').value; const data = lessonsDataCache[id]||{}; 
+            document.getElementById('lessonYoutube').value = data.yt||''; document.getElementById('lessonExamText').value = data.exam ? JSON.stringify(data.exam,null,2) : ''; document.getElementById('pdfStatus').innerText = data.pdf ? '✅ ملزمة مرفوعة مسبقاً' : ''; 
+            const stats = analyticsDataCache[id]||{yt:0, pdf:0}; document.getElementById('stat-yt').innerText = `👁️ مشاهدات الفيديو: ${stats.yt||0}`; document.getElementById('stat-pdf').innerText = `📥 تحميل الملزمة: ${stats.pdf||0}`; 
+            
+            const badges = document.getElementById('admin-content-badges'); badges.innerHTML = '';
+            if(data.yt) badges.innerHTML += `<div class="bg-white px-3 py-1.5 rounded-lg shadow-sm flex items-center gap-2 text-sm font-black text-red-600 border border-red-100">📺 فيديو الشرح <button onclick="deleteLessonContent('yt')" class="bg-red-50 hover:bg-red-500 hover:text-white text-red-600 p-1.5 rounded-md transition-colors border border-red-200">مسح 🗑️</button></div>`;
+            if(data.pdf) badges.innerHTML += `<div class="bg-white px-3 py-1.5 rounded-lg shadow-sm flex items-center gap-2 text-sm font-black text-blue-600 border border-blue-100">📄 الملزمة <button onclick="deleteLessonContent('pdf')" class="bg-blue-50 hover:bg-blue-500 hover:text-white text-blue-600 p-1.5 rounded-md transition-colors border border-blue-200">مسح 🗑️</button></div>`;
+            if(data.exam) badges.innerHTML += `<div class="bg-white px-3 py-1.5 rounded-lg shadow-sm flex items-center gap-2 text-sm font-black text-emerald-600 border border-emerald-100">⏱️ الامتحان <button onclick="deleteLessonContent('exam')" class="bg-emerald-50 hover:bg-emerald-500 hover:text-white text-emerald-600 p-1.5 rounded-md transition-colors border border-emerald-200">مسح 🗑️</button></div>`;
+            if(data.yt || data.pdf || data.exam) document.getElementById('admin-current-content').classList.remove('hidden'); else document.getElementById('admin-current-content').classList.add('hidden');
+        }
+        function deleteLessonContent(type) {
+            const id = document.getElementById('contentLessonId').value; if(!id) return;
+            if(confirm('هل أنت متأكد من مسح هذا المحتوى؟')) {
+                database.ref('lessons_data/' + id + '/' + type).remove().then(() => {
+                    alert('تم المسح بنجاح! 🗑️');
+                    if(type === 'yt') document.getElementById('lessonYoutube').value = '';
+                    if(type === 'exam') document.getElementById('lessonExamText').value = '';
+                    if(type === 'pdf') document.getElementById('pdfStatus').innerText = '';
+                    loadLessonData();
+                });
+            }
+        }
+        function handleContentUpload(e) { e.preventDefault(); const id = document.getElementById('contentLessonId').value; if(!id) return alert('برجاء اختيار الدرس'); let data = lessonsDataCache[id]||{yt:'', pdf:null, exam:null}; data.yt = document.getElementById('lessonYoutube').value; try { const json = document.getElementById('lessonExamText').value.trim(); data.exam = json ? JSON.parse(json) : null; } catch(err) { return alert('❌ كود JSON غير صحيح'); } const file = document.getElementById('lessonPdf').files[0]; const save = () => database.ref('lessons_data/'+id).set(data).then(()=>{ alert('✅ تم حفظ بيانات الدرس'); loadLessonData(); document.getElementById('lessonPdf').value = ''; }); if(file) { const r = new FileReader(); r.onload = e=>{ data.pdf = e.target.result; save(); }; r.readAsDataURL(file); } else save(); }
+
+        function renderStudentsTable() { document.getElementById('studentsListTbody').innerHTML = allStudents.map(s=>`<tr class="hover:bg-slate-50"><td class="p-4 font-bold text-slate-800">${s.name}</td><td class="p-4 font-bold text-indigo-600" dir="ltr">${s.phone||s.email}</td><td class="p-4 text-slate-500 text-xs">${s.date||'غير محدد'}</td><td class="p-4 text-center space-x-2 space-x-reverse"><button onclick="editStudentData('${s.uid}', '${s.name}', '${s.phone||''}')" class="bg-blue-50 hover:bg-blue-500 text-blue-600 hover:text-white px-3 py-1.5 rounded-lg text-xs font-bold transition-colors">تعديل ✏️</button><button onclick="deleteStudent('${s.uid}')" class="bg-red-50 hover:bg-red-500 text-red-600 hover:text-white px-3 py-1.5 rounded-lg text-xs font-bold transition-colors mt-2 md:mt-0">حذف 🗑️</button></td></tr>`).join(''); }
+        function editStudentData(uid, oldName, oldPhone) { const newName = prompt("أدخل الاسم الجديد للطالب:", oldName); const newPhone = prompt("أدخل رقم موبايل ولي الأمر الجديد:", oldPhone); let updates = {}; if(newName && newName !== oldName) updates['name'] = newName; if(newPhone && newPhone !== oldPhone && newPhone.length >= 10) updates['phone'] = newPhone; if(Object.keys(updates).length > 0) { database.ref('students/' + uid).update(updates).then(() => alert('تم تحديث بيانات الطالب بنجاح.')); } }
+        
+        function deleteStudent(uid) { 
+            if(confirm("تحذير: هل أنت متأكد من مسح هذا الطالب وكل امتحاناته نهائياً؟")) { 
+                database.ref('students/' + uid).remove();
+                const examsToDelete = examResultsCache.filter(e => e.uid === uid);
+                examsToDelete.forEach(e => database.ref('exam_results/' + e.key).remove());
+                alert('تم مسح الطالب وتصفير حسابه بنجاح!'); 
+            } 
+        }
+        function filterStudents() { const v = document.getElementById('searchStudent').value.toLowerCase(); Array.from(document.getElementById('studentsListTbody').rows).forEach(r => r.style.display = r.cells[0].innerText.includes(v)?'':'none'); }
+
+        function updateLbUnitDropdown() { const g = document.getElementById('lbGrade').value; const sel = document.getElementById('lbUnitId'); sel.innerHTML = '<option value="">-- الوحدة --</option>'; CURRICULUM.filter(u=>u.grade===g).forEach(u => sel.innerHTML+=`<option value="${u.id}">${u.title.split(':')[0]}</option>`); }
+        function updateLbLessonDropdown() { const uId = document.getElementById('lbUnitId').value; const sel = document.getElementById('lbLessonId'); sel.innerHTML = '<option value="">-- الدرس أو المجموع --</option>'; const u = CURRICULUM.find(x=>x.id===uId); if(u) { sel.innerHTML+=`<option value="ALL_${u.id}">📊 مجموع الوحدة</option>`; u.lessons.forEach(l => sel.innerHTML+=`<option value="${l.id}">${l.t}</option>`); } }
+        
+        function renderLeaderboard() { 
+            const id = document.getElementById('lbLessonId').value; if(!id) return; let res = []; 
+            if(id.startsWith('ALL_')) { const uId = id.replace('ALL_',''); const u = CURRICULUM.find(x=>x.id===uId); const validIds = u ? u.lessons.map(l=>l.id).concat([u.id+'_review']) : []; let g = {}; examResultsCache.filter(r=>validIds.includes(r.lessonId)).forEach(r => { const iden = r.uid || r.phone; if(!g[iden]) g[iden] = {name:r.name, phone:r.phone, score:0, total:0, time:0, keys:[], uid: r.uid}; g[iden].score+=r.score; g[iden].total+=r.total; g[iden].time+=r.time; g[iden].keys.push(r.key); }); res = Object.values(g); } else { res = examResultsCache.filter(r=>r.lessonId===id); } 
+            res.sort((a,b) => b.score!==a.score ? b.score-a.score : a.time-b.time); 
+            
+            document.getElementById('leaderboardTbody').innerHTML = res.map((r,i)=>{ 
+                let realName = getStudentRealName(r.uid, r.name);
+                const waText = encodeURIComponent(`أهلاً ولي أمر البطل ${realName} 🎓\nنحيطكم علماً بأن الطالب أتم اختبار [${getLessonNameById(id.replace('ALL_',''))}] وحصل على درجة (${r.score} من ${r.total}).\nمع تحيات منصة Geo X 🌍`); 
+                const waLink = `https://wa.me/20${r.phone}?text=${waText}`; 
+                let st = allStudents.find(s => s.uid === r.uid || (r.phone && s.phone === r.phone));
+                let pPic = (st && st.profilePic) ? `<img src="${st.profilePic}" loading="lazy" decoding="async" class="w-8 h-8 rounded-full object-cover border border-slate-200 shrink-0">` : `<div class="w-8 h-8 rounded-full bg-indigo-50 text-indigo-500 flex items-center justify-center text-sm shrink-0">👤</div>`;
+                
+                let deleteExamBtn = !id.startsWith('ALL_') ? `<button onclick="deleteExamResult('${r.key}')" class="bg-red-50 hover:bg-red-500 text-red-600 hover:text-white px-3 py-1.5 rounded-lg text-xs font-bold transition-colors inline-block mt-2 md:mt-0 shadow-sm mr-1">مسح الامتحان ❌</button>` : '';
+
+                return `<tr class="hover:bg-slate-50"><td class="p-4 font-black text-slate-500">#${i+1}</td><td class="p-4 font-bold text-slate-800"><div class="flex items-center gap-2">${pPic}<span class="truncate">${realName}</span></div></td><td class="p-4 font-black text-indigo-700">${r.score} / ${r.total}</td><td class="p-4 text-slate-600 text-xs">${r.time} ثانية</td><td class="p-4 text-center space-x-2 space-x-reverse"><a href="${waLink}" target="_blank" class="bg-green-50 hover:bg-green-500 text-green-600 hover:text-white px-3 py-1.5 rounded-lg text-xs font-bold transition-colors inline-block shadow-sm">تقرير 📱</a> ${deleteExamBtn}</td></tr>`; 
+            }).join(''); 
+        }
+        
+        function deleteExamResult(key) { if(confirm("مسح نتيجة هذا الامتحان فعلاً؟ (سيتمكن الطالب من إعادته)")) { database.ref('exam_results/' + key).remove().then(() => { alert('تم مسح الامتحان!'); renderLeaderboard(); }); } }
+        function exportExcel(id, name) { const wb = XLSX.utils.table_to_book(document.getElementById(id)); XLSX.writeFile(wb, name+'.xlsx'); }
+        function saveAnnouncementText() { const txt = document.getElementById('adminAnnouncementInput').value.trim(); database.ref('announcement').set(txt).then(() => alert('تم النشر!')); }
+        function clearAnnouncementText() { database.ref('announcement').set('').then(() => { document.getElementById('adminAnnouncementInput').value = ''; alert('تم إيقاف الإعلان!'); }); }
+
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredPrompt = e; const installBtn = document.getElementById('install-app-btn'); if (installBtn) installBtn.classList.remove('hidden'); });
+        function installPWA() { 
+            if (deferredPrompt) { 
+                deferredPrompt.prompt(); 
+                deferredPrompt.userChoice.then((choiceResult) => { 
+                    if (choiceResult.outcome === 'accepted') { 
+                        const installBtn = document.getElementById('install-app-btn');
+                        if(installBtn) installBtn.classList.add('hidden'); 
+                    } 
+                    deferredPrompt = null; 
+                }); 
+            } else { 
+                alert('لتنزيل التطبيق:\n- للآيفون: اضغط زر المشاركة (Share) ثم "Add to Home Screen".\n- للأندرويد: من قائمة المتصفح (⋮) اختر "Install app" أو "Add to Home Screen".'); 
+            } 
+        }
+        if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js').then(reg => { console.log('PWA Service Worker Registered', reg); }).catch(err => console.log('Service Worker Error', err)); }); }
     </script>
 </body>
 </html>
