@@ -1,8 +1,31 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>منصة العروض والامتحانات</title>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>RAYA - العروض المتاحة حاليا</title>
 <script src="https://cdn.tailwindcss.com"></script>
+<!-- تعريف لون شركة راية الرسمي ليتم تطبيقه على كامل المنصة -->
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          raya: {
+            50: '#e6ebf5',
+            100: '#ccd7eb',
+            200: '#99b0d6',
+            300: '#6688c2',
+            400: '#3361ad',
+            500: '#0033A0', /* اللون الأساسي للوجو */
+            600: '#002980',
+            700: '#001f60',
+            800: '#001440',
+            900: '#000a20',
+          }
+        }
+      }
+    }
+  }
+</script>
 <style>
     body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f8fafc; color: #0f172a; }
     ::-webkit-scrollbar { width: 6px; height: 6px; }
@@ -53,14 +76,14 @@ const RenderAvatar = ({ avatarValue, sizeClass="w-16 h-16" }) => {
     if(avatarValue.includes('.png') || avatarValue.includes('.jpg')) {
         return <img src={avatarValue} alt="User" className={`${sizeClass} rounded-full object-cover shadow-md border-2 border-white bg-slate-100`} onError={e=>e.target.src='https://cdn-icons-png.flaticon.com/512/149/149071.png'}/>;
     }
-    return <div className={`flex items-center justify-center bg-blue-50 text-blue-600 rounded-full shadow-md border-2 border-white ${sizeClass}`}><span style={{fontSize:'200%'}}>{avatarValue}</span></div>;
+    return <div className={`flex items-center justify-center bg-raya-50 text-raya-600 rounded-full shadow-md border-2 border-white ${sizeClass}`}><span style={{fontSize:'200%'}}>{avatarValue}</span></div>;
 };
 
-// دالة عرض اللوجو الذكية (إذا لم يجد صورة اللوجو يعرض نص بديل)
+// دالة عرض اللوجو
 const CompanyLogo = ({ className }) => (
     <div className="flex items-center justify-center">
         <img src="logo.png" alt="Company Logo" className={className} onError={(e)=>{e.target.style.display='none'; e.target.nextSibling.style.display='block';}} />
-        <span className={`font-black text-blue-900 tracking-wider hidden ${className.includes('h-20') ? 'text-5xl' : 'text-2xl'}`}>المنصة الرئيسية</span>
+        <span className={`font-black text-raya-800 tracking-wider hidden ${className.includes('h-20') ? 'text-5xl' : 'text-2xl'}`}>المنصة الرئيسية</span>
     </div>
 );
 
@@ -68,20 +91,19 @@ function App() {
     const [user, setUser] = useState(null); const [dbUser, setDbUser] = useState(null); const [role, setRole] = useState(null); const [brandInput, setBrandInput] = useState(''); const [view, setView] = useState('login'); const [loading, setLoading] = useState(true);
     
     useEffect(() => {
-        const timer = setTimeout(() => { if(loading) setLoading(false); }, 8000); // إعطاء وقت كافي للتحقق من الجلسة
+        const timer = setTimeout(() => { if(loading) setLoading(false); }, 8000);
         const unsubscribe = auth.onAuthStateChanged(async (currentUser) => {
             try {
                 if(currentUser) {
                     const email = currentUser.email;
                     if(ADMIN_EMAILS.includes(email)) { setRole('admin'); setUser(currentUser); setView('admin'); setLoading(false); return; }
+                    
                     const userDoc = await db.collection('users').doc(email).get();
                     if(userDoc.exists) {
                         const data = userDoc.data();
                         setUser(currentUser); setDbUser(data); setRole('user'); setView('dashboard');
-                    } else {
-                        // حالة نادرة: مسجل بجوجل لكن ملفه غير موجود
-                        await auth.signOut(); setUser(null); setRole(null); setView('login');
                     }
+                    // تم إزالة الطرد التلقائي هنا للسماح لعملية إنشاء الحساب بالاستمرار
                 } else { setUser(null); setRole(null); setView('login'); }
             } catch(error) { console.error(error); setView('login'); } finally { setLoading(false); clearTimeout(timer); }
         });
@@ -91,20 +113,26 @@ function App() {
     const handleGoogleLogin = async () => {
         try {
             setLoading(true); const result = await auth.signInWithPopup(googleProvider); const email = result.user.email;
-            if(ADMIN_EMAILS.includes(email)) return; 
+            if(ADMIN_EMAILS.includes(email)) {
+                setRole('admin'); setUser(result.user); setView('admin'); setLoading(false); return;
+            }
+            
             const userDocRef = db.collection('users').doc(email); const userDoc = await userDocRef.get();
+            
             if(!userDoc.exists) {
-                if(!brandInput.trim()) { alert("تنبيه: اكتب اسم البراند التابع له أولاً، ثم اضغط تسجيل الدخول."); await auth.signOut(); setLoading(false); return; }
+                if(!brandInput.trim()) { alert("تنبيه: اكتب اسم البراند أولاً، ثم اضغط تسجيل دخول."); await auth.signOut(); setLoading(false); return; }
                 const newData = { name: result.user.displayName || email.split('@')[0], email: email, brand: brandInput.trim(), status: 'active', hasExamined: false, score: 0, timeTaken: 0, avatar: 'avatar1.png', mistakes: [] };
                 await userDocRef.set(newData);
                 setDbUser(newData); setUser(result.user); setRole('user'); setView('dashboard');
+            } else {
+                setDbUser(userDoc.data()); setUser(result.user); setRole('user'); setView('dashboard');
             }
         } catch(error) { if(error.code !== 'auth/popup-closed-by-user') alert("خطأ في الاتصال. تأكد من الإنترنت."); } finally { setLoading(false); }
     };
 
     const handleLogout = async () => { if(window.confirm("هل تريد تسجيل الخروج؟")) { await auth.signOut(); window.location.reload(); } };
     
-    if(loading) return <div className="flex flex-col h-screen items-center justify-center bg-slate-50"><div className="w-14 h-14 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mb-4"></div><div className="text-blue-800 font-bold text-lg animate-pulse">جاري تسجيل الدخول...</div></div>;
+    if(loading) return <div className="flex flex-col h-screen items-center justify-center bg-slate-50"><div className="w-14 h-14 border-4 border-raya-500 border-t-transparent rounded-full animate-spin mb-4"></div><div className="text-raya-800 font-bold text-lg animate-pulse">جاري تسجيل الدخول...</div></div>;
 
     return (
         <div className="min-h-screen flex flex-col bg-slate-50">
@@ -116,7 +144,7 @@ function App() {
                             {role === 'user' && dbUser?.mistakes?.length > 0 && <button onClick={() => alert("مراجعة الأخطاء السابقة:\n\n" + dbUser.mistakes.map(m => `السؤال: ${m.q}\nإجابتك: ${m.userAns}\nالصحيح: ${m.correctAns}`).join('\n\n---\n'))} className="text-sm font-semibold text-rose-600 bg-rose-50 hover:bg-rose-100 px-4 py-2 rounded-lg transition-colors border border-rose-200 flex items-center gap-2"> بنك أخطائي</button>}
                         </div>
                         <div className="flex items-center gap-4">
-                            {role === 'admin' && <span className="bg-blue-100 text-blue-800 text-xs font-bold px-3 py-1 rounded-md border border-blue-200">مدير النظام</span>}
+                            {role === 'admin' && <span className="bg-raya-50 text-raya-800 text-xs font-bold px-3 py-1 rounded-md border border-raya-200">مدير النظام</span>}
                             <CompanyLogo className="h-8 md:h-10 object-contain" />
                         </div>
                     </div>
@@ -127,20 +155,21 @@ function App() {
                 {view === 'login' && (
                     <div className="flex flex-col items-center justify-center min-h-[80vh] fade-in">
                         <div className="bg-white p-8 md:p-12 rounded-3xl shadow-xl border border-slate-100 w-full max-w-md text-center relative overflow-hidden">
-                            <div className="absolute top-0 left-0 w-full h-2 bg-blue-600"></div>
-                            <CompanyLogo className="h-20 mx-auto mb-6 object-contain" />
-                            <p className="text-slate-500 mb-10 font-semibold text-sm">بوابة الموظفين للعروض والامتحانات الدورية</p>
+                            <div className="absolute top-0 left-0 w-full h-2 bg-raya-500"></div>
+                            <CompanyLogo className="h-16 mx-auto mb-6 object-contain" />
+                            <h1 className="text-4xl font-black text-raya-800 mb-2 tracking-wide hidden">RAYA</h1>
+                            <p className="text-raya-800 font-bold text-lg mb-10">العروض المتاحة حاليا</p>
                             
                             <div className="space-y-6">
                                 <div className="text-right">
-                                    <label className="block text-sm font-bold text-slate-700 mb-2 ml-1">اسم البراند التابع له (للموظف الجديد فقط)</label>
-                                    <input type="text" placeholder="مثال: مبيعات، تسويق، IT..." className="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition font-medium text-slate-800" value={brandInput} onChange={e => setBrandInput(e.target.value)} />
+                                    <label className="block text-sm font-bold text-slate-700 mb-2">اسم البراند</label>
+                                    <input type="text" placeholder="" className="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-raya-500 focus:border-raya-500 outline-none transition font-medium text-slate-800" value={brandInput} onChange={e => setBrandInput(e.target.value)} />
                                 </div>
-                                <button onClick={handleGoogleLogin} className="w-full bg-blue-600 text-white font-bold py-4 rounded-xl shadow-lg hover:bg-blue-700 transition flex items-center justify-center gap-3 active:scale-95 text-lg border border-blue-700">
-                                    دخول بواسطة حساب الشركة
+                                <button onClick={handleGoogleLogin} className="w-full bg-raya-500 text-white font-bold py-4 rounded-xl shadow-lg hover:bg-raya-600 transition flex items-center justify-center gap-3 active:scale-95 text-lg border border-raya-600">
+                                    تسجيل دخول
                                 </button>
                             </div>
-                            <p className="mt-6 text-xs font-semibold text-slate-400 bg-slate-50 p-3 rounded-lg">إذا كنت مسجلاً مسبقاً، اترك خانة البراند فارغة واضغط دخول وسيتم التعرف عليك تلقائياً.</p>
+                            <p className="mt-6 text-xs font-semibold text-slate-400 bg-slate-50 p-3 rounded-lg">إذا كنت مسجلاً مسبقاً، اترك خانة البراند فارغة واضغط تسجيل دخول.</p>
                         </div>
                     </div>
                 )}
@@ -204,7 +233,7 @@ function AdminPanel() {
         <div className="max-w-7xl mx-auto space-y-8 fade-in">
             <div className="bg-white p-6 md:p-8 rounded-3xl shadow-sm border border-slate-200 flex flex-col md:flex-row justify-between items-center gap-6">
                 <div className="text-center md:text-right">
-                    <h2 className="text-3xl font-black text-blue-900 mb-2">لوحة التحكم التنفيذية</h2>
+                    <h2 className="text-3xl font-black text-raya-800 mb-2">لوحة تحكم الإدارة</h2>
                     <div className="flex items-center justify-center md:justify-start gap-2 text-sm font-bold bg-slate-50 inline-flex px-4 py-2 rounded-lg border border-slate-100">
                         حالة التقييم: <span className={`flex items-center gap-1.5 ${settings.examActive?'text-emerald-600':'text-rose-600'}`}>
                             <span className={`w-2.5 h-2.5 rounded-full ${settings.examActive?'bg-emerald-500':'bg-rose-500'} animate-pulse`}></span>
@@ -214,7 +243,7 @@ function AdminPanel() {
                 </div>
                 <div className="flex gap-3 flex-wrap justify-center">
                     <button onClick={toggleExam} className={`px-6 py-3 rounded-xl font-bold text-white shadow-sm transition-all border ${settings.examActive ? 'bg-rose-600 hover:bg-rose-700 border-rose-700' : 'bg-emerald-600 hover:bg-emerald-700 border-emerald-700'}`}>{settings.examActive ? 'إغلاق نافذة الامتحان' : 'إتاحة الامتحان للجميع'}</button>
-                    <button onClick={startNewExam} className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-bold shadow-sm transition-all border border-blue-700">تصفير النتائج وإطلاق عرض جديد</button>
+                    <button onClick={startNewExam} className="bg-raya-500 hover:bg-raya-600 text-white px-6 py-3 rounded-xl font-bold shadow-sm transition-all border border-raya-600">تصفير النتائج وإطلاق عرض جديد</button>
                 </div>
             </div>
             
@@ -222,17 +251,17 @@ function AdminPanel() {
                 <div className="bg-white p-8 rounded-3xl shadow-sm border border-slate-200 flex flex-col">
                     <div className="flex justify-between items-center mb-6">
                         <h3 className="font-black text-xl text-slate-800">إدارة نصوص وصور العروض (JSON)</h3>
-                        <span className="bg-blue-50 text-blue-700 px-3 py-1 rounded-lg text-sm font-bold border border-blue-100">{settings.offers?.length||0} عروض</span>
+                        <span className="bg-raya-50 text-raya-700 px-3 py-1 rounded-lg text-sm font-bold border border-raya-100">{settings.offers?.length||0} عروض</span>
                     </div>
-                    <textarea dir="ltr" className="w-full flex-grow h-56 p-5 border border-slate-200 rounded-2xl text-left font-mono text-sm focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 outline-none mb-5 resize-none bg-slate-50 text-slate-700 shadow-inner" value={offersJSON} onChange={e=>setOffersJSON(e.target.value)}></textarea>
+                    <textarea dir="ltr" className="w-full flex-grow h-56 p-5 border border-slate-200 rounded-2xl text-left font-mono text-sm focus:ring-4 focus:ring-raya-500/20 focus:border-raya-500 outline-none mb-5 resize-none bg-slate-50 text-slate-700 shadow-inner" value={offersJSON} onChange={e=>setOffersJSON(e.target.value)}></textarea>
                     <button onClick={()=>saveJSON('offers')} className="bg-slate-800 text-white font-bold py-4 rounded-xl shadow-md hover:bg-slate-900 transition-colors">حفظ واعتماد العروض</button>
                 </div>
                 <div className="bg-white p-8 rounded-3xl shadow-sm border border-slate-200 flex flex-col">
                     <div className="flex justify-between items-center mb-6">
                         <h3 className="font-black text-xl text-slate-800">إدارة بنك الأسئلة (JSON)</h3>
-                        <span className="bg-blue-50 text-blue-700 px-3 py-1 rounded-lg text-sm font-bold border border-blue-100">{settings.questionsPool?.length||0} أسئلة بالبنك</span>
+                        <span className="bg-raya-50 text-raya-700 px-3 py-1 rounded-lg text-sm font-bold border border-raya-100">{settings.questionsPool?.length||0} أسئلة بالبنك</span>
                     </div>
-                    <textarea dir="ltr" className="w-full flex-grow h-56 p-5 border border-slate-200 rounded-2xl text-left font-mono text-sm focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 outline-none mb-5 resize-none bg-slate-50 text-slate-700 shadow-inner" value={questionsJSON} onChange={e=>setQuestionsJSON(e.target.value)}></textarea>
+                    <textarea dir="ltr" className="w-full flex-grow h-56 p-5 border border-slate-200 rounded-2xl text-left font-mono text-sm focus:ring-4 focus:ring-raya-500/20 focus:border-raya-500 outline-none mb-5 resize-none bg-slate-50 text-slate-700 shadow-inner" value={questionsJSON} onChange={e=>setQuestionsJSON(e.target.value)}></textarea>
                     <button onClick={()=>saveJSON('questionsPool')} className="bg-slate-800 text-white font-bold py-4 rounded-xl shadow-md hover:bg-slate-900 transition-colors">حفظ واعتماد بنك الأسئلة</button>
                 </div>
             </div>
@@ -243,7 +272,7 @@ function AdminPanel() {
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
                         {pendingUsers.map(u => (
                             <div key={u.id} className="bg-white p-5 rounded-2xl shadow-sm border border-amber-100 flex justify-between items-center">
-                                <div><p className="font-black text-slate-800">{u.name}</p><p className="text-sm font-bold text-blue-600 mt-1 bg-blue-50 inline-block px-2 py-0.5 rounded">{u.brand}</p></div>
+                                <div><p className="font-black text-slate-800">{u.name}</p><p className="text-sm font-bold text-raya-600 mt-1 bg-raya-50 inline-block px-2 py-0.5 rounded">{u.brand}</p></div>
                                 <div className="flex gap-2">
                                     <button onClick={()=>db.collection('users').doc(u.email).update({status: 'active'})} className="bg-emerald-100 hover:bg-emerald-200 text-emerald-700 px-4 py-2 rounded-xl text-sm font-bold transition">قبول</button>
                                     <button onClick={()=>db.collection('users').doc(u.email).delete()} className="bg-rose-100 hover:bg-rose-200 text-rose-700 px-4 py-2 rounded-xl text-sm font-bold transition">رفض</button>
@@ -256,9 +285,9 @@ function AdminPanel() {
 
             <div className="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden flex flex-col">
                 <div className="p-8 border-b border-slate-100 flex justify-between items-center flex-wrap gap-4 bg-slate-50">
-                    <h3 className="text-2xl font-black text-blue-900">سجل الموظفين والتقييم ({activeUsers.length})</h3>
+                    <h3 className="text-2xl font-black text-raya-800">سجل الموظفين والتقييم ({activeUsers.length})</h3>
                     <div className="flex gap-3 w-full md:w-auto">
-                        <input type="text" placeholder="بحث باسم الموظف أو البراند..." className="flex-grow md:w-72 border border-slate-300 p-3 rounded-xl bg-white outline-none focus:ring-2 focus:ring-blue-500 font-bold text-sm" onChange={e=>setSearch(e.target.value)} />
+                        <input type="text" placeholder="بحث باسم الموظف أو البراند..." className="flex-grow md:w-72 border border-slate-300 p-3 rounded-xl bg-white outline-none focus:ring-2 focus:ring-raya-500 font-bold text-sm" onChange={e=>setSearch(e.target.value)} />
                         <button onClick={exportEx} className="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-3 rounded-xl font-bold shadow-sm transition flex items-center gap-2 text-sm">تصدير التقرير (Excel)</button>
                     </div>
                 </div>
@@ -269,11 +298,11 @@ function AdminPanel() {
                         </thead>
                         <tbody className="divide-y divide-slate-50">
                             {activeUsers.map(u => (
-                                <tr key={u.id} className="hover:bg-blue-50/50 transition-colors group">
-                                    <td className="p-5"><div className="font-black text-slate-800 text-lg group-hover:text-blue-700 transition-colors">{u.name}</div><div className="text-xs font-semibold text-slate-400 mt-1">{u.email}</div></td>
+                                <tr key={u.id} className="hover:bg-raya-50/50 transition-colors group">
+                                    <td className="p-5"><div className="font-black text-slate-800 text-lg group-hover:text-raya-700 transition-colors">{u.name}</div><div className="text-xs font-semibold text-slate-400 mt-1">{u.email}</div></td>
                                     <td className="p-5"><span className="font-bold text-slate-700 bg-slate-100 px-3 py-1 rounded-lg">{u.brand}</span></td>
                                     <td className="p-5 text-center">{u.hasExamined ? <span className="inline-block bg-emerald-50 text-emerald-600 px-4 py-1.5 rounded-full text-sm font-bold border border-emerald-100">مكتمل</span> : <span className="inline-block bg-slate-50 text-slate-500 px-4 py-1.5 rounded-full text-sm font-bold border border-slate-200">في الانتظار</span>}</td>
-                                    <td className="p-5 text-center">{u.hasExamined ? <div className="inline-flex flex-col items-center"><span className="text-xl font-black text-blue-800 bg-blue-50 px-3 rounded-lg border border-blue-100">{u.score}/6</span><span className="text-xs font-bold text-slate-500 mt-2">⏱ {u.timeTaken} ثانية</span></div> : <span className="text-slate-300">-</span>}</td>
+                                    <td className="p-5 text-center">{u.hasExamined ? <div className="inline-flex flex-col items-center"><span className="text-xl font-black text-raya-800 bg-raya-50 px-3 rounded-lg border border-raya-100">{u.score}/6</span><span className="text-xs font-bold text-slate-500 mt-2">⏱ {u.timeTaken} ثانية</span></div> : <span className="text-slate-300">-</span>}</td>
                                     <td className="p-5 text-center">{u.hasExamined && u.mistakes?.length > 0 ? <button onClick={()=>setMistakesModal(u)} className="bg-rose-50 text-rose-600 hover:bg-rose-600 hover:text-white border border-rose-200 px-4 py-2 rounded-xl text-xs font-bold transition-all shadow-sm">عرض الأخطاء ({u.mistakes.length})</button> : (u.hasExamined ? <span className="text-emerald-500 font-bold text-sm bg-emerald-50 px-3 py-1.5 rounded-lg border border-emerald-100">علامة كاملة 🏆</span> : <span className="text-slate-300">-</span>)}</td>
                                     <td className="p-5 text-center"><button onClick={()=>{if(confirm("هل أنت متأكد من حذف هذا الموظف نهائياً؟")) db.collection('users').doc(u.email).delete()}} className="text-slate-400 hover:text-rose-600 hover:bg-rose-50 p-2 rounded-lg font-bold transition">حذف</button></td>
                                 </tr>
@@ -289,7 +318,7 @@ function AdminPanel() {
                 <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
                     <div className="bg-white rounded-3xl shadow-2xl w-full max-w-2xl max-h-[85vh] flex flex-col overflow-hidden animate-[fadeIn_0.2s_ease-out]">
                         <div className="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50">
-                            <div><h3 className="font-black text-2xl text-blue-900">سجل أخطاء: {mistakesModal.name}</h3><p className="text-sm font-bold text-slate-500 mt-2 bg-white inline-block px-3 py-1 rounded-lg border border-slate-200">القسم: {mistakesModal.brand} | النتيجة: {mistakesModal.score}/6</p></div>
+                            <div><h3 className="font-black text-2xl text-raya-800">سجل أخطاء: {mistakesModal.name}</h3><p className="text-sm font-bold text-slate-500 mt-2 bg-white inline-block px-3 py-1 rounded-lg border border-slate-200">القسم: {mistakesModal.brand} | النتيجة: {mistakesModal.score}/6</p></div>
                             <button onClick={()=>setMistakesModal(null)} className="w-10 h-10 flex items-center justify-center rounded-full bg-slate-200 text-slate-600 hover:bg-rose-500 hover:text-white transition font-bold text-xl">&times;</button>
                         </div>
                         <div className="p-6 overflow-y-auto space-y-5 bg-slate-50/50 flex-grow">
@@ -324,10 +353,10 @@ function UserDashboard({ user, dbUser, setDbUser, onStartExam }) {
     return (
         <div className="max-w-5xl mx-auto space-y-8 fade-in">
             <div className="bg-white p-8 rounded-3xl shadow-sm border border-slate-200 flex flex-col md:flex-row items-center justify-between gap-8 relative overflow-hidden">
-                <div className="absolute -left-20 -top-20 w-64 h-64 bg-blue-50 rounded-full blur-3xl opacity-70"></div>
+                <div className="absolute -left-20 -top-20 w-64 h-64 bg-raya-50 rounded-full blur-3xl opacity-70"></div>
                 <div className="relative z-10 text-center md:text-right flex-grow">
-                    <h2 className="text-4xl font-black text-blue-900 mb-3">مرحباً بك، {dbUser.name}</h2>
-                    <span className="inline-flex items-center gap-2 bg-slate-50 text-slate-700 border border-slate-200 px-5 py-2 rounded-xl text-sm font-bold shadow-sm">🏢 قسم / براند: <span className="text-blue-700 font-black">{dbUser.brand}</span></span>
+                    <h2 className="text-4xl font-black text-raya-800 mb-3">مرحباً بك، {dbUser.name}</h2>
+                    <span className="inline-flex items-center gap-2 bg-slate-50 text-slate-700 border border-slate-200 px-5 py-2 rounded-xl text-sm font-bold shadow-sm">🏢 قسم / براند: <span className="text-raya-600 font-black">{dbUser.brand}</span></span>
                 </div>
                 <div className="relative z-10 text-center bg-slate-50 p-5 rounded-3xl border border-slate-100 shadow-sm shrink-0">
                     <p className="text-xs font-bold text-slate-400 mb-4 tracking-wide">صورة الملف الشخصي</p>
@@ -336,7 +365,7 @@ function UserDashboard({ user, dbUser, setDbUser, onStartExam }) {
                     </div>
                     <div className="flex gap-3 justify-center bg-white p-3 rounded-2xl shadow-sm border border-slate-100">
                         {AVATARS.map(a=>(
-                            <div key={a.id} onClick={()=>{setDbUser({...dbUser,avatar:a.src}); db.collection('users').doc(user.email).update({avatar:a.src});}} className={`cursor-pointer rounded-xl p-1.5 transition-all ${dbUser.avatar===a.src ? 'bg-blue-100 ring-2 ring-blue-500 scale-110 shadow-sm' : 'hover:bg-slate-100 opacity-60 hover:opacity-100'}`}>
+                            <div key={a.id} onClick={()=>{setDbUser({...dbUser,avatar:a.src}); db.collection('users').doc(user.email).update({avatar:a.src});}} className={`cursor-pointer rounded-xl p-1.5 transition-all ${dbUser.avatar===a.src ? 'bg-raya-100 ring-2 ring-raya-500 scale-110 shadow-sm' : 'hover:bg-slate-100 opacity-60 hover:opacity-100'}`}>
                                 <RenderAvatar avatarValue={a.src} sizeClass="w-10 h-10" />
                             </div>
                         ))}
@@ -344,14 +373,14 @@ function UserDashboard({ user, dbUser, setDbUser, onStartExam }) {
                 </div>
             </div>
             
-            <div className="bg-white p-8 md:p-10 rounded-3xl shadow-sm border border-slate-200 border-t-8 border-t-blue-600 text-center relative overflow-hidden">
-                <h2 className="text-3xl font-black mb-8 text-slate-800 flex items-center justify-center gap-3"><span className="text-blue-600">📋</span> النشرة الدورية للعروض والتحديثات</h2>
+            <div className="bg-white p-8 md:p-10 rounded-3xl shadow-sm border border-slate-200 border-t-8 border-t-raya-500 text-center relative overflow-hidden">
+                <h2 className="text-3xl font-black mb-8 text-slate-800 flex items-center justify-center gap-3"><span className="text-raya-500">📋</span> النشرة الدورية للعروض والتحديثات</h2>
                 <div className="grid gap-6 mb-10 text-right">
                     {settings.offers?.length>0 ? settings.offers.map((o,i)=>(
                         <div key={i} className="bg-slate-50 border border-slate-200 p-6 rounded-3xl shadow-sm hover:shadow-md transition-shadow relative overflow-hidden">
-                            <div className="absolute right-0 top-0 bottom-0 w-2 bg-blue-500"></div>
+                            <div className="absolute right-0 top-0 bottom-0 w-2 bg-raya-500"></div>
                             {o.image && <img src={o.image} alt="عرض" className="w-full max-h-80 object-contain rounded-2xl mb-5 bg-white border border-slate-100 p-2" />}
-                            {o.text && <p className="font-bold text-slate-800 text-lg leading-loose flex items-start gap-4"><span className="text-blue-500 text-2xl shrink-0 mt-1">📌</span> <span>{o.text}</span></p>}
+                            {o.text && <p className="font-bold text-slate-800 text-lg leading-loose flex items-start gap-4"><span className="text-raya-500 text-2xl shrink-0 mt-1">📌</span> <span>{o.text}</span></p>}
                         </div>
                     )) : <div className="bg-slate-50 p-10 rounded-3xl border-2 border-dashed border-slate-300 text-slate-400 font-bold text-xl">لا توجد عروض أو تحديثات معتمدة حالياً. يرجى الانتظار.</div>}
                 </div>
@@ -361,7 +390,7 @@ function UserDashboard({ user, dbUser, setDbUser, onStartExam }) {
                 ) : (
                     <div className="space-y-4">
                         <p className="text-sm font-bold text-slate-400">تأكد من قراءة واستيعاب العروض أعلاه جيداً قبل بدء التقييم.</p>
-                        <button onClick={onStartExam} disabled={!settings.examActive} className={`w-full md:w-3/4 py-5 rounded-2xl font-black text-2xl text-white shadow-xl transition-all ${settings.examActive ? 'bg-blue-600 hover:bg-blue-700 hover:shadow-blue-500/40 transform hover:-translate-y-1 border border-blue-700' : 'bg-slate-300 cursor-not-allowed border border-slate-300 text-slate-500'}`}>
+                        <button onClick={onStartExam} disabled={!settings.examActive} className={`w-full md:w-3/4 py-5 rounded-2xl font-black text-2xl text-white shadow-xl transition-all ${settings.examActive ? 'bg-raya-500 hover:bg-raya-600 hover:shadow-raya-500/40 transform hover:-translate-y-1 border border-raya-600' : 'bg-slate-300 cursor-not-allowed border border-slate-300 text-slate-500'}`}>
                             {settings.examActive ? 'تمت القراءة والمراجعة.. ابدأ التقييم الآن' : '🔒 التقييم مغلق حالياً من قِبل إدارة النظام'}
                         </button>
                     </div>
@@ -373,7 +402,7 @@ function UserDashboard({ user, dbUser, setDbUser, onStartExam }) {
                 <h2 className="text-3xl font-black text-center text-slate-800 mb-10 relative z-10">🏆 لوحة الشرف وأوائل التقييم</h2>
                 
                 {dbUser.hasExamined && rank > 0 && (
-                    <div className="text-center font-black mb-10 text-blue-900 bg-blue-50 py-5 rounded-2xl border border-blue-200 shadow-sm text-2xl relative z-10 flex items-center justify-center gap-3">
+                    <div className="text-center font-black mb-10 text-raya-800 bg-raya-50 py-5 rounded-2xl border border-raya-200 shadow-sm text-2xl relative z-10 flex items-center justify-center gap-3">
                         ترتيبك الحالي في لوحة الشرف: المركز {rank}
                     </div>
                 )}
@@ -396,7 +425,7 @@ function UserDashboard({ user, dbUser, setDbUser, onStartExam }) {
                                     </div>
                                 </div>
                                 <div className="bg-white/80 backdrop-blur-md px-6 py-3 rounded-2xl text-center md:text-left border border-white/60 shadow-sm w-full md:w-auto flex flex-row md:flex-col justify-between items-center">
-                                    <div className="text-blue-800 text-2xl font-black">{u.score}/6</div>
+                                    <div className="text-raya-700 text-xl font-black">{u.score}/6</div>
                                     <div className="text-sm font-bold text-slate-500 md:mt-1 bg-slate-100 md:bg-transparent px-3 py-1 md:p-0 rounded-lg">⏱ {u.timeTaken} ثانية</div>
                                 </div>
                             </div>
@@ -434,7 +463,6 @@ function ExamRoom({ user, onFinish }) {
         else if(on && time===0 && !isSubmitting) submit(true); 
     }, [on, time, isSubmitting]);
 
-    // نظام الحماية (Anti-Cheat)
     useEffect(() => {
         const handleCheat = () => {
             if(on && !isSubmitting) {
@@ -494,15 +522,15 @@ function ExamRoom({ user, onFinish }) {
         ansRef.current = newAns; setAns(newAns);
     };
 
-    if(!on) return <div className="flex items-center justify-center h-screen bg-slate-800"><div className="bg-white p-12 rounded-[3rem] shadow-2xl border-8 border-blue-500 text-center w-72 h-72 flex flex-col justify-center items-center transform transition-transform"><CompanyLogo className="h-10 mb-4 opacity-50" /><div className="text-blue-500 font-black mb-2 text-xl tracking-widest">تجهيز التقييم</div><div className="text-8xl text-blue-900 font-black animate-pulse">{cd}</div></div></div>;
+    if(!on) return <div className="flex items-center justify-center h-screen bg-slate-800"><div className="bg-white p-12 rounded-[3rem] shadow-2xl border-8 border-raya-500 text-center w-72 h-72 flex flex-col justify-center items-center transform transition-transform"><CompanyLogo className="h-10 mb-4 opacity-50" /><div className="text-raya-500 font-black mb-2 text-xl tracking-widest">تجهيز التقييم</div><div className="text-8xl text-raya-800 font-black animate-pulse">{cd}</div></div></div>;
     
     return (
         <div className="max-w-4xl mx-auto pb-32 pt-4 px-2 exam-protected fade-in">
-            <div className="bg-white p-5 md:p-6 rounded-3xl shadow-md mb-8 sticky top-4 z-50 border-b-4 border-blue-600 flex justify-between items-center bg-opacity-95 backdrop-blur-md">
-                <div className="text-xl font-black text-blue-900 hidden md:flex items-center gap-3"><span className="w-3 h-3 rounded-full bg-rose-500 animate-ping"></span> تقييم المنصة</div>
+            <div className="bg-white p-5 md:p-6 rounded-3xl shadow-md mb-8 sticky top-4 z-50 border-b-4 border-raya-500 flex justify-between items-center bg-opacity-95 backdrop-blur-md">
+                <div className="text-xl font-black text-raya-800 hidden md:flex items-center gap-3"><span className="w-3 h-3 rounded-full bg-rose-500 animate-ping"></span> تقييم المنصة</div>
                 <div className="flex gap-4 md:gap-8 items-center font-bold w-full md:w-auto justify-between md:justify-end">
-                    <span className="text-slate-600 text-sm bg-slate-100 px-4 py-2 rounded-xl border border-slate-200 shadow-inner flex items-center gap-2">مكتمل: <span className="text-blue-700 font-black text-lg">{Object.keys(ans).length}</span>/6</span>
-                    <span className={`text-2xl px-6 py-2 rounded-2xl border-2 shadow-sm font-mono ${time<60?'text-rose-600 bg-rose-50 border-rose-300 animate-pulse':'text-blue-800 bg-blue-50 border-blue-200'}`}>⏱ {Math.floor(time/60)}:{('0'+(time%60)).slice(-2)}</span>
+                    <span className="text-slate-600 text-sm bg-slate-100 px-4 py-2 rounded-xl border border-slate-200 shadow-inner flex items-center gap-2">مكتمل: <span className="text-raya-700 font-black text-lg">{Object.keys(ans).length}</span>/6</span>
+                    <span className={`text-2xl px-6 py-2 rounded-2xl border-2 shadow-sm font-mono ${time<60?'text-rose-600 bg-rose-50 border-rose-300 animate-pulse':'text-raya-800 bg-raya-50 border-raya-200'}`}>⏱ {Math.floor(time/60)}:{('0'+(time%60)).slice(-2)}</span>
                 </div>
             </div>
 
@@ -513,9 +541,9 @@ function ExamRoom({ user, onFinish }) {
                         <h3 className="text-xl md:text-2xl font-black mb-8 text-slate-800 flex gap-4 leading-relaxed items-start"><span className="bg-slate-100 text-slate-500 w-12 h-12 flex items-center justify-center rounded-2xl shrink-0 font-black shadow-inner text-xl border border-slate-200">{i+1}</span><span className="mt-1">{q.q}</span></h3>
                         <div className="space-y-4 pl-2 md:pl-12 pr-2">
                             {q.opts.map((o,idx)=>(
-                                <div key={idx} onClick={()=>handleOptionSelect(i, idx)} className={`flex items-center p-5 md:p-6 rounded-2xl border-2 cursor-pointer transition-all ${ans[i]===idx?'bg-blue-50 border-blue-500 shadow-md ring-4 ring-blue-500/10 scale-[1.01]':'bg-white border-slate-200 hover:bg-slate-50 hover:border-slate-300'}`}>
-                                    <div className={`w-6 h-6 md:w-8 md:h-8 rounded-full border-2 ml-4 flex items-center justify-center shrink-0 bg-white transition-colors ${ans[i]===idx?'border-blue-600':'border-slate-300'}`}>{ans[i]===idx&&<div className="w-3 h-3 md:w-4 md:h-4 bg-blue-600 rounded-full"></div>}</div>
-                                    <span className={`text-lg md:text-xl font-bold ${ans[i]===idx?'text-blue-900':'text-slate-600'}`}>{o}</span>
+                                <div key={idx} onClick={()=>handleOptionSelect(i, idx)} className={`flex items-center p-5 md:p-6 rounded-2xl border-2 cursor-pointer transition-all ${ans[i]===idx?'bg-raya-50 border-raya-500 shadow-md ring-4 ring-raya-500/10 scale-[1.01]':'bg-white border-slate-200 hover:bg-slate-50 hover:border-slate-300'}`}>
+                                    <div className={`w-6 h-6 md:w-8 md:h-8 rounded-full border-2 ml-4 flex items-center justify-center shrink-0 bg-white transition-colors ${ans[i]===idx?'border-raya-600':'border-slate-300'}`}>{ans[i]===idx&&<div className="w-3 h-3 md:w-4 md:h-4 bg-raya-600 rounded-full"></div>}</div>
+                                    <span className={`text-lg md:text-xl font-bold ${ans[i]===idx?'text-raya-800':'text-slate-600'}`}>{o}</span>
                                 </div>
                             ))}
                         </div>
@@ -524,7 +552,7 @@ function ExamRoom({ user, onFinish }) {
             </div>
 
             <div className="fixed bottom-0 left-0 right-0 p-5 bg-white border-t border-slate-200 shadow-[0_-15px_30px_-15px_rgba(0,0,0,0.1)] z-40">
-                <button disabled={isSubmitting} onClick={()=>{if(window.confirm("تأكيد أخير: هل أنت متأكد من تسليم الإجابات النهائية واعتماد التقييم؟ لا يمكنك التراجع بعد هذه الخطوة."))submit();}} className={`w-full max-w-4xl mx-auto flex justify-center items-center gap-3 ${isSubmitting ? 'bg-slate-400' : 'bg-blue-600 hover:bg-blue-700'} text-white font-black text-xl py-5 md:py-6 rounded-2xl shadow-xl transition-all transform active:scale-[0.98] border border-transparent hover:border-blue-800`}>
+                <button disabled={isSubmitting} onClick={()=>{if(window.confirm("تأكيد أخير: هل أنت متأكد من تسليم الإجابات النهائية واعتماد التقييم؟ لا يمكنك التراجع بعد هذه الخطوة."))submit();}} className={`w-full max-w-4xl mx-auto flex justify-center items-center gap-3 ${isSubmitting ? 'bg-slate-400' : 'bg-raya-500 hover:bg-raya-600'} text-white font-black text-xl py-5 md:py-6 rounded-2xl shadow-xl transition-all transform active:scale-[0.98] border border-transparent hover:border-raya-700`}>
                     {isSubmitting ? 'جاري التشفير والاعتماد...' : 'تسليم التقييم النهائي'}
                 </button>
             </div>
