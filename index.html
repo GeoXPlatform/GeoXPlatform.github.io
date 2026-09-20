@@ -20,7 +20,10 @@ const firebaseConfig = { apiKey: "AIzaSyAkSD8k1Q4_gSwar3mwfDPVpUPWzHJevNk", auth
 if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth(); const db = firebase.firestore(); const googleProvider = new firebase.auth.GoogleAuthProvider();
 googleProvider.setCustomParameters({ prompt: 'select_account' });
-const ADMIN_EMAIL = "abdoo.ashraf353@gmail.com";
+
+// إضافة حسابات المديرين المتعددة هنا
+const ADMIN_EMAILS = ["abdoo.ashraf353@gmail.com", "yousef74joe74@gmail.com"];
+
 const AVATARS = [{id:1,icon:'🧽'},{id:2,icon:'🦑'},{id:3,icon:'⭐'},{id:4,icon:'💼'},{id:5,icon:'🤡'}];
 
 function App() {
@@ -32,7 +35,7 @@ function App() {
             try {
                 if(currentUser) {
                     const email = currentUser.email;
-                    if(email === ADMIN_EMAIL) { setRole('admin'); setUser(currentUser); setView('admin'); setLoading(false); return; }
+                    if(ADMIN_EMAILS.includes(email)) { setRole('admin'); setUser(currentUser); setView('admin'); setLoading(false); return; }
                     const userDoc = await db.collection('users').doc(email).get();
                     if(userDoc.exists) {
                         const data = userDoc.data();
@@ -47,7 +50,7 @@ function App() {
     const handleGoogleLogin = async () => {
         try {
             setLoading(true); const result = await auth.signInWithPopup(googleProvider); const email = result.user.email;
-            if(email === ADMIN_EMAIL) return; 
+            if(ADMIN_EMAILS.includes(email)) return; 
             const userDocRef = db.collection('users').doc(email); const userDoc = await userDocRef.get();
             if(!userDoc.exists) {
                 if(!brandInput.trim()) { alert("تنبيه: اكتب اسم البراند أولاً قبل الدخول."); await auth.signOut(); setLoading(false); return; }
