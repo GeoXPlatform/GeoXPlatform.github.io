@@ -58,7 +58,7 @@ function App() {
         } catch(error) { if(error.code !== 'auth/popup-closed-by-user') alert("Error: " + error.message); } finally { setLoading(false); }
     };
 
-    const handleLogout = async () => { if(confirm("تسجيل الخروج؟")) { await auth.signOut(); window.location.reload(); } };
+    const handleLogout = async () => { if(window.confirm("تسجيل الخروج؟")) { await auth.signOut(); window.location.reload(); } };
     if(loading) return <div className="flex h-screen items-center justify-center bg-gray-50"><div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div></div>;
 
     return (
@@ -84,7 +84,7 @@ function App() {
                 )}
                 {view === 'admin' && <AdminPanel />}
                 {view === 'dashboard' && role === 'user' && <UserDashboard user={user} dbUser={dbUser} setDbUser={setDbUser} onStartExam={() => setView('exam')} />}
-                {view === 'exam' && role === 'user' && <ExamRoom user={user} onFinish={(s,m,t) => { alert(`النتيجة: ${s}/6\nالوقت: ${t}ث`); setDbUser(p=>({...p,hasExamined:true,score:s,mistakes:m,timeTaken:t})); setView('dashboard'); }} />}
+                {view === 'exam' && role === 'user' && <ExamRoom user={user} onFinish={(s,m,t) => { alert(`انتهى الامتحان بنجاح!\n\nالنتيجة: ${s}/6\nالوقت المستغرق: ${t} ثانية`); setDbUser(p=>({...p,hasExamined:true,score:s,mistakes:m,timeTaken:t})); setView('dashboard'); }} />}
             </main>
         </div>
     );
@@ -110,7 +110,7 @@ function AdminPanel() {
 
     const toggleExam = () => db.collection('settings').doc('main').update({examActive:!settings.examActive});
     const startNewExam = async () => {
-        if(confirm("سيتم تصفير نتيجة الامتحان لجميع الموظفين. تأكيد؟")) {
+        if(window.confirm("سيتم تصفير نتيجة الامتحان لجميع الموظفين. تأكيد؟")) {
             const batch = db.batch();
             users.forEach(u => batch.update(db.collection('users').doc(u.id), { hasExamined: false, score: 0, timeTaken: 0, mistakes: [] }));
             await batch.commit();
@@ -125,7 +125,8 @@ function AdminPanel() {
             if(type === 'questionsPool' && (!Array.isArray(parsed) || parsed.length < 6)) {
                 alert("تأكد أن بنك الأسئلة يحتوي على 6 أسئلة على الأقل."); return;
             }
-            await db.collection('settings').doc('main').update({ [type]: parsed });
+            const safeParsed = JSON.parse(JSON.stringify(parsed));
+            await db.collection('settings').doc('main').update({ [type]: safeParsed });
             alert("تم الحفظ بنجاح!");
         } catch(e) { alert("خطأ في كود الـ JSON! تأكد من الأقواس والفواصل."); }
     };
@@ -227,7 +228,11 @@ function ExamRoom({ user, onFinish }) {
     
     const force = async()=>{ 
         if(isSubmitting) return; setIsSubmitting(true);
-        try { await db.collection('users').doc(user.email).update({hasExamined:true,score:0,timeTaken:300-time,mistakes:[]}); onFinish(0,[],300-time); } catch(e) { onFinish(0,[],300-time); }
+        try { 
+            const payload = JSON.parse(JSON.stringify({hasExamined:true,score:0,timeTaken:300-time,mistakes:[]}));
+            await db.collection('users').doc(user.email).update(payload); 
+            onFinish(0,[],300-time); 
+        } catch(e) { onFinish(0,[],300-time); }
     };
     
     const submit = async()=>{ 
@@ -238,10 +243,21 @@ function ExamRoom({ user, onFinish }) {
             qs.forEach((q,i)=>{
                 const answeredIdx = ans[i];
                 if(answeredIdx===q.cor) s++;
-                else m.push({q: q.q || "سؤال غير معروف", correctAns: q.opts[q.cor] || "بدون إجابة", userAns: answeredIdx !== undefined ? (q.opts[answeredIdx] || "غير معروف") : "لم يُجب"});
+                else {
+                    let qText = q.q ? String(q.q) : "سؤال غير معروف";
+                    let cText = q.opts && q.opts[q.cor] ? String(q.opts[q.cor]) : "بدون إجابة صحيحة";
+                    let uText = answeredIdx !== undefined && q.opts && q.opts[answeredIdx] ? String(q.opts[answeredIdx]) : "لم يُجب";
+                    m.push({q: qText, correctAns: cText, userAns: uText});
+                }
             }); 
             const finalTime = 300-time;
-            await db.collection('users').doc(user.email).update({hasExamined:true,score:s,timeTaken:finalTime,mistakes:m}); 
+            const payload = JSON.parse(JSON.stringify({
+                hasExamined: true,
+                score: s,
+                timeTaken: finalTime,
+                mistakes: m
+            }));
+            await db.collection('users').doc(user.email).update(payload); 
             onFinish(s,m,finalTime);
         } catch(error) {
             alert("حدث خطأ أثناء الإرسال: " + error.message);
