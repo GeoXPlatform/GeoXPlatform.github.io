@@ -52,16 +52,18 @@ const auth = firebase.auth(); const db = firebase.firestore(); const googleProvi
 googleProvider.setCustomParameters({ prompt: 'select_account' });
 
 const ADMIN_EMAILS = ["abdoo.ashraf353@gmail.com", "yousef74joe74@gmail.com"];
+// أسماء الأفاتار التي سترفعها على جيت هاب
 const AVATARS = [ {id:1, src:'avatar1.png'}, {id:2, src:'avatar2.png'}, {id:3, src:'avatar3.png'}, {id:4, src:'avatar4.png'}, {id:5, src:'avatar5.png'} ];
 
-// دالة عرض الأفاتار (بدون دوائر ولا خلفيات، صور مفتوحة)
+// دالة عرض الأفاتار (بدون دوائر ولا خلفيات، صور مفتوحة تماماً)
 const RenderAvatar = ({ avatarValue, sizeClass="w-16 h-16" }) => {
     const defaultImg = "https://cdn-icons-png.flaticon.com/512/149/149071.png";
-    if(!avatarValue) return <img src="avatar1.png" alt="User" className={`${sizeClass} object-contain`} onError={e=>e.target.src=defaultImg}/>;
-    if(avatarValue.includes('.png') || avatarValue.includes('.jpg')) {
-        return <img src={avatarValue} alt="User" className={`${sizeClass} object-contain drop-shadow-sm`} onError={e=>e.target.src=defaultImg}/>;
+    let src = avatarValue || 'avatar1.png';
+    // في حال كان المستخدم القديم لديه إيموجي مخزن، نعرضه لحين تغييره
+    if(src.length < 5 && src.match(/[\p{Emoji}]/u)) {
+        return <div className={`flex items-center justify-center text-raya-600 ${sizeClass}`}><span style={{fontSize:'200%'}}>{src}</span></div>;
     }
-    return <div className={`flex items-center justify-center text-raya-600 ${sizeClass}`}><span style={{fontSize:'200%'}}>{avatarValue}</span></div>;
+    return <img src={src} alt="User" className={`${sizeClass} object-contain drop-shadow-md transition-transform`} onError={e=>e.target.src=defaultImg}/>;
 };
 
 const CompanyLogo = ({ className }) => (
@@ -343,7 +345,7 @@ function UserDashboard({ user, dbUser, setDbUser, onStartExam }) {
                     </div>
                     <div className="flex gap-3 justify-center bg-white p-3 rounded-2xl shadow-sm border border-slate-100">
                         {AVATARS.map(a=>(
-                            <div key={a.id} onClick={()=>{setDbUser({...dbUser,avatar:a.src}); db.collection('users').doc(user.email).update({avatar:a.src});}} className={`cursor-pointer rounded-xl p-1 transition-all ${dbUser.avatar===a.src ? 'bg-raya-50 ring-2 ring-raya-500 scale-110 shadow-sm' : 'hover:bg-slate-100 opacity-60 hover:opacity-100'}`}>
+                            <div key={a.id} onClick={()=>{setDbUser({...dbUser,avatar:a.src}); db.collection('users').doc(user.email).update({avatar:a.src});}} className={`cursor-pointer rounded-xl p-1 transition-all flex items-center justify-center ${dbUser.avatar===a.src ? 'bg-raya-50 ring-2 ring-raya-500 scale-110 shadow-sm' : 'hover:bg-slate-100 opacity-60 hover:opacity-100'}`}>
                                 <RenderAvatar avatarValue={a.src} sizeClass="w-10 h-10" />
                             </div>
                         ))}
@@ -419,17 +421,25 @@ function ExamRoom({ user, onFinish }) {
     const [qs, setQs] = useState([]); const [ans, setAns] = useState({}); const [cd, setCd] = useState(3); const [time, setTime] = useState(300); const [on, setOn] = useState(false); const [isSubmitting, setIsSubmitting] = useState(false);
     const ansRef = useRef({}); const timeRef = useRef(300); const warnings = useRef(0);
 
-    // الحل الجذري لمشكلة الإجابات: الاعتماد على قيمة النص المطابقة بدلاً من ترتيب الـ Index المتغير
+    // الحل الرياضي الجذري لمشكلة الـ JSON: ربط الإجابة بالنص المباشر وليس الترتيب!
     useEffect(() => { 
         db.collection('settings').doc('main').get().then(d => { 
             if(d.exists && d.data().questionsPool?.length >= 6) {
                 const pool = d.data().questionsPool;
                 const shuffled = [...pool].sort(()=>0.5-Math.random()).slice(0,6);
                 const processed = shuffled.map(q => {
-                    const originalCorrectText = q.options[Number(q.correct)]; // حفظ نص الإجابة الصحيحة
-                    const opts = [...q.options].sort(()=>0.5-Math.random()); // خلط الخيارات
-                    const newCorIdx = opts.findIndex(o => o === originalCorrectText); // البحث عن مكانها الجديد
-                    return { q: q.question, opts: opts, cor: newCorIdx > -1 ? newCorIdx : 0 };
+                    // استخراج نص الإجابة الصحيحة بشكل دقيق من الـ JSON سواء كان (answer) أو (correct)
+                    let exactCorrectString = "";
+                    if (q.answer !== undefined) { exactCorrectString = String(q.answer).trim(); } 
+                    else if (q.correct !== undefined) { exactCorrectString = String(q.options[Number(q.correct)]).trim(); }
+
+                    const opts = [...q.options].sort(()=>0.5-Math.random()); 
+                    
+                    // البحث عن مكان الإجابة الصحيحة بعد أن تم خلطها عشوائياً
+                    let newCorIdx = opts.findIndex(o => String(o).trim() === exactCorrectString);
+                    if(newCorIdx === -1) newCorIdx = 0; // حماية إضافية
+                    
+                    return { q: q.question, opts: opts, cor: newCorIdx };
                 });
                 setQs(processed);
             } else { alert("نعتذر، لا توجد أسئلة كافية لبدء التقييم. يرجى مراجعة الإدارة."); window.location.reload(); } 
@@ -448,7 +458,8 @@ function ExamRoom({ user, onFinish }) {
             if(on && !isSubmitting) {
                 warnings.current += 1;
                 if(warnings.current === 1) {
-                    alert("⚠️ إنذار أمني (1/2): يمنع الخروج من شاشة التقييم أو فتح تطبيقات أخرى! إذا تكرر ذلك سيتم سحب الورقة واعتماد إجاباتك الحالية فوراً.");
+                    // الإنذار الأول يوقف الكود تماماً ولا يكمل إلا بضغط (OK)
+                    alert("⚠️ إنذار أمني (1/2):\n\nلقد قمت بالخروج من شاشة التقييم! يمنع فتح نوافذ أخرى أو ترك الشاشة.\n\nاضغط 'موافق' (OK) للعودة للامتحان. إذا تكرر هذا الأمر سيتم سحب الورقة تلقائياً.");
                 } else if(warnings.current >= 2) {
                     alert("🚫 تم سحب ورقة التقييم واعتمادها تلقائياً لمخالفة القواعد الأمنية للمرة الثانية.");
                     submit(true);
@@ -456,21 +467,21 @@ function ExamRoom({ user, onFinish }) {
             }
         };
 
-        const onVisibilityChange = () => { if(document.hidden) handleCheat(); };
-        const onBlur = () => { handleCheat(); };
+        const onVisibilityChange = () => { 
+            // يعمل فقط عندما يقوم المستخدم بتغيير التبويب أو إخفاء الشاشة
+            if(document.hidden) handleCheat(); 
+        };
         const onKeyDown = (e) => { if(e.key === 'PrintScreen') { navigator.clipboard.writeText(''); alert('حماية النظام: غير مسموح بالتقاط صور للشاشة أثناء التقييم.'); } };
 
         if(on) {
             document.body.classList.add('exam-protected');
             document.addEventListener('visibilitychange', onVisibilityChange);
-            window.addEventListener('blur', onBlur);
             window.addEventListener('keyup', onKeyDown);
         }
 
         return () => {
             document.body.classList.remove('exam-protected');
             document.removeEventListener('visibilitychange', onVisibilityChange);
-            window.removeEventListener('blur', onBlur);
             window.removeEventListener('keyup', onKeyDown);
         };
     }, [on, isSubmitting]);
@@ -523,7 +534,7 @@ function ExamRoom({ user, onFinish }) {
                             {q.opts.map((o,idx)=>(
                                 <div key={idx} onClick={()=>handleOptionSelect(i, idx)} className={`flex items-center p-5 md:p-6 rounded-2xl border-2 cursor-pointer transition-all ${ans[i]===idx?'bg-raya-50 border-raya-500 shadow-md ring-4 ring-raya-500/10 scale-[1.01]':'bg-white border-slate-200 hover:bg-slate-50 hover:border-slate-300'}`}>
                                     <div className={`w-6 h-6 md:w-8 md:h-8 rounded-full border-2 ml-4 flex items-center justify-center shrink-0 bg-white transition-colors ${ans[i]===idx?'border-raya-600':'border-slate-300'}`}>{ans[i]===idx&&<div className="w-3 h-3 md:w-4 md:h-4 bg-raya-600 rounded-full"></div>}</div>
-                                    <span className={`text-lg md:text-xl font-bold ${ans[i]===idx?'text-raya-900':'text-slate-600'}`}>{o}</span>
+                                    <span className={`text-lg md:text-xl font-bold ${ans[i]===idx?'text-raya-800':'text-slate-600'}`}>{o}</span>
                                 </div>
                             ))}
                         </div>
