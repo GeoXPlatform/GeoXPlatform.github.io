@@ -3,23 +3,16 @@
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>RAYA - العروض المتاحة حاليا</title>
 <script src="https://cdn.tailwindcss.com"></script>
-<!-- تعريف لون شركة راية الرسمي ليتم تطبيقه على كامل المنصة -->
+<!-- تعريف لون شركة راية -->
 <script>
   tailwind.config = {
     theme: {
       extend: {
         colors: {
           raya: {
-            50: '#e6ebf5',
-            100: '#ccd7eb',
-            200: '#99b0d6',
-            300: '#6688c2',
-            400: '#3361ad',
-            500: '#0033A0', /* اللون الأساسي للوجو */
-            600: '#002980',
-            700: '#001f60',
-            800: '#001440',
-            900: '#000a20',
+            50: '#e6ebf5', 100: '#ccd7eb', 200: '#99b0d6', 300: '#6688c2', 400: '#3361ad',
+            500: '#0033A0', /* لون اللوجو الأساسي */
+            600: '#002980', 700: '#001f60', 800: '#001440', 900: '#000a20',
           }
         }
       }
@@ -32,13 +25,8 @@
     ::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 4px; }
     ::-webkit-scrollbar-thumb:hover { background: #64748b; }
     
-    /* منع السكرين شوت والنسخ وقت الامتحان فقط */
     @media print { .exam-protected { display: none !important; } }
-    .exam-protected {
-        -webkit-touch-callout: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none;
-    }
-    
-    /* تأثيرات حركية خفيفة */
+    .exam-protected { -webkit-touch-callout: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; }
     .fade-in { animation: fadeIn 0.4s ease-in-out; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 </style>
@@ -55,7 +43,6 @@
 <script type="text/babel">
 const { useState, useEffect, useRef } = React;
 
-// إعدادات فايربيز مع تفعيل الجلسة الدائمة
 const firebaseConfig = { apiKey: "AIzaSyAkSD8k1Q4_gSwar3mwfDPVpUPWzHJevNk", authDomain: "geox-platform.firebaseapp.com", databaseURL: "https://geox-platform-default-rtdb.firebaseio.com", projectId: "geox-platform", storageBucket: "geox-platform.firebasestorage.app", messagingSenderId: "691272759644", appId: "1:691272759644:web:297e11465b2fbe83ef6999", measurementId: "G-HVEFX0HGMM" };
 if(!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
@@ -64,26 +51,23 @@ if(!firebase.apps.length) {
 const auth = firebase.auth(); const db = firebase.firestore(); const googleProvider = new firebase.auth.GoogleAuthProvider();
 googleProvider.setCustomParameters({ prompt: 'select_account' });
 
-// حسابات الإدارة
 const ADMIN_EMAILS = ["abdoo.ashraf353@gmail.com", "yousef74joe74@gmail.com"];
-
-// الأفاتار كصور مرفوعة
 const AVATARS = [ {id:1, src:'avatar1.png'}, {id:2, src:'avatar2.png'}, {id:3, src:'avatar3.png'}, {id:4, src:'avatar4.png'}, {id:5, src:'avatar5.png'} ];
 
-// دالة عرض الأفاتار
+// دالة عرض الأفاتار (بدون دوائر ولا خلفيات، صور مفتوحة)
 const RenderAvatar = ({ avatarValue, sizeClass="w-16 h-16" }) => {
-    if(!avatarValue) return <img src="avatar1.png" alt="User" className={`${sizeClass} rounded-full object-cover shadow-md border-2 border-white`} onError={e=>e.target.src='https://cdn-icons-png.flaticon.com/512/149/149071.png'}/>;
+    const defaultImg = "https://cdn-icons-png.flaticon.com/512/149/149071.png";
+    if(!avatarValue) return <img src="avatar1.png" alt="User" className={`${sizeClass} object-contain`} onError={e=>e.target.src=defaultImg}/>;
     if(avatarValue.includes('.png') || avatarValue.includes('.jpg')) {
-        return <img src={avatarValue} alt="User" className={`${sizeClass} rounded-full object-cover shadow-md border-2 border-white bg-slate-100`} onError={e=>e.target.src='https://cdn-icons-png.flaticon.com/512/149/149071.png'}/>;
+        return <img src={avatarValue} alt="User" className={`${sizeClass} object-contain drop-shadow-sm`} onError={e=>e.target.src=defaultImg}/>;
     }
-    return <div className={`flex items-center justify-center bg-raya-50 text-raya-600 rounded-full shadow-md border-2 border-white ${sizeClass}`}><span style={{fontSize:'200%'}}>{avatarValue}</span></div>;
+    return <div className={`flex items-center justify-center text-raya-600 ${sizeClass}`}><span style={{fontSize:'200%'}}>{avatarValue}</span></div>;
 };
 
-// دالة عرض اللوجو
 const CompanyLogo = ({ className }) => (
     <div className="flex items-center justify-center">
         <img src="logo.png" alt="Company Logo" className={className} onError={(e)=>{e.target.style.display='none'; e.target.nextSibling.style.display='block';}} />
-        <span className={`font-black text-raya-800 tracking-wider hidden ${className.includes('h-20') ? 'text-5xl' : 'text-2xl'}`}>المنصة الرئيسية</span>
+        <span className={`font-black text-raya-800 tracking-wider hidden ${className.includes('h-20') ? 'text-5xl' : 'text-2xl'}`}>RAYA</span>
     </div>
 );
 
@@ -103,7 +87,6 @@ function App() {
                         const data = userDoc.data();
                         setUser(currentUser); setDbUser(data); setRole('user'); setView('dashboard');
                     }
-                    // تم إزالة الطرد التلقائي هنا للسماح لعملية إنشاء الحساب بالاستمرار
                 } else { setUser(null); setRole(null); setView('login'); }
             } catch(error) { console.error(error); setView('login'); } finally { setLoading(false); clearTimeout(timer); }
         });
@@ -113,12 +96,9 @@ function App() {
     const handleGoogleLogin = async () => {
         try {
             setLoading(true); const result = await auth.signInWithPopup(googleProvider); const email = result.user.email;
-            if(ADMIN_EMAILS.includes(email)) {
-                setRole('admin'); setUser(result.user); setView('admin'); setLoading(false); return;
-            }
+            if(ADMIN_EMAILS.includes(email)) { setRole('admin'); setUser(result.user); setView('admin'); setLoading(false); return; }
             
             const userDocRef = db.collection('users').doc(email); const userDoc = await userDocRef.get();
-            
             if(!userDoc.exists) {
                 if(!brandInput.trim()) { alert("تنبيه: اكتب اسم البراند أولاً، ثم اضغط تسجيل دخول."); await auth.signOut(); setLoading(false); return; }
                 const newData = { name: result.user.displayName || email.split('@')[0], email: email, brand: brandInput.trim(), status: 'active', hasExamined: false, score: 0, timeTaken: 0, avatar: 'avatar1.png', mistakes: [] };
@@ -144,7 +124,7 @@ function App() {
                             {role === 'user' && dbUser?.mistakes?.length > 0 && <button onClick={() => alert("مراجعة الأخطاء السابقة:\n\n" + dbUser.mistakes.map(m => `السؤال: ${m.q}\nإجابتك: ${m.userAns}\nالصحيح: ${m.correctAns}`).join('\n\n---\n'))} className="text-sm font-semibold text-rose-600 bg-rose-50 hover:bg-rose-100 px-4 py-2 rounded-lg transition-colors border border-rose-200 flex items-center gap-2"> بنك أخطائي</button>}
                         </div>
                         <div className="flex items-center gap-4">
-                            {role === 'admin' && <span className="bg-raya-50 text-raya-800 text-xs font-bold px-3 py-1 rounded-md border border-raya-200">مدير النظام</span>}
+                            {role === 'admin' && <span className="bg-raya-100 text-raya-800 text-xs font-bold px-3 py-1 rounded-md border border-raya-200">مدير النظام</span>}
                             <CompanyLogo className="h-8 md:h-10 object-contain" />
                         </div>
                     </div>
@@ -157,7 +137,6 @@ function App() {
                         <div className="bg-white p-8 md:p-12 rounded-3xl shadow-xl border border-slate-100 w-full max-w-md text-center relative overflow-hidden">
                             <div className="absolute top-0 left-0 w-full h-2 bg-raya-500"></div>
                             <CompanyLogo className="h-16 mx-auto mb-6 object-contain" />
-                            <h1 className="text-4xl font-black text-raya-800 mb-2 tracking-wide hidden">RAYA</h1>
                             <p className="text-raya-800 font-bold text-lg mb-10">العروض المتاحة حاليا</p>
                             
                             <div className="space-y-6">
@@ -313,12 +292,11 @@ function AdminPanel() {
                 </div>
             </div>
 
-            {/* Modal عرض الأخطاء للمدير */}
             {mistakesModal && (
                 <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
                     <div className="bg-white rounded-3xl shadow-2xl w-full max-w-2xl max-h-[85vh] flex flex-col overflow-hidden animate-[fadeIn_0.2s_ease-out]">
                         <div className="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50">
-                            <div><h3 className="font-black text-2xl text-raya-800">سجل أخطاء: {mistakesModal.name}</h3><p className="text-sm font-bold text-slate-500 mt-2 bg-white inline-block px-3 py-1 rounded-lg border border-slate-200">القسم: {mistakesModal.brand} | النتيجة: {mistakesModal.score}/6</p></div>
+                            <div><h3 className="font-black text-2xl text-raya-900">سجل أخطاء: {mistakesModal.name}</h3><p className="text-sm font-bold text-slate-500 mt-2 bg-white inline-block px-3 py-1 rounded-lg border border-slate-200">القسم: {mistakesModal.brand} | النتيجة: {mistakesModal.score}/6</p></div>
                             <button onClick={()=>setMistakesModal(null)} className="w-10 h-10 flex items-center justify-center rounded-full bg-slate-200 text-slate-600 hover:bg-rose-500 hover:text-white transition font-bold text-xl">&times;</button>
                         </div>
                         <div className="p-6 overflow-y-auto space-y-5 bg-slate-50/50 flex-grow">
@@ -356,7 +334,7 @@ function UserDashboard({ user, dbUser, setDbUser, onStartExam }) {
                 <div className="absolute -left-20 -top-20 w-64 h-64 bg-raya-50 rounded-full blur-3xl opacity-70"></div>
                 <div className="relative z-10 text-center md:text-right flex-grow">
                     <h2 className="text-4xl font-black text-raya-800 mb-3">مرحباً بك، {dbUser.name}</h2>
-                    <span className="inline-flex items-center gap-2 bg-slate-50 text-slate-700 border border-slate-200 px-5 py-2 rounded-xl text-sm font-bold shadow-sm">🏢 قسم / براند: <span className="text-raya-600 font-black">{dbUser.brand}</span></span>
+                    <span className="inline-flex items-center gap-2 bg-slate-50 text-slate-700 border border-slate-200 px-5 py-2 rounded-xl text-sm font-bold shadow-sm">🏢 البراند: <span className="text-raya-600 font-black">{dbUser.brand}</span></span>
                 </div>
                 <div className="relative z-10 text-center bg-slate-50 p-5 rounded-3xl border border-slate-100 shadow-sm shrink-0">
                     <p className="text-xs font-bold text-slate-400 mb-4 tracking-wide">صورة الملف الشخصي</p>
@@ -365,7 +343,7 @@ function UserDashboard({ user, dbUser, setDbUser, onStartExam }) {
                     </div>
                     <div className="flex gap-3 justify-center bg-white p-3 rounded-2xl shadow-sm border border-slate-100">
                         {AVATARS.map(a=>(
-                            <div key={a.id} onClick={()=>{setDbUser({...dbUser,avatar:a.src}); db.collection('users').doc(user.email).update({avatar:a.src});}} className={`cursor-pointer rounded-xl p-1.5 transition-all ${dbUser.avatar===a.src ? 'bg-raya-100 ring-2 ring-raya-500 scale-110 shadow-sm' : 'hover:bg-slate-100 opacity-60 hover:opacity-100'}`}>
+                            <div key={a.id} onClick={()=>{setDbUser({...dbUser,avatar:a.src}); db.collection('users').doc(user.email).update({avatar:a.src});}} className={`cursor-pointer rounded-xl p-1 transition-all ${dbUser.avatar===a.src ? 'bg-raya-50 ring-2 ring-raya-500 scale-110 shadow-sm' : 'hover:bg-slate-100 opacity-60 hover:opacity-100'}`}>
                                 <RenderAvatar avatarValue={a.src} sizeClass="w-10 h-10" />
                             </div>
                         ))}
@@ -374,7 +352,7 @@ function UserDashboard({ user, dbUser, setDbUser, onStartExam }) {
             </div>
             
             <div className="bg-white p-8 md:p-10 rounded-3xl shadow-sm border border-slate-200 border-t-8 border-t-raya-500 text-center relative overflow-hidden">
-                <h2 className="text-3xl font-black mb-8 text-slate-800 flex items-center justify-center gap-3"><span className="text-raya-500">📋</span> النشرة الدورية للعروض والتحديثات</h2>
+                <h2 className="text-3xl font-black mb-8 text-slate-800 flex items-center justify-center gap-3"><span className="text-raya-500">📋</span> العروض والتحديثات المتاحة</h2>
                 <div className="grid gap-6 mb-10 text-right">
                     {settings.offers?.length>0 ? settings.offers.map((o,i)=>(
                         <div key={i} className="bg-slate-50 border border-slate-200 p-6 rounded-3xl shadow-sm hover:shadow-md transition-shadow relative overflow-hidden">
@@ -402,7 +380,7 @@ function UserDashboard({ user, dbUser, setDbUser, onStartExam }) {
                 <h2 className="text-3xl font-black text-center text-slate-800 mb-10 relative z-10">🏆 لوحة الشرف وأوائل التقييم</h2>
                 
                 {dbUser.hasExamined && rank > 0 && (
-                    <div className="text-center font-black mb-10 text-raya-800 bg-raya-50 py-5 rounded-2xl border border-raya-200 shadow-sm text-2xl relative z-10 flex items-center justify-center gap-3">
+                    <div className="text-center font-black mb-10 text-raya-900 bg-raya-50 py-5 rounded-2xl border border-raya-200 shadow-sm text-2xl relative z-10 flex items-center justify-center gap-3">
                         ترتيبك الحالي في لوحة الشرف: المركز {rank}
                     </div>
                 )}
@@ -425,7 +403,7 @@ function UserDashboard({ user, dbUser, setDbUser, onStartExam }) {
                                     </div>
                                 </div>
                                 <div className="bg-white/80 backdrop-blur-md px-6 py-3 rounded-2xl text-center md:text-left border border-white/60 shadow-sm w-full md:w-auto flex flex-row md:flex-col justify-between items-center">
-                                    <div className="text-raya-700 text-xl font-black">{u.score}/6</div>
+                                    <div className="text-raya-800 text-2xl font-black">{u.score}/6</div>
                                     <div className="text-sm font-bold text-slate-500 md:mt-1 bg-slate-100 md:bg-transparent px-3 py-1 md:p-0 rounded-lg">⏱ {u.timeTaken} ثانية</div>
                                 </div>
                             </div>
@@ -441,15 +419,17 @@ function ExamRoom({ user, onFinish }) {
     const [qs, setQs] = useState([]); const [ans, setAns] = useState({}); const [cd, setCd] = useState(3); const [time, setTime] = useState(300); const [on, setOn] = useState(false); const [isSubmitting, setIsSubmitting] = useState(false);
     const ansRef = useRef({}); const timeRef = useRef(300); const warnings = useRef(0);
 
+    // الحل الجذري لمشكلة الإجابات: الاعتماد على قيمة النص المطابقة بدلاً من ترتيب الـ Index المتغير
     useEffect(() => { 
         db.collection('settings').doc('main').get().then(d => { 
             if(d.exists && d.data().questionsPool?.length >= 6) {
                 const pool = d.data().questionsPool;
                 const shuffled = [...pool].sort(()=>0.5-Math.random()).slice(0,6);
                 const processed = shuffled.map(q => {
-                    const opts = q.options.map((t,i)=>({t,i})).sort(()=>0.5-Math.random()); 
-                    let corIdx = opts.findIndex(o=>o.i===Number(q.correct)); if(corIdx===-1) corIdx=0; 
-                    return{q:q.question, opts:opts.map(o=>o.t), cor:corIdx};
+                    const originalCorrectText = q.options[Number(q.correct)]; // حفظ نص الإجابة الصحيحة
+                    const opts = [...q.options].sort(()=>0.5-Math.random()); // خلط الخيارات
+                    const newCorIdx = opts.findIndex(o => o === originalCorrectText); // البحث عن مكانها الجديد
+                    return { q: q.question, opts: opts, cor: newCorIdx > -1 ? newCorIdx : 0 };
                 });
                 setQs(processed);
             } else { alert("نعتذر، لا توجد أسئلة كافية لبدء التقييم. يرجى مراجعة الإدارة."); window.location.reload(); } 
@@ -543,7 +523,7 @@ function ExamRoom({ user, onFinish }) {
                             {q.opts.map((o,idx)=>(
                                 <div key={idx} onClick={()=>handleOptionSelect(i, idx)} className={`flex items-center p-5 md:p-6 rounded-2xl border-2 cursor-pointer transition-all ${ans[i]===idx?'bg-raya-50 border-raya-500 shadow-md ring-4 ring-raya-500/10 scale-[1.01]':'bg-white border-slate-200 hover:bg-slate-50 hover:border-slate-300'}`}>
                                     <div className={`w-6 h-6 md:w-8 md:h-8 rounded-full border-2 ml-4 flex items-center justify-center shrink-0 bg-white transition-colors ${ans[i]===idx?'border-raya-600':'border-slate-300'}`}>{ans[i]===idx&&<div className="w-3 h-3 md:w-4 md:h-4 bg-raya-600 rounded-full"></div>}</div>
-                                    <span className={`text-lg md:text-xl font-bold ${ans[i]===idx?'text-raya-800':'text-slate-600'}`}>{o}</span>
+                                    <span className={`text-lg md:text-xl font-bold ${ans[i]===idx?'text-raya-900':'text-slate-600'}`}>{o}</span>
                                 </div>
                             ))}
                         </div>
