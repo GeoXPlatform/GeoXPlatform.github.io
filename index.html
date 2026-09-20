@@ -58,7 +58,7 @@ function App() {
         } catch(error) { if(error.code !== 'auth/popup-closed-by-user') alert("Error: " + error.message); } finally { setLoading(false); }
     };
 
-    const handleLogout = async () => { if(window.confirm("تسجيل الخروج؟")) { await auth.signOut(); window.location.reload(); } };
+    const handleLogout = async () => { if(confirm("تسجيل الخروج؟")) { await auth.signOut(); window.location.reload(); } };
     if(loading) return <div className="flex h-screen items-center justify-center bg-gray-50"><div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div></div>;
 
     return (
@@ -84,7 +84,7 @@ function App() {
                 )}
                 {view === 'admin' && <AdminPanel />}
                 {view === 'dashboard' && role === 'user' && <UserDashboard user={user} dbUser={dbUser} setDbUser={setDbUser} onStartExam={() => setView('exam')} />}
-                {view === 'exam' && role === 'user' && <ExamRoom user={user} onFinish={(s,m,t) => { alert(`انتهى الامتحان بنجاح!\n\nالنتيجة: ${s}/6\nالوقت المستغرق: ${t} ثانية`); setDbUser(p=>({...p,hasExamined:true,score:s,mistakes:m,timeTaken:t})); setView('dashboard'); }} />}
+                {view === 'exam' && role === 'user' && <ExamRoom user={user} onFinish={(s,m,t) => { alert(`النتيجة: ${s}/6\nالوقت: ${t}ث`); setDbUser(p=>({...p,hasExamined:true,score:s,mistakes:m,timeTaken:t})); setView('dashboard'); }} />}
             </main>
         </div>
     );
@@ -110,7 +110,7 @@ function AdminPanel() {
 
     const toggleExam = () => db.collection('settings').doc('main').update({examActive:!settings.examActive});
     const startNewExam = async () => {
-        if(window.confirm("سيتم تصفير نتيجة الامتحان لجميع الموظفين. تأكيد؟")) {
+        if(confirm("سيتم تصفير نتيجة الامتحان لجميع الموظفين. تأكيد؟")) {
             const batch = db.batch();
             users.forEach(u => batch.update(db.collection('users').doc(u.id), { hasExamined: false, score: 0, timeTaken: 0, mistakes: [] }));
             await batch.commit();
@@ -187,7 +187,6 @@ function UserDashboard({ user, dbUser, setDbUser, onStartExam }) {
     useEffect(() => {
         db.collection('settings').doc('main').onSnapshot(d => d.exists && setSettings(d.data()));
         db.collection('users').where('hasExamined','==',true).onSnapshot(s => {
-            // ترتيب بالدرجة الأعلى أولاً، ثم بالوقت الأقل (كما طلبت تماماً)
             const sortedData = s.docs.map(d=>d.data()).sort((a,b)=> b.score - a.score || a.timeTaken - b.timeTaken);
             setBoard(sortedData);
         });
@@ -221,7 +220,7 @@ function UserDashboard({ user, dbUser, setDbUser, onStartExam }) {
 function ExamRoom({ user, onFinish }) {
     const [qs, setQs] = useState([]); const [ans, setAns] = useState({}); const [cd, setCd] = useState(3); const [time, setTime] = useState(300); const [on, setOn] = useState(false); const [isSubmitting, setIsSubmitting] = useState(false);
     
-    useEffect(() => { db.collection('settings').doc('main').get().then(d => { if(d.exists&&d.data().questionsPool?.length>=6) setQs([...d.data().questionsPool].sort(()=>0.5-Math.random()).slice(0,6).map(q=>{const opts=q.options.map((t,i)=>({t,i})).sort(()=>0.5-Math.random()); return{q:q.question,opts:opts.map(o=>o.t),cor:opts.findIndex(o=>o.i===q.correct)};})); else{alert("لا توجد أسئلة كافية!");window.location.reload();} }); }, []);
+    useEffect(() => { db.collection('settings').doc('main').get().then(d => { if(d.exists&&d.data().questionsPool?.length>=6) setQs([...d.data().questionsPool].sort(()=>0.5-Math.random()).slice(0,6).map(q=>{const opts=q.options.map((t,i)=>({t,i})).sort(()=>0.5-Math.random()); let corIdx = opts.findIndex(o=>o.i===Number(q.correct)); if(corIdx===-1) corIdx=0; return{q:q.question,opts:opts.map(o=>o.t),cor:corIdx};})); else{alert("لا توجد أسئلة كافية!");window.location.reload();} }); }, []);
     useEffect(() => { if(qs.length>0&&cd>0) setTimeout(()=>setCd(cd-1),1000); else if(qs.length>0&&cd===0) setOn(true); }, [cd, qs]);
     useEffect(() => { if(on&&time>0&&!isSubmitting) setTimeout(()=>setTime(time-1),1000); else if(on&&time===0&&!isSubmitting) submit(); }, [on, time, isSubmitting]);
     useEffect(() => { const ch = ()=>{if(document.hidden&&on&&!isSubmitting){alert("تسليم بصفر لمخالفة القواعد (الخروج من الصفحة)!");force();}}; window.addEventListener('blur',ch); document.addEventListener('visibilitychange',ch); return ()=>{window.removeEventListener('blur',ch); document.removeEventListener('visibilitychange',ch);}; }, [on, isSubmitting]);
@@ -236,7 +235,11 @@ function ExamRoom({ user, onFinish }) {
         setIsSubmitting(true);
         try {
             let s=0;let m=[]; 
-            qs.forEach((q,i)=>{if(ans[i]===q.cor)s++;else m.push({q:q.q,correctAns:q.opts[q.cor],userAns:ans[i]!==undefined?q.opts[ans[i]]:"لم يُجب"});}); 
+            qs.forEach((q,i)=>{
+                const answeredIdx = ans[i];
+                if(answeredIdx===q.cor) s++;
+                else m.push({q: q.q || "سؤال غير معروف", correctAns: q.opts[q.cor] || "بدون إجابة", userAns: answeredIdx !== undefined ? (q.opts[answeredIdx] || "غير معروف") : "لم يُجب"});
+            }); 
             const finalTime = 300-time;
             await db.collection('users').doc(user.email).update({hasExamined:true,score:s,timeTaken:finalTime,mistakes:m}); 
             onFinish(s,m,finalTime);
