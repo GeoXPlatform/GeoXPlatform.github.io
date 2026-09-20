@@ -21,14 +21,14 @@
 </script>
 <style>
     body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f8fafc; color: #0f172a; }
-    ::-webkit-scrollbar { width: 6px; height: 6px; }
-    ::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 4px; }
-    ::-webkit-scrollbar-thumb:hover { background: #64748b; }
+    ::-webkit-scrollbar { width: 4px; height: 4px; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 2px; }
+    ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
     
     @media print { .exam-protected { display: none !important; } }
     .exam-protected { -webkit-touch-callout: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; }
-    .fade-in { animation: fadeIn 0.4s ease-in-out; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    .fade-in { animation: fadeIn 0.3s ease-in-out; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 </style>
 <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
 <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
@@ -52,24 +52,21 @@ const auth = firebase.auth(); const db = firebase.firestore(); const googleProvi
 googleProvider.setCustomParameters({ prompt: 'select_account' });
 
 const ADMIN_EMAILS = ["abdoo.ashraf353@gmail.com", "yousef74joe74@gmail.com"];
-// أسماء الأفاتار التي سترفعها على جيت هاب
 const AVATARS = [ {id:1, src:'avatar1.png'}, {id:2, src:'avatar2.png'}, {id:3, src:'avatar3.png'}, {id:4, src:'avatar4.png'}, {id:5, src:'avatar5.png'} ];
 
-// دالة عرض الأفاتار (بدون دوائر ولا خلفيات، صور مفتوحة تماماً)
-const RenderAvatar = ({ avatarValue, sizeClass="w-16 h-16" }) => {
+const RenderAvatar = ({ avatarValue, sizeClass="w-12 h-12" }) => {
     const defaultImg = "https://cdn-icons-png.flaticon.com/512/149/149071.png";
     let src = avatarValue || 'avatar1.png';
-    // في حال كان المستخدم القديم لديه إيموجي مخزن، نعرضه لحين تغييره
     if(src.length < 5 && src.match(/[\p{Emoji}]/u)) {
-        return <div className={`flex items-center justify-center text-raya-600 ${sizeClass}`}><span style={{fontSize:'200%'}}>{src}</span></div>;
+        return <div className={`flex items-center justify-center text-raya-600 ${sizeClass}`}><span style={{fontSize:'150%'}}>{src}</span></div>;
     }
-    return <img src={src} alt="User" className={`${sizeClass} object-contain drop-shadow-md transition-transform`} onError={e=>e.target.src=defaultImg}/>;
+    return <img src={src} alt="User" className={`${sizeClass} object-contain drop-shadow-sm transition-transform`} onError={e=>e.target.src=defaultImg}/>;
 };
 
 const CompanyLogo = ({ className }) => (
     <div className="flex items-center justify-center">
         <img src="logo.png" alt="Company Logo" className={className} onError={(e)=>{e.target.style.display='none'; e.target.nextSibling.style.display='block';}} />
-        <span className={`font-black text-raya-800 tracking-wider hidden ${className.includes('h-20') ? 'text-5xl' : 'text-2xl'}`}>RAYA</span>
+        <span className={`font-black text-raya-800 tracking-wider hidden ${className}`}>RAYA</span>
     </div>
 );
 
@@ -114,43 +111,43 @@ function App() {
 
     const handleLogout = async () => { if(window.confirm("هل تريد تسجيل الخروج؟")) { await auth.signOut(); window.location.reload(); } };
     
-    if(loading) return <div className="flex flex-col h-screen items-center justify-center bg-slate-50"><div className="w-14 h-14 border-4 border-raya-500 border-t-transparent rounded-full animate-spin mb-4"></div><div className="text-raya-800 font-bold text-lg animate-pulse">جاري تسجيل الدخول...</div></div>;
+    if(loading) return <div className="flex flex-col h-screen items-center justify-center bg-slate-50"><div className="w-10 h-10 border-4 border-raya-500 border-t-transparent rounded-full animate-spin mb-3"></div><div className="text-raya-800 font-bold text-sm animate-pulse">جاري تسجيل الدخول...</div></div>;
 
     return (
         <div className="min-h-screen flex flex-col bg-slate-50">
             {user && (
                 <header className="bg-white border-b border-slate-200 sticky top-0 z-40 shadow-sm">
-                    <div className="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
-                        <div className="flex gap-3 items-center">
-                            <button onClick={handleLogout} className="text-sm font-semibold text-slate-600 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 px-4 py-2 rounded-lg transition-colors border border-slate-200">خروج</button>
-                            {role === 'user' && dbUser?.mistakes?.length > 0 && <button onClick={() => alert("مراجعة الأخطاء السابقة:\n\n" + dbUser.mistakes.map(m => `السؤال: ${m.q}\nإجابتك: ${m.userAns}\nالصحيح: ${m.correctAns}`).join('\n\n---\n'))} className="text-sm font-semibold text-rose-600 bg-rose-50 hover:bg-rose-100 px-4 py-2 rounded-lg transition-colors border border-rose-200 flex items-center gap-2"> بنك أخطائي</button>}
+                    <div className="max-w-7xl mx-auto px-4 py-2 flex justify-between items-center">
+                        <div className="flex gap-2 items-center">
+                            <button onClick={handleLogout} className="text-xs font-bold text-slate-600 hover:text-slate-900 bg-slate-100 px-3 py-1.5 rounded transition-colors border border-slate-200">خروج</button>
+                            {role === 'user' && dbUser?.mistakes?.length > 0 && <button onClick={() => alert("مراجعة الأخطاء السابقة:\n\n" + dbUser.mistakes.map(m => `السؤال: ${m.q}\nإجابتك: ${m.userAns}\nالصحيح: ${m.correctAns}`).join('\n\n---\n'))} className="text-xs font-bold text-rose-600 bg-rose-50 px-3 py-1.5 rounded transition-colors border border-rose-200 flex items-center gap-1"> بنك أخطائي</button>}
                         </div>
-                        <div className="flex items-center gap-4">
-                            {role === 'admin' && <span className="bg-raya-100 text-raya-800 text-xs font-bold px-3 py-1 rounded-md border border-raya-200">مدير النظام</span>}
-                            <CompanyLogo className="h-8 md:h-10 object-contain" />
+                        <div className="flex items-center gap-3">
+                            {role === 'admin' && <span className="bg-raya-100 text-raya-800 text-[10px] font-bold px-2 py-1 rounded border border-raya-200">مدير النظام</span>}
+                            <CompanyLogo className="h-6 md:h-8 object-contain" />
                         </div>
                     </div>
                 </header>
             )}
             
-            <main className="flex-grow p-4 md:p-8">
+            <main className="flex-grow p-3 md:p-6">
                 {view === 'login' && (
-                    <div className="flex flex-col items-center justify-center min-h-[80vh] fade-in">
-                        <div className="bg-white p-8 md:p-12 rounded-3xl shadow-xl border border-slate-100 w-full max-w-md text-center relative overflow-hidden">
-                            <div className="absolute top-0 left-0 w-full h-2 bg-raya-500"></div>
-                            <CompanyLogo className="h-16 mx-auto mb-6 object-contain" />
-                            <p className="text-raya-800 font-bold text-lg mb-10">العروض المتاحة حاليا</p>
+                    <div className="flex flex-col items-center justify-center min-h-[85vh] fade-in">
+                        <div className="bg-white p-6 md:p-8 rounded-2xl shadow-lg border border-slate-100 w-full max-w-sm text-center relative overflow-hidden">
+                            <div className="absolute top-0 left-0 w-full h-1 bg-raya-500"></div>
+                            <CompanyLogo className="h-12 mx-auto mb-4 object-contain" />
+                            <p className="text-raya-800 font-bold text-base mb-6">العروض المتاحة حاليا</p>
                             
-                            <div className="space-y-6">
+                            <div className="space-y-4">
                                 <div className="text-right">
-                                    <label className="block text-sm font-bold text-slate-700 mb-2">اسم البراند</label>
-                                    <input type="text" placeholder="" className="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-raya-500 focus:border-raya-500 outline-none transition font-medium text-slate-800" value={brandInput} onChange={e => setBrandInput(e.target.value)} />
+                                    <label className="block text-xs font-bold text-slate-700 mb-1">اسم البراند</label>
+                                    <input type="text" className="w-full p-3 bg-slate-50 border border-slate-200 rounded-lg focus:ring-1 focus:ring-raya-500 focus:border-raya-500 outline-none transition text-sm font-medium text-slate-800" value={brandInput} onChange={e => setBrandInput(e.target.value)} />
                                 </div>
-                                <button onClick={handleGoogleLogin} className="w-full bg-raya-500 text-white font-bold py-4 rounded-xl shadow-lg hover:bg-raya-600 transition flex items-center justify-center gap-3 active:scale-95 text-lg border border-raya-600">
+                                <button onClick={handleGoogleLogin} className="w-full bg-raya-500 text-white font-bold py-3 rounded-lg shadow hover:bg-raya-600 transition flex items-center justify-center gap-2 active:scale-95 text-sm border border-raya-600">
                                     تسجيل دخول
                                 </button>
                             </div>
-                            <p className="mt-6 text-xs font-semibold text-slate-400 bg-slate-50 p-3 rounded-lg">إذا كنت مسجلاً مسبقاً، اترك خانة البراند فارغة واضغط تسجيل دخول.</p>
+                            <p className="mt-4 text-[10px] font-semibold text-slate-400 bg-slate-50 p-2 rounded">إذا كنت مسجلاً مسبقاً، اترك خانة البراند فارغة واضغط تسجيل دخول.</p>
                         </div>
                     </div>
                 )}
@@ -211,52 +208,52 @@ function AdminPanel() {
     const pendingUsers = users.filter(u => u.status === 'pending');
 
     return (
-        <div className="max-w-7xl mx-auto space-y-8 fade-in">
-            <div className="bg-white p-6 md:p-8 rounded-3xl shadow-sm border border-slate-200 flex flex-col md:flex-row justify-between items-center gap-6">
+        <div className="max-w-6xl mx-auto space-y-6 fade-in">
+            <div className="bg-white p-5 rounded-xl shadow-sm border border-slate-200 flex flex-col md:flex-row justify-between items-center gap-4">
                 <div className="text-center md:text-right">
-                    <h2 className="text-3xl font-black text-raya-800 mb-2">لوحة تحكم الإدارة</h2>
-                    <div className="flex items-center justify-center md:justify-start gap-2 text-sm font-bold bg-slate-50 inline-flex px-4 py-2 rounded-lg border border-slate-100">
-                        حالة التقييم: <span className={`flex items-center gap-1.5 ${settings.examActive?'text-emerald-600':'text-rose-600'}`}>
-                            <span className={`w-2.5 h-2.5 rounded-full ${settings.examActive?'bg-emerald-500':'bg-rose-500'} animate-pulse`}></span>
-                            {settings.examActive?"مُتاح للموظفين":"مغلق حالياً"}
+                    <h2 className="text-xl font-bold text-raya-800 mb-1">لوحة تحكم الإدارة</h2>
+                    <div className="flex items-center justify-center md:justify-start gap-1 text-xs font-bold bg-slate-50 px-2 py-1 rounded border border-slate-100">
+                        التقييم: <span className={`flex items-center gap-1 ${settings.examActive?'text-emerald-600':'text-rose-600'}`}>
+                            <span className={`w-1.5 h-1.5 rounded-full ${settings.examActive?'bg-emerald-500':'bg-rose-500'}`}></span>
+                            {settings.examActive?"متاح":"مغلق"}
                         </span>
                     </div>
                 </div>
-                <div className="flex gap-3 flex-wrap justify-center">
-                    <button onClick={toggleExam} className={`px-6 py-3 rounded-xl font-bold text-white shadow-sm transition-all border ${settings.examActive ? 'bg-rose-600 hover:bg-rose-700 border-rose-700' : 'bg-emerald-600 hover:bg-emerald-700 border-emerald-700'}`}>{settings.examActive ? 'إغلاق نافذة الامتحان' : 'إتاحة الامتحان للجميع'}</button>
-                    <button onClick={startNewExam} className="bg-raya-500 hover:bg-raya-600 text-white px-6 py-3 rounded-xl font-bold shadow-sm transition-all border border-raya-600">تصفير النتائج وإطلاق عرض جديد</button>
+                <div className="flex gap-2 flex-wrap justify-center">
+                    <button onClick={toggleExam} className={`px-4 py-2 rounded-lg text-xs font-bold text-white shadow-sm transition-all border ${settings.examActive ? 'bg-rose-600 border-rose-700' : 'bg-emerald-600 border-emerald-700'}`}>{settings.examActive ? 'إغلاق الامتحان' : 'إتاحة الامتحان'}</button>
+                    <button onClick={startNewExam} className="bg-raya-500 text-white px-4 py-2 rounded-lg text-xs font-bold shadow-sm transition-all border border-raya-600">تصفير وإطلاق عرض جديد</button>
                 </div>
             </div>
             
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <div className="bg-white p-8 rounded-3xl shadow-sm border border-slate-200 flex flex-col">
-                    <div className="flex justify-between items-center mb-6">
-                        <h3 className="font-black text-xl text-slate-800">إدارة نصوص وصور العروض (JSON)</h3>
-                        <span className="bg-raya-50 text-raya-700 px-3 py-1 rounded-lg text-sm font-bold border border-raya-100">{settings.offers?.length||0} عروض</span>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                <div className="bg-white p-5 rounded-xl shadow-sm border border-slate-200 flex flex-col">
+                    <div className="flex justify-between items-center mb-3">
+                        <h3 className="font-bold text-sm text-slate-800">العروض (JSON)</h3>
+                        <span className="bg-raya-50 text-raya-700 px-2 py-0.5 rounded text-[10px] font-bold border border-raya-100">{settings.offers?.length||0}</span>
                     </div>
-                    <textarea dir="ltr" className="w-full flex-grow h-56 p-5 border border-slate-200 rounded-2xl text-left font-mono text-sm focus:ring-4 focus:ring-raya-500/20 focus:border-raya-500 outline-none mb-5 resize-none bg-slate-50 text-slate-700 shadow-inner" value={offersJSON} onChange={e=>setOffersJSON(e.target.value)}></textarea>
-                    <button onClick={()=>saveJSON('offers')} className="bg-slate-800 text-white font-bold py-4 rounded-xl shadow-md hover:bg-slate-900 transition-colors">حفظ واعتماد العروض</button>
+                    <textarea dir="ltr" className="w-full flex-grow h-32 p-3 border border-slate-200 rounded-lg text-left font-mono text-[11px] focus:ring-1 focus:ring-raya-500 outline-none mb-3 bg-slate-50 text-slate-700" value={offersJSON} onChange={e=>setOffersJSON(e.target.value)}></textarea>
+                    <button onClick={()=>saveJSON('offers')} className="bg-slate-800 text-white text-xs font-bold py-2 rounded-lg shadow-sm">حفظ العروض</button>
                 </div>
-                <div className="bg-white p-8 rounded-3xl shadow-sm border border-slate-200 flex flex-col">
-                    <div className="flex justify-between items-center mb-6">
-                        <h3 className="font-black text-xl text-slate-800">إدارة بنك الأسئلة (JSON)</h3>
-                        <span className="bg-raya-50 text-raya-700 px-3 py-1 rounded-lg text-sm font-bold border border-raya-100">{settings.questionsPool?.length||0} أسئلة بالبنك</span>
+                <div className="bg-white p-5 rounded-xl shadow-sm border border-slate-200 flex flex-col">
+                    <div className="flex justify-between items-center mb-3">
+                        <h3 className="font-bold text-sm text-slate-800">بنك الأسئلة (JSON)</h3>
+                        <span className="bg-raya-50 text-raya-700 px-2 py-0.5 rounded text-[10px] font-bold border border-raya-100">{settings.questionsPool?.length||0}</span>
                     </div>
-                    <textarea dir="ltr" className="w-full flex-grow h-56 p-5 border border-slate-200 rounded-2xl text-left font-mono text-sm focus:ring-4 focus:ring-raya-500/20 focus:border-raya-500 outline-none mb-5 resize-none bg-slate-50 text-slate-700 shadow-inner" value={questionsJSON} onChange={e=>setQuestionsJSON(e.target.value)}></textarea>
-                    <button onClick={()=>saveJSON('questionsPool')} className="bg-slate-800 text-white font-bold py-4 rounded-xl shadow-md hover:bg-slate-900 transition-colors">حفظ واعتماد بنك الأسئلة</button>
+                    <textarea dir="ltr" className="w-full flex-grow h-32 p-3 border border-slate-200 rounded-lg text-left font-mono text-[11px] focus:ring-1 focus:ring-raya-500 outline-none mb-3 bg-slate-50 text-slate-700" value={questionsJSON} onChange={e=>setQuestionsJSON(e.target.value)}></textarea>
+                    <button onClick={()=>saveJSON('questionsPool')} className="bg-slate-800 text-white text-xs font-bold py-2 rounded-lg shadow-sm">حفظ الأسئلة</button>
                 </div>
             </div>
 
             {pendingUsers.length > 0 && (
-                <div className="bg-amber-50 p-8 rounded-3xl border border-amber-200 shadow-sm">
-                    <h3 className="text-xl font-black text-amber-900 mb-6 flex items-center gap-2">⏳ طلبات تسجيل بانتظار الموافقة والتفعيل ({pendingUsers.length})</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                <div className="bg-amber-50 p-5 rounded-xl border border-amber-200 shadow-sm">
+                    <h3 className="text-sm font-bold text-amber-900 mb-3">⏳ طلبات تسجيل ({pendingUsers.length})</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                         {pendingUsers.map(u => (
-                            <div key={u.id} className="bg-white p-5 rounded-2xl shadow-sm border border-amber-100 flex justify-between items-center">
-                                <div><p className="font-black text-slate-800">{u.name}</p><p className="text-sm font-bold text-raya-600 mt-1 bg-raya-50 inline-block px-2 py-0.5 rounded">{u.brand}</p></div>
-                                <div className="flex gap-2">
-                                    <button onClick={()=>db.collection('users').doc(u.email).update({status: 'active'})} className="bg-emerald-100 hover:bg-emerald-200 text-emerald-700 px-4 py-2 rounded-xl text-sm font-bold transition">قبول</button>
-                                    <button onClick={()=>db.collection('users').doc(u.email).delete()} className="bg-rose-100 hover:bg-rose-200 text-rose-700 px-4 py-2 rounded-xl text-sm font-bold transition">رفض</button>
+                            <div key={u.id} className="bg-white p-3 rounded-lg shadow-sm border border-amber-100 flex justify-between items-center">
+                                <div><p className="font-bold text-sm text-slate-800">{u.name}</p><p className="text-[10px] font-bold text-raya-600 mt-0.5">{u.brand}</p></div>
+                                <div className="flex gap-1">
+                                    <button onClick={()=>db.collection('users').doc(u.email).update({status: 'active'})} className="bg-emerald-100 text-emerald-700 px-2 py-1 rounded text-xs font-bold">قبول</button>
+                                    <button onClick={()=>db.collection('users').doc(u.email).delete()} className="bg-rose-100 text-rose-700 px-2 py-1 rounded text-xs font-bold">رفض</button>
                                 </div>
                             </div>
                         ))}
@@ -264,51 +261,50 @@ function AdminPanel() {
                 </div>
             )}
 
-            <div className="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden flex flex-col">
-                <div className="p-8 border-b border-slate-100 flex justify-between items-center flex-wrap gap-4 bg-slate-50">
-                    <h3 className="text-2xl font-black text-raya-800">سجل الموظفين والتقييم ({activeUsers.length})</h3>
-                    <div className="flex gap-3 w-full md:w-auto">
-                        <input type="text" placeholder="بحث باسم الموظف أو البراند..." className="flex-grow md:w-72 border border-slate-300 p-3 rounded-xl bg-white outline-none focus:ring-2 focus:ring-raya-500 font-bold text-sm" onChange={e=>setSearch(e.target.value)} />
-                        <button onClick={exportEx} className="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-3 rounded-xl font-bold shadow-sm transition flex items-center gap-2 text-sm">تصدير التقرير (Excel)</button>
+            <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                <div className="p-4 border-b border-slate-100 flex justify-between items-center flex-wrap gap-3 bg-slate-50">
+                    <h3 className="text-base font-bold text-raya-800">الموظفين ({activeUsers.length})</h3>
+                    <div className="flex gap-2 w-full md:w-auto">
+                        <input type="text" placeholder="بحث..." className="flex-grow border border-slate-300 p-1.5 rounded bg-white outline-none focus:border-raya-500 text-xs" onChange={e=>setSearch(e.target.value)} />
+                        <button onClick={exportEx} className="bg-emerald-600 text-white px-3 py-1.5 rounded text-xs font-bold">تصدير Excel</button>
                     </div>
                 </div>
-                <div className="overflow-x-auto p-2">
-                    <table className="w-full text-right border-collapse">
-                        <thead className="text-slate-500 text-sm">
-                            <tr><th className="p-5 font-bold border-b border-slate-100">بيانات الموظف</th><th className="p-5 font-bold border-b border-slate-100">البراند</th><th className="p-5 font-bold border-b border-slate-100 text-center">حالة الامتحان</th><th className="p-5 font-bold border-b border-slate-100 text-center">النتيجة والوقت</th><th className="p-5 font-bold border-b border-slate-100 text-center">التفاصيل</th><th className="p-5 font-bold border-b border-slate-100 text-center">إدارة</th></tr>
+                <div className="overflow-x-auto p-1">
+                    <table className="w-full text-right border-collapse text-xs">
+                        <thead className="text-slate-500">
+                            <tr><th className="p-2 border-b border-slate-100">الموظف</th><th className="p-2 border-b border-slate-100">البراند</th><th className="p-2 border-b border-slate-100 text-center">الامتحان</th><th className="p-2 border-b border-slate-100 text-center">النتيجة</th><th className="p-2 border-b border-slate-100 text-center">التفاصيل</th><th className="p-2 border-b border-slate-100 text-center">إدارة</th></tr>
                         </thead>
                         <tbody className="divide-y divide-slate-50">
                             {activeUsers.map(u => (
-                                <tr key={u.id} className="hover:bg-raya-50/50 transition-colors group">
-                                    <td className="p-5"><div className="font-black text-slate-800 text-lg group-hover:text-raya-700 transition-colors">{u.name}</div><div className="text-xs font-semibold text-slate-400 mt-1">{u.email}</div></td>
-                                    <td className="p-5"><span className="font-bold text-slate-700 bg-slate-100 px-3 py-1 rounded-lg">{u.brand}</span></td>
-                                    <td className="p-5 text-center">{u.hasExamined ? <span className="inline-block bg-emerald-50 text-emerald-600 px-4 py-1.5 rounded-full text-sm font-bold border border-emerald-100">مكتمل</span> : <span className="inline-block bg-slate-50 text-slate-500 px-4 py-1.5 rounded-full text-sm font-bold border border-slate-200">في الانتظار</span>}</td>
-                                    <td className="p-5 text-center">{u.hasExamined ? <div className="inline-flex flex-col items-center"><span className="text-xl font-black text-raya-800 bg-raya-50 px-3 rounded-lg border border-raya-100">{u.score}/6</span><span className="text-xs font-bold text-slate-500 mt-2">⏱ {u.timeTaken} ثانية</span></div> : <span className="text-slate-300">-</span>}</td>
-                                    <td className="p-5 text-center">{u.hasExamined && u.mistakes?.length > 0 ? <button onClick={()=>setMistakesModal(u)} className="bg-rose-50 text-rose-600 hover:bg-rose-600 hover:text-white border border-rose-200 px-4 py-2 rounded-xl text-xs font-bold transition-all shadow-sm">عرض الأخطاء ({u.mistakes.length})</button> : (u.hasExamined ? <span className="text-emerald-500 font-bold text-sm bg-emerald-50 px-3 py-1.5 rounded-lg border border-emerald-100">علامة كاملة 🏆</span> : <span className="text-slate-300">-</span>)}</td>
-                                    <td className="p-5 text-center"><button onClick={()=>{if(confirm("هل أنت متأكد من حذف هذا الموظف نهائياً؟")) db.collection('users').doc(u.email).delete()}} className="text-slate-400 hover:text-rose-600 hover:bg-rose-50 p-2 rounded-lg font-bold transition">حذف</button></td>
+                                <tr key={u.id} className="hover:bg-raya-50/50">
+                                    <td className="p-2"><div className="font-bold text-slate-800">{u.name}</div><div className="text-[10px] text-slate-400">{u.email}</div></td>
+                                    <td className="p-2"><span className="font-semibold text-slate-700 bg-slate-100 px-2 py-0.5 rounded">{u.brand}</span></td>
+                                    <td className="p-2 text-center">{u.hasExamined ? <span className="bg-emerald-50 text-emerald-600 px-2 py-0.5 rounded text-[10px] font-bold">مكتمل</span> : <span className="bg-slate-50 text-slate-500 px-2 py-0.5 rounded text-[10px] font-bold">انتظار</span>}</td>
+                                    <td className="p-2 text-center">{u.hasExamined ? <div><span className="font-bold text-raya-800">{u.score}/6</span><div className="text-[10px] text-slate-500">{u.timeTaken}ث</div></div> : '-'}</td>
+                                    <td className="p-2 text-center">{u.hasExamined && u.mistakes?.length > 0 ? <button onClick={()=>setMistakesModal(u)} className="bg-rose-50 text-rose-600 border border-rose-100 px-2 py-1 rounded text-[10px] font-bold">الأخطاء ({u.mistakes.length})</button> : (u.hasExamined ? <span className="text-emerald-500 text-[10px] font-bold">كاملة 🏆</span> : '-')}</td>
+                                    <td className="p-2 text-center"><button onClick={()=>{if(confirm("حذف الموظف نهائياً؟")) db.collection('users').doc(u.email).delete()}} className="text-slate-400 hover:text-rose-600 p-1 rounded text-[10px] font-bold">حذف</button></td>
                                 </tr>
                             ))}
-                            {activeUsers.length === 0 && <tr><td colSpan="6" className="p-12 text-center text-slate-400 font-bold text-lg bg-slate-50 rounded-xl m-4">لا يوجد موظفين مسجلين مطابقين للبحث.</td></tr>}
                         </tbody>
                     </table>
                 </div>
             </div>
 
             {mistakesModal && (
-                <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-                    <div className="bg-white rounded-3xl shadow-2xl w-full max-w-2xl max-h-[85vh] flex flex-col overflow-hidden animate-[fadeIn_0.2s_ease-out]">
-                        <div className="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50">
-                            <div><h3 className="font-black text-2xl text-raya-900">سجل أخطاء: {mistakesModal.name}</h3><p className="text-sm font-bold text-slate-500 mt-2 bg-white inline-block px-3 py-1 rounded-lg border border-slate-200">القسم: {mistakesModal.brand} | النتيجة: {mistakesModal.score}/6</p></div>
-                            <button onClick={()=>setMistakesModal(null)} className="w-10 h-10 flex items-center justify-center rounded-full bg-slate-200 text-slate-600 hover:bg-rose-500 hover:text-white transition font-bold text-xl">&times;</button>
+                <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-3">
+                    <div className="bg-white rounded-xl shadow-xl w-full max-w-lg max-h-[85vh] flex flex-col overflow-hidden animate-[fadeIn_0.2s_ease-out]">
+                        <div className="p-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+                            <div><h3 className="font-bold text-base text-raya-900">سجل: {mistakesModal.name}</h3><p className="text-[11px] font-bold text-slate-500">{mistakesModal.brand} | النتيجة: {mistakesModal.score}/6</p></div>
+                            <button onClick={()=>setMistakesModal(null)} className="w-8 h-8 rounded-full bg-slate-200 text-slate-600 font-bold">&times;</button>
                         </div>
-                        <div className="p-6 overflow-y-auto space-y-5 bg-slate-50/50 flex-grow">
+                        <div className="p-4 overflow-y-auto space-y-3 bg-slate-50/50 flex-grow">
                             {mistakesModal.mistakes.map((m, i) => (
-                                <div key={i} className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm relative overflow-hidden">
-                                    <div className="absolute right-0 top-0 bottom-0 w-1.5 bg-rose-400"></div>
-                                    <p className="font-black text-slate-800 mb-4 text-lg leading-relaxed"><span className="text-rose-500 ml-1">س{i+1}:</span> {m.q}</p>
-                                    <div className="space-y-3 bg-slate-50 p-4 rounded-xl border border-slate-100">
-                                        <p className="text-sm flex flex-col md:flex-row md:items-center gap-2"><span className="text-rose-700 font-bold bg-rose-100 px-3 py-1 rounded-md text-xs shrink-0 w-fit">إجابة الموظف:</span> <span className="font-bold text-slate-700">{m.userAns}</span></p>
-                                        <p className="text-sm flex flex-col md:flex-row md:items-center gap-2"><span className="text-emerald-700 font-bold bg-emerald-100 px-3 py-1 rounded-md text-xs shrink-0 w-fit">الإجابة الصحيحة:</span> <span className="font-black text-emerald-700">{m.correctAns}</span></p>
+                                <div key={i} className="bg-white p-3 rounded-lg border border-slate-200 shadow-sm relative overflow-hidden">
+                                    <div className="absolute right-0 top-0 bottom-0 w-1 bg-rose-400"></div>
+                                    <p className="font-bold text-slate-800 text-sm mb-2"><span className="text-rose-500 ml-1">{i+1}.</span> {m.q}</p>
+                                    <div className="space-y-1.5 bg-slate-50 p-2 rounded text-[11px]">
+                                        <p className="flex items-start gap-1"><span className="text-rose-700 font-bold bg-rose-100 px-1 rounded shrink-0">إجابته:</span> <span className="font-semibold text-slate-700">{m.userAns}</span></p>
+                                        <p className="flex items-start gap-1"><span className="text-emerald-700 font-bold bg-emerald-100 px-1 rounded shrink-0">الصحيحة:</span> <span className="font-bold text-emerald-700">{m.correctAns}</span></p>
                                     </div>
                                 </div>
                             ))}
@@ -331,82 +327,80 @@ function UserDashboard({ user, dbUser, setDbUser, onStartExam }) {
     }, []);
     const rank = board.findIndex(u => u.email === user.email) + 1;
     return (
-        <div className="max-w-5xl mx-auto space-y-8 fade-in">
-            <div className="bg-white p-8 rounded-3xl shadow-sm border border-slate-200 flex flex-col md:flex-row items-center justify-between gap-8 relative overflow-hidden">
-                <div className="absolute -left-20 -top-20 w-64 h-64 bg-raya-50 rounded-full blur-3xl opacity-70"></div>
-                <div className="relative z-10 text-center md:text-right flex-grow">
-                    <h2 className="text-4xl font-black text-raya-800 mb-3">مرحباً بك، {dbUser.name}</h2>
-                    <span className="inline-flex items-center gap-2 bg-slate-50 text-slate-700 border border-slate-200 px-5 py-2 rounded-xl text-sm font-bold shadow-sm">🏢 البراند: <span className="text-raya-600 font-black">{dbUser.brand}</span></span>
+        <div className="max-w-4xl mx-auto space-y-5 fade-in">
+            <div className="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-5 relative overflow-hidden">
+                <div className="text-center sm:text-right flex-grow z-10">
+                    <h2 className="text-xl md:text-2xl font-black text-raya-800 mb-1">مرحباً بك، {dbUser.name}</h2>
+                    <span className="inline-flex items-center gap-1 bg-slate-50 text-slate-700 border border-slate-200 px-3 py-1 rounded-lg text-[11px] font-bold">البراند: <span className="text-raya-600">{dbUser.brand}</span></span>
                 </div>
-                <div className="relative z-10 text-center bg-slate-50 p-5 rounded-3xl border border-slate-100 shadow-sm shrink-0">
-                    <p className="text-xs font-bold text-slate-400 mb-4 tracking-wide">صورة الملف الشخصي</p>
-                    <div className="flex justify-center mb-5">
-                        <RenderAvatar avatarValue={dbUser.avatar} sizeClass="w-24 h-24" />
+                <div className="text-center bg-slate-50 p-3 rounded-xl border border-slate-100 shrink-0 z-10 w-full sm:w-auto">
+                    <p className="text-[10px] font-bold text-slate-400 mb-2">صورة الملف الشخصي</p>
+                    <div className="flex justify-center mb-3">
+                        <RenderAvatar avatarValue={dbUser.avatar} sizeClass="w-16 h-16 md:w-20 md:h-20" />
                     </div>
-                    <div className="flex gap-3 justify-center bg-white p-3 rounded-2xl shadow-sm border border-slate-100">
+                    <div className="flex gap-2 justify-center bg-white p-2 rounded-lg border border-slate-100">
                         {AVATARS.map(a=>(
-                            <div key={a.id} onClick={()=>{setDbUser({...dbUser,avatar:a.src}); db.collection('users').doc(user.email).update({avatar:a.src});}} className={`cursor-pointer rounded-xl p-1 transition-all flex items-center justify-center ${dbUser.avatar===a.src ? 'bg-raya-50 ring-2 ring-raya-500 scale-110 shadow-sm' : 'hover:bg-slate-100 opacity-60 hover:opacity-100'}`}>
-                                <RenderAvatar avatarValue={a.src} sizeClass="w-10 h-10" />
+                            <div key={a.id} onClick={()=>{setDbUser({...dbUser,avatar:a.src}); db.collection('users').doc(user.email).update({avatar:a.src});}} className={`cursor-pointer rounded-lg p-1 transition-all flex items-center justify-center ${dbUser.avatar===a.src ? 'bg-raya-50 ring-1 ring-raya-400 scale-110 shadow-sm' : 'hover:bg-slate-50 opacity-60 hover:opacity-100'}`}>
+                                <RenderAvatar avatarValue={a.src} sizeClass="w-8 h-8" />
                             </div>
                         ))}
                     </div>
                 </div>
             </div>
             
-            <div className="bg-white p-8 md:p-10 rounded-3xl shadow-sm border border-slate-200 border-t-8 border-t-raya-500 text-center relative overflow-hidden">
-                <h2 className="text-3xl font-black mb-8 text-slate-800 flex items-center justify-center gap-3"><span className="text-raya-500">📋</span> العروض والتحديثات المتاحة</h2>
-                <div className="grid gap-6 mb-10 text-right">
+            <div className="bg-white p-5 md:p-8 rounded-2xl shadow-sm border border-slate-200 border-t-4 border-t-raya-500 text-center relative overflow-hidden">
+                <h2 className="text-lg md:text-xl font-bold mb-5 text-slate-800 flex items-center justify-center gap-2"><span className="text-raya-500">📋</span> العروض والتحديثات المتاحة</h2>
+                <div className="grid gap-3 mb-6 text-right">
                     {settings.offers?.length>0 ? settings.offers.map((o,i)=>(
-                        <div key={i} className="bg-slate-50 border border-slate-200 p-6 rounded-3xl shadow-sm hover:shadow-md transition-shadow relative overflow-hidden">
-                            <div className="absolute right-0 top-0 bottom-0 w-2 bg-raya-500"></div>
-                            {o.image && <img src={o.image} alt="عرض" className="w-full max-h-80 object-contain rounded-2xl mb-5 bg-white border border-slate-100 p-2" />}
-                            {o.text && <p className="font-bold text-slate-800 text-lg leading-loose flex items-start gap-4"><span className="text-raya-500 text-2xl shrink-0 mt-1">📌</span> <span>{o.text}</span></p>}
+                        <div key={i} className="bg-slate-50 border border-slate-200 p-4 rounded-xl shadow-sm relative overflow-hidden">
+                            <div className="absolute right-0 top-0 bottom-0 w-1 bg-raya-400"></div>
+                            {o.image && <img src={o.image} alt="عرض" className="w-full max-h-48 object-contain rounded-lg mb-3 bg-white border border-slate-100 p-1" />}
+                            {o.text && <p className="font-semibold text-slate-800 text-sm leading-relaxed flex items-start gap-2"><span className="text-raya-500 text-lg shrink-0">📌</span> <span>{o.text}</span></p>}
                         </div>
-                    )) : <div className="bg-slate-50 p-10 rounded-3xl border-2 border-dashed border-slate-300 text-slate-400 font-bold text-xl">لا توجد عروض أو تحديثات معتمدة حالياً. يرجى الانتظار.</div>}
+                    )) : <div className="bg-slate-50 p-6 rounded-xl border border-dashed border-slate-300 text-slate-400 font-bold text-sm">لا توجد عروض أو تحديثات حالياً.</div>}
                 </div>
                 
                 {dbUser.hasExamined ? (
-                    <div className="p-6 bg-emerald-50 text-emerald-800 rounded-3xl font-black text-xl border-2 border-emerald-200 shadow-inner flex items-center justify-center gap-3">✅ تمت المشاركة في التقييم الخاص بهذه النشرة بنجاح.</div>
+                    <div className="p-4 bg-emerald-50 text-emerald-700 rounded-xl font-bold text-sm border border-emerald-200 shadow-inner flex items-center justify-center gap-2">✅ تمت المشاركة في التقييم الخاص بنجاح.</div>
                 ) : (
-                    <div className="space-y-4">
-                        <p className="text-sm font-bold text-slate-400">تأكد من قراءة واستيعاب العروض أعلاه جيداً قبل بدء التقييم.</p>
-                        <button onClick={onStartExam} disabled={!settings.examActive} className={`w-full md:w-3/4 py-5 rounded-2xl font-black text-2xl text-white shadow-xl transition-all ${settings.examActive ? 'bg-raya-500 hover:bg-raya-600 hover:shadow-raya-500/40 transform hover:-translate-y-1 border border-raya-600' : 'bg-slate-300 cursor-not-allowed border border-slate-300 text-slate-500'}`}>
-                            {settings.examActive ? 'تمت القراءة والمراجعة.. ابدأ التقييم الآن' : '🔒 التقييم مغلق حالياً من قِبل إدارة النظام'}
+                    <div className="space-y-3">
+                        <p className="text-[11px] font-bold text-slate-400">تأكد من قراءة العروض جيداً قبل التقييم.</p>
+                        <button onClick={onStartExam} disabled={!settings.examActive} className={`w-full md:w-1/2 py-3 rounded-xl font-bold text-base text-white shadow-md transition-all ${settings.examActive ? 'bg-raya-500 hover:bg-raya-600 active:scale-95' : 'bg-slate-300 cursor-not-allowed text-slate-500'}`}>
+                            {settings.examActive ? 'بدء التقييم الآن' : '🔒 التقييم مغلق حالياً'}
                         </button>
                     </div>
                 )}
             </div>
 
-            <div className="bg-white p-8 md:p-10 rounded-3xl shadow-sm border border-slate-200 relative overflow-hidden">
-                <div className="absolute right-0 top-0 w-64 h-64 bg-amber-50 rounded-full blur-3xl opacity-60"></div>
-                <h2 className="text-3xl font-black text-center text-slate-800 mb-10 relative z-10">🏆 لوحة الشرف وأوائل التقييم</h2>
+            <div className="bg-white p-5 md:p-8 rounded-2xl shadow-sm border border-slate-200">
+                <h2 className="text-xl font-black text-center text-slate-800 mb-6">🏆 أوائل التقييم</h2>
                 
                 {dbUser.hasExamined && rank > 0 && (
-                    <div className="text-center font-black mb-10 text-raya-900 bg-raya-50 py-5 rounded-2xl border border-raya-200 shadow-sm text-2xl relative z-10 flex items-center justify-center gap-3">
-                        ترتيبك الحالي في لوحة الشرف: المركز {rank}
+                    <div className="text-center font-bold mb-6 text-raya-800 bg-raya-50 py-3 rounded-lg border border-raya-200 text-sm">
+                        ترتيبك الحالي: المركز {rank}
                     </div>
                 )}
                 
-                <div className="space-y-5 relative z-10">
-                    {board.length===0 && <p className="text-center text-slate-400 font-bold text-lg py-8 bg-slate-50 rounded-2xl border border-dashed border-slate-200">لم يتم اعتماد أي نتائج حتى الآن.</p>}
+                <div className="space-y-3">
+                    {board.length===0 && <p className="text-center text-slate-400 font-bold text-xs py-6 bg-slate-50 rounded-xl border border-dashed border-slate-200">لم يتم اعتماد أي نتائج.</p>}
                     {board.map((u,i) => {
                         const isFirst = i===0; const isSecond = i===1; const isThird = i===2;
-                        const cardClass = isFirst ? 'bg-gradient-to-r from-amber-50 to-yellow-100 border-amber-300 text-amber-900 shadow-lg transform md:scale-[1.02] z-10 relative' : 
-                                          isSecond ? 'bg-slate-50 border-slate-300 text-slate-800 shadow-md' : 
-                                          isThird ? 'bg-orange-50 border-orange-200 text-orange-900 shadow-md' : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50';
+                        const cardClass = isFirst ? 'bg-gradient-to-r from-amber-50 to-yellow-100 border-amber-200 text-amber-900 shadow-sm' : 
+                                          isSecond ? 'bg-slate-50 border-slate-200 text-slate-800' : 
+                                          isThird ? 'bg-orange-50 border-orange-100 text-orange-900' : 'bg-white border-slate-100 text-slate-600';
                         return (
-                            <div key={i} className={`flex flex-col md:flex-row justify-between items-center p-5 rounded-3xl font-bold border-2 transition-all gap-4 ${cardClass}`}>
-                                <div className="flex items-center gap-5 w-full md:w-auto">
-                                    <div className="flex items-center justify-center w-12 text-3xl drop-shadow-md">{isFirst?'🥇':isSecond?'🥈':isThird?'🥉':<span className="text-xl text-slate-400 font-black">#{i+1}</span>}</div>
-                                    <RenderAvatar avatarValue={u.avatar} sizeClass={isFirst ? "w-20 h-20" : "w-16 h-16"} />
+                            <div key={i} className={`flex justify-between items-center p-3 rounded-xl font-bold border ${cardClass}`}>
+                                <div className="flex items-center gap-3">
+                                    <div className="w-8 text-xl text-center">{isFirst?'🥇':isSecond?'🥈':isThird?'🥉':<span className="text-sm text-slate-400">#{i+1}</span>}</div>
+                                    <RenderAvatar avatarValue={u.avatar} sizeClass="w-10 h-10" />
                                     <div>
-                                        <div className={`font-black ${isFirst ? 'text-2xl' : 'text-xl'}`}>{u.name}</div>
-                                        <div className={`text-xs font-bold px-3 py-1 rounded-lg inline-block mt-2 ${isFirst?'bg-amber-200/60':isSecond?'bg-slate-200/60':isThird?'bg-orange-200/60':'bg-slate-100'}`}>{u.brand}</div>
+                                        <div className={`font-black ${isFirst ? 'text-sm' : 'text-xs'}`}>{u.name}</div>
+                                        <div className={`text-[9px] font-bold px-2 py-0.5 rounded inline-block mt-0.5 ${isFirst?'bg-amber-200/50':isSecond?'bg-slate-200/50':isThird?'bg-orange-200/50':'bg-slate-100'}`}>{u.brand}</div>
                                     </div>
                                 </div>
-                                <div className="bg-white/80 backdrop-blur-md px-6 py-3 rounded-2xl text-center md:text-left border border-white/60 shadow-sm w-full md:w-auto flex flex-row md:flex-col justify-between items-center">
-                                    <div className="text-raya-800 text-2xl font-black">{u.score}/6</div>
-                                    <div className="text-sm font-bold text-slate-500 md:mt-1 bg-slate-100 md:bg-transparent px-3 py-1 md:p-0 rounded-lg">⏱ {u.timeTaken} ثانية</div>
+                                <div className="bg-white/80 px-3 py-1.5 rounded-lg text-center border border-white/60 shadow-sm">
+                                    <div className="text-raya-700 text-base font-black">{u.score}/6</div>
+                                    <div className="text-[9px] font-bold text-slate-500">{u.timeTaken} ثانية</div>
                                 </div>
                             </div>
                         )
@@ -419,59 +413,61 @@ function UserDashboard({ user, dbUser, setDbUser, onStartExam }) {
 
 function ExamRoom({ user, onFinish }) {
     const [qs, setQs] = useState([]); const [ans, setAns] = useState({}); const [cd, setCd] = useState(3); const [time, setTime] = useState(300); const [on, setOn] = useState(false); const [isSubmitting, setIsSubmitting] = useState(false);
+    const [warningOverlay, setWarningOverlay] = useState(null); // نافذة التحذير المنبثقة بدلاً من alert
     const ansRef = useRef({}); const timeRef = useRef(300); const warnings = useRef(0);
 
-    // الحل الرياضي الجذري لمشكلة الـ JSON: ربط الإجابة بالنص المباشر وليس الترتيب!
+    // الحل الجذري الأكيد 100% لمشكلة الـ JSON
+    // يتم تحويل الاختيارات لمصفوفة من الـ Objects تحمل قيمة منطقية (isCorrect) قبل خلطها
     useEffect(() => { 
         db.collection('settings').doc('main').get().then(d => { 
             if(d.exists && d.data().questionsPool?.length >= 6) {
                 const pool = d.data().questionsPool;
                 const shuffled = [...pool].sort(()=>0.5-Math.random()).slice(0,6);
+                
                 const processed = shuffled.map(q => {
-                    // استخراج نص الإجابة الصحيحة بشكل دقيق من الـ JSON سواء كان (answer) أو (correct)
+                    // تحديد نص الإجابة الصحيحة الأصلية
                     let exactCorrectString = "";
                     if (q.answer !== undefined) { exactCorrectString = String(q.answer).trim(); } 
                     else if (q.correct !== undefined) { exactCorrectString = String(q.options[Number(q.correct)]).trim(); }
 
-                    const opts = [...q.options].sort(()=>0.5-Math.random()); 
+                    // تجهيز الخيارات وإعطاء علامة (True) للإجابة المطابقة
+                    const optsWithMeta = q.options.map(opt => ({
+                        text: String(opt).trim(),
+                        isCorrect: String(opt).trim() === exactCorrectString
+                    }));
                     
-                    // البحث عن مكان الإجابة الصحيحة بعد أن تم خلطها عشوائياً
-                    let newCorIdx = opts.findIndex(o => String(o).trim() === exactCorrectString);
-                    if(newCorIdx === -1) newCorIdx = 0; // حماية إضافية
+                    // خلط الخيارات
+                    optsWithMeta.sort(()=>0.5-Math.random()); 
                     
-                    return { q: q.question, opts: opts, cor: newCorIdx };
+                    return { q: q.question, opts: optsWithMeta, correctText: exactCorrectString };
                 });
                 setQs(processed);
-            } else { alert("نعتذر، لا توجد أسئلة كافية لبدء التقييم. يرجى مراجعة الإدارة."); window.location.reload(); } 
+            } else { alert("نعتذر، لا توجد أسئلة كافية."); window.location.reload(); } 
         }); 
     }, []);
     
     useEffect(() => { if(qs.length>0&&cd>0) setTimeout(()=>setCd(cd-1),1000); else if(qs.length>0&&cd===0) setOn(true); }, [cd, qs]);
     
     useEffect(() => { 
-        if(on && time>0 && !isSubmitting) { const timerId = setTimeout(()=>{ setTime(time-1); timeRef.current = time-1; }, 1000); return () => clearTimeout(timerId); } 
+        if(on && time>0 && !isSubmitting && !warningOverlay) { const timerId = setTimeout(()=>{ setTime(time-1); timeRef.current = time-1; }, 1000); return () => clearTimeout(timerId); } 
         else if(on && time===0 && !isSubmitting) submit(true); 
-    }, [on, time, isSubmitting]);
+    }, [on, time, isSubmitting, warningOverlay]);
 
     useEffect(() => {
         const handleCheat = () => {
-            if(on && !isSubmitting) {
+            if(on && !isSubmitting && !warningOverlay) {
                 warnings.current += 1;
                 if(warnings.current === 1) {
-                    // الإنذار الأول يوقف الكود تماماً ولا يكمل إلا بضغط (OK)
-                    alert("⚠️ إنذار أمني (1/2):\n\nلقد قمت بالخروج من شاشة التقييم! يمنع فتح نوافذ أخرى أو ترك الشاشة.\n\nاضغط 'موافق' (OK) للعودة للامتحان. إذا تكرر هذا الأمر سيتم سحب الورقة تلقائياً.");
+                    setWarningOverlay("⚠️ إنذار أمني (1/2)\n\nلقد قمت بالخروج من شاشة التقييم! يمنع فتح نوافذ أخرى أو ترك الشاشة.\n\nاضغط 'موافق' للعودة للامتحان. إذا تكرر هذا الأمر سيتم سحب الورقة تلقائياً.");
                 } else if(warnings.current >= 2) {
-                    alert("🚫 تم سحب ورقة التقييم واعتمادها تلقائياً لمخالفة القواعد الأمنية للمرة الثانية.");
-                    submit(true);
+                    setWarningOverlay("🚫 تم سحب ورقة التقييم واعتمادها تلقائياً لمخالفة القواعد الأمنية للمرة الثانية.");
+                    setTimeout(() => submit(true), 2000);
                 }
             }
         };
 
-        const onVisibilityChange = () => { 
-            // يعمل فقط عندما يقوم المستخدم بتغيير التبويب أو إخفاء الشاشة
-            if(document.hidden) handleCheat(); 
-        };
-        const onKeyDown = (e) => { if(e.key === 'PrintScreen') { navigator.clipboard.writeText(''); alert('حماية النظام: غير مسموح بالتقاط صور للشاشة أثناء التقييم.'); } };
+        const onVisibilityChange = () => { if(document.hidden) handleCheat(); };
+        const onKeyDown = (e) => { if(e.key === 'PrintScreen') { navigator.clipboard.writeText(''); alert('حماية النظام: يمنع التقاط صور.'); } };
 
         if(on) {
             document.body.classList.add('exam-protected');
@@ -484,19 +480,23 @@ function ExamRoom({ user, onFinish }) {
             document.removeEventListener('visibilitychange', onVisibilityChange);
             window.removeEventListener('keyup', onKeyDown);
         };
-    }, [on, isSubmitting]);
+    }, [on, isSubmitting, warningOverlay]);
     
     const submit = async(isForced = false) => { 
         if(isSubmitting) return; setIsSubmitting(true);
         try {
             let s=0; let m=[]; 
             qs.forEach((q,i) => {
-                const answeredIdx = ansRef.current[i];
-                if(answeredIdx===q.cor) s++;
-                else {
+                const selectedOptIndex = ansRef.current[i];
+                const selectedOpt = selectedOptIndex !== undefined ? q.opts[selectedOptIndex] : null;
+                
+                // التقييم يعتمد على (isCorrect) المحفوظة مع الاختيار نفسه!
+                if(selectedOpt && selectedOpt.isCorrect) {
+                    s++;
+                } else {
                     let qText = q.q ? String(q.q) : "سؤال غير معروف";
-                    let cText = q.opts && q.opts[q.cor] ? String(q.opts[q.cor]) : "بدون إجابة صحيحة";
-                    let uText = answeredIdx !== undefined && q.opts && q.opts[answeredIdx] ? String(q.opts[answeredIdx]) : "لم يُجب";
+                    let cText = q.correctText || "بدون إجابة صحيحة";
+                    let uText = selectedOpt ? selectedOpt.text : "لم يُجب";
                     m.push({q: qText, correctAns: cText, userAns: uText});
                 }
             }); 
@@ -504,37 +504,50 @@ function ExamRoom({ user, onFinish }) {
             const payload = JSON.parse(JSON.stringify({ hasExamined: true, score: s, timeTaken: finalTime, mistakes: m }));
             await db.collection('users').doc(user.email).update(payload); 
             onFinish(s,m,finalTime);
-        } catch(error) { alert("حدث خطأ في الشبكة أثناء الاعتماد: " + error.message); setIsSubmitting(false); }
+        } catch(error) { alert("حدث خطأ أثناء الاعتماد: " + error.message); setIsSubmitting(false); }
     };
     
     const handleOptionSelect = (qIndex, optIndex) => {
-        if(isSubmitting) return;
+        if(isSubmitting || warningOverlay) return;
         const newAns = {...ansRef.current, [qIndex]: optIndex};
         ansRef.current = newAns; setAns(newAns);
     };
 
-    if(!on) return <div className="flex items-center justify-center h-screen bg-slate-800"><div className="bg-white p-12 rounded-[3rem] shadow-2xl border-8 border-raya-500 text-center w-72 h-72 flex flex-col justify-center items-center transform transition-transform"><CompanyLogo className="h-10 mb-4 opacity-50" /><div className="text-raya-500 font-black mb-2 text-xl tracking-widest">تجهيز التقييم</div><div className="text-8xl text-raya-800 font-black animate-pulse">{cd}</div></div></div>;
+    if(!on) return <div className="flex items-center justify-center h-screen bg-slate-800"><div className="bg-white p-8 rounded-3xl shadow-2xl border-4 border-raya-500 text-center w-56 h-56 flex flex-col justify-center items-center"><CompanyLogo className="h-8 mb-3 opacity-50" /><div className="text-raya-500 font-bold mb-1 text-sm">تجهيز التقييم</div><div className="text-6xl text-raya-800 font-black animate-pulse">{cd}</div></div></div>;
     
     return (
-        <div className="max-w-4xl mx-auto pb-32 pt-4 px-2 exam-protected fade-in">
-            <div className="bg-white p-5 md:p-6 rounded-3xl shadow-md mb-8 sticky top-4 z-50 border-b-4 border-raya-500 flex justify-between items-center bg-opacity-95 backdrop-blur-md">
-                <div className="text-xl font-black text-raya-800 hidden md:flex items-center gap-3"><span className="w-3 h-3 rounded-full bg-rose-500 animate-ping"></span> تقييم المنصة</div>
-                <div className="flex gap-4 md:gap-8 items-center font-bold w-full md:w-auto justify-between md:justify-end">
-                    <span className="text-slate-600 text-sm bg-slate-100 px-4 py-2 rounded-xl border border-slate-200 shadow-inner flex items-center gap-2">مكتمل: <span className="text-raya-700 font-black text-lg">{Object.keys(ans).length}</span>/6</span>
-                    <span className={`text-2xl px-6 py-2 rounded-2xl border-2 shadow-sm font-mono ${time<60?'text-rose-600 bg-rose-50 border-rose-300 animate-pulse':'text-raya-800 bg-raya-50 border-raya-200'}`}>⏱ {Math.floor(time/60)}:{('0'+(time%60)).slice(-2)}</span>
+        <div className="max-w-2xl mx-auto pb-24 pt-3 px-3 exam-protected fade-in relative">
+            {warningOverlay && (
+                <div className="fixed inset-0 bg-slate-900/80 z-[100] flex items-center justify-center p-5 backdrop-blur-sm">
+                    <div className="bg-white p-6 rounded-2xl max-w-sm text-center shadow-2xl animate-[fadeIn_0.2s_ease-out]">
+                        <div className="text-4xl mb-3">{warningOverlay.includes('🚫') ? '🚫' : '⚠️'}</div>
+                        <p className="font-bold text-slate-800 text-sm whitespace-pre-wrap leading-relaxed">{warningOverlay}</p>
+                        {!warningOverlay.includes('🚫') && (
+                            <button onClick={()=>setWarningOverlay(null)} className="mt-5 w-full bg-raya-500 text-white font-bold py-3 rounded-lg shadow active:scale-95 text-sm">
+                                موافق، متابعة التقييم
+                            </button>
+                        )}
+                    </div>
+                </div>
+            )}
+
+            <div className="bg-white p-3 md:p-4 rounded-xl shadow-sm mb-5 sticky top-2 z-40 border-b-2 border-raya-500 flex justify-between items-center bg-opacity-95 backdrop-blur-md">
+                <div className="text-sm font-black text-raya-800 hidden sm:flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-rose-500 animate-ping"></span> تقييم المنصة</div>
+                <div className="flex gap-3 w-full sm:w-auto justify-between sm:justify-end items-center">
+                    <span className="text-slate-600 text-xs bg-slate-100 px-3 py-1.5 rounded-lg border border-slate-200">مكتمل: <span className="text-raya-700 font-black text-sm">{Object.keys(ans).length}</span>/6</span>
+                    <span className={`text-base px-4 py-1.5 rounded-lg border shadow-sm font-mono font-bold ${time<60?'text-rose-600 bg-rose-50 border-rose-200 animate-pulse':'text-raya-800 bg-raya-50 border-raya-200'}`}>⏱ {Math.floor(time/60)}:{('0'+(time%60)).slice(-2)}</span>
                 </div>
             </div>
 
-            <div className="space-y-8">
+            <div className="space-y-5">
                 {qs.map((q,i)=>(
-                    <div key={i} className="bg-white p-6 md:p-10 rounded-3xl shadow-sm border border-slate-200 hover:shadow-md transition-shadow relative overflow-hidden">
-                        <div className="absolute right-0 top-0 bottom-0 w-2 bg-slate-200"></div>
-                        <h3 className="text-xl md:text-2xl font-black mb-8 text-slate-800 flex gap-4 leading-relaxed items-start"><span className="bg-slate-100 text-slate-500 w-12 h-12 flex items-center justify-center rounded-2xl shrink-0 font-black shadow-inner text-xl border border-slate-200">{i+1}</span><span className="mt-1">{q.q}</span></h3>
-                        <div className="space-y-4 pl-2 md:pl-12 pr-2">
-                            {q.opts.map((o,idx)=>(
-                                <div key={idx} onClick={()=>handleOptionSelect(i, idx)} className={`flex items-center p-5 md:p-6 rounded-2xl border-2 cursor-pointer transition-all ${ans[i]===idx?'bg-raya-50 border-raya-500 shadow-md ring-4 ring-raya-500/10 scale-[1.01]':'bg-white border-slate-200 hover:bg-slate-50 hover:border-slate-300'}`}>
-                                    <div className={`w-6 h-6 md:w-8 md:h-8 rounded-full border-2 ml-4 flex items-center justify-center shrink-0 bg-white transition-colors ${ans[i]===idx?'border-raya-600':'border-slate-300'}`}>{ans[i]===idx&&<div className="w-3 h-3 md:w-4 md:h-4 bg-raya-600 rounded-full"></div>}</div>
-                                    <span className={`text-lg md:text-xl font-bold ${ans[i]===idx?'text-raya-800':'text-slate-600'}`}>{o}</span>
+                    <div key={i} className="bg-white p-4 md:p-6 rounded-2xl shadow-sm border border-slate-200">
+                        <h3 className="text-sm md:text-base font-bold mb-4 text-slate-800 flex gap-3 leading-relaxed items-start"><span className="bg-slate-100 text-slate-500 w-8 h-8 flex items-center justify-center rounded-lg shrink-0 text-sm border border-slate-200">{i+1}</span><span className="mt-1">{q.q}</span></h3>
+                        <div className="space-y-3 pl-1 md:pl-8">
+                            {q.opts.map((optObj,idx)=>(
+                                <div key={idx} onClick={()=>handleOptionSelect(i, idx)} className={`flex items-center p-3 md:p-4 rounded-xl border-2 cursor-pointer transition-all ${ans[i]===idx?'bg-raya-50 border-raya-400 shadow-sm':'bg-white border-slate-200 hover:bg-slate-50'}`}>
+                                    <div className={`w-4 h-4 md:w-5 md:h-5 rounded-full border-2 ml-3 flex items-center justify-center shrink-0 bg-white transition-colors ${ans[i]===idx?'border-raya-600':'border-slate-300'}`}>{ans[i]===idx&&<div className="w-2 h-2 bg-raya-600 rounded-full"></div>}</div>
+                                    <span className={`text-xs md:text-sm font-bold ${ans[i]===idx?'text-raya-800':'text-slate-600'}`}>{optObj.text}</span>
                                 </div>
                             ))}
                         </div>
@@ -542,9 +555,9 @@ function ExamRoom({ user, onFinish }) {
                 ))}
             </div>
 
-            <div className="fixed bottom-0 left-0 right-0 p-5 bg-white border-t border-slate-200 shadow-[0_-15px_30px_-15px_rgba(0,0,0,0.1)] z-40">
-                <button disabled={isSubmitting} onClick={()=>{if(window.confirm("تأكيد أخير: هل أنت متأكد من تسليم الإجابات النهائية واعتماد التقييم؟ لا يمكنك التراجع بعد هذه الخطوة."))submit();}} className={`w-full max-w-4xl mx-auto flex justify-center items-center gap-3 ${isSubmitting ? 'bg-slate-400' : 'bg-raya-500 hover:bg-raya-600'} text-white font-black text-xl py-5 md:py-6 rounded-2xl shadow-xl transition-all transform active:scale-[0.98] border border-transparent hover:border-raya-700`}>
-                    {isSubmitting ? 'جاري التشفير والاعتماد...' : 'تسليم التقييم النهائي'}
+            <div className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t border-slate-200 shadow-[0_-10px_20px_-10px_rgba(0,0,0,0.1)] z-30">
+                <button disabled={isSubmitting || warningOverlay} onClick={()=>{if(window.confirm("تأكيد: اعتماد التقييم؟"))submit();}} className={`w-full max-w-2xl mx-auto flex justify-center items-center gap-2 ${isSubmitting || warningOverlay ? 'bg-slate-400' : 'bg-raya-500 hover:bg-raya-600'} text-white font-bold text-sm md:text-base py-3 md:py-4 rounded-xl shadow-md transition-all active:scale-95`}>
+                    {isSubmitting ? 'جاري الاعتماد...' : 'تسليم التقييم النهائي'}
                 </button>
             </div>
         </div>
