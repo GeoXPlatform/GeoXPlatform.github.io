@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>GEOX - منصة العروض والامتحانات</title>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>RAYA - منصة العروض والامتحانات</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <style>body{user-select:none;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background-color:#f8fafc;}.avatar-option{cursor:pointer;transition:transform 0.2s;}.avatar-option:hover{transform:scale(1.1);}.selected-avatar{border:4px solid #3b82f6;border-radius:50%;background-color:#eff6ff;}::-webkit-scrollbar{width:8px;}::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:4px;}::-webkit-scrollbar-thumb:hover{background:#94a3b8;}</style>
 <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
@@ -36,8 +36,7 @@ function App() {
                     const userDoc = await db.collection('users').doc(email).get();
                     if(userDoc.exists) {
                         const data = userDoc.data();
-                        if(data.status === 'pending') { alert("حسابك موقوف مؤقتاً."); await auth.signOut(); setUser(null); setView('login'); }
-                        else { setUser(currentUser); setDbUser(data); setRole('user'); setView('dashboard'); }
+                        setUser(currentUser); setDbUser(data); setRole('user'); setView('dashboard');
                     }
                 } else { setUser(null); setRole(null); setView('login'); }
             } catch(error) { alert("Error: " + error.message); setView('login'); } finally { setLoading(false); }
@@ -70,14 +69,14 @@ function App() {
                         <button onClick={handleLogout} className="bg-gray-100 px-4 py-2 rounded-lg font-bold hover:bg-gray-200">خروج</button>
                         {role === 'user' && dbUser?.mistakes?.length > 0 && <button onClick={() => alert("أخطاؤك:\n\n" + dbUser.mistakes.map(m => `السؤال: ${m.q}\nإجابتك: ${m.userAns}\nالصحيح: ${m.correctAns}`).join('\n\n'))} className="bg-red-50 text-red-600 px-3 py-2 rounded-lg font-bold">❌ أخطائي</button>}
                     </div>
-                    <h1 className="text-3xl font-extrabold text-blue-800">GEOX {role==='admin'&&<span className="text-xs bg-blue-100 px-2 rounded">الإدارة</span>}</h1>
+                    <h1 className="text-3xl font-extrabold text-blue-800">RAYA {role==='admin'&&<span className="text-xs bg-blue-100 px-2 rounded">الإدارة</span>}</h1>
                 </div>
             )}
             <main className="flex-grow p-4">
                 {view === 'login' && (
                     <div className="flex flex-col items-center justify-center min-h-[85vh]">
                         <div className="bg-white p-10 rounded-2xl shadow-xl w-full max-w-md text-center border-t-8 border-blue-600">
-                            <h1 className="text-5xl font-extrabold text-blue-800 mb-8">GEOX</h1>
+                            <h1 className="text-5xl font-extrabold text-blue-800 mb-8">RAYA</h1>
                             <input type="text" placeholder="اكتب البراند هنا (لأول مرة فقط)" className="w-full p-4 mb-4 bg-gray-50 border rounded-xl text-right font-bold" value={brandInput} onChange={e => setBrandInput(e.target.value)} />
                             <button onClick={handleGoogleLogin} className="w-full bg-blue-600 text-white font-bold py-4 rounded-xl shadow-md hover:bg-blue-700">دخول بواسطة Google</button>
                         </div>
@@ -92,29 +91,92 @@ function App() {
 }
 
 function AdminPanel() {
-    const [users, setUsers] = useState([]); const [settings, setSettings] = useState({examActive:false,questionsPool:[],offers:[]}); const [search, setSearch] = useState('');
+    const [users, setUsers] = useState([]); const [settings, setSettings] = useState({examActive:false,questionsPool:[],offers:[]}); 
+    const [search, setSearch] = useState('');
+    const [offersJSON, setOffersJSON] = useState('');
+    const [questionsJSON, setQuestionsJSON] = useState('');
+
     useEffect(() => {
         db.collection('users').onSnapshot(s => setUsers(s.docs.map(d => ({id:d.id,...d.data()}))));
-        db.collection('settings').doc('main').onSnapshot(d => d.exists ? setSettings(d.data()) : db.collection('settings').doc('main').set({examActive:false,questionsPool:[],offers:[]}));
+        db.collection('settings').doc('main').onSnapshot(d => {
+            if(d.exists) {
+                const data = d.data();
+                setSettings(data);
+                if(!offersJSON) setOffersJSON(JSON.stringify(data.offers || [], null, 2));
+                if(!questionsJSON) setQuestionsJSON(JSON.stringify(data.questionsPool || [], null, 2));
+            } else db.collection('settings').doc('main').set({examActive:false,questionsPool:[],offers:[]});
+        });
     }, []);
-    const handleFile = (e, type) => { const r = new FileReader(); r.onload = async ev => { try{ await db.collection('settings').doc('main').update({[type]:JSON.parse(ev.target.result)}); alert("تم الرفع!"); e.target.value=null; }catch(err){alert("خطأ بالملف");} }; if(e.target.files[0]) r.readAsText(e.target.files[0]); };
-    const exportEx = () => { XLSX.writeFile(XLSX.utils.book_append_sheet(XLSX.utils.book_new(), XLSX.utils.json_to_sheet(users.map(u=>({'الاسم':u.name,'البريد':u.email,'البراند':u.brand,'امتحن':u.hasExamined?'نعم':'لا','الدرجة':u.score||0,'الوقت':u.timeTaken||0}))), "Data"), "GEOX.xlsx"); };
+
+    const toggleExam = () => db.collection('settings').doc('main').update({examActive:!settings.examActive});
+    const startNewExam = async () => {
+        if(confirm("سيتم تصفير نتيجة الامتحان لجميع الموظفين. تأكيد؟")) {
+            const batch = db.batch();
+            users.forEach(u => batch.update(db.collection('users').doc(u.id), { hasExamined: false, score: 0, timeTaken: 0, mistakes: [] }));
+            await batch.commit();
+            alert("تم تصفير النتائج بنجاح!");
+        }
+    };
+
+    const saveJSON = async (type) => {
+        try {
+            const raw = type === 'offers' ? offersJSON : questionsJSON;
+            const parsed = JSON.parse(raw);
+            if(type === 'questionsPool' && (!Array.isArray(parsed) || parsed.length < 6)) {
+                alert("تأكد أن بنك الأسئلة يحتوي على 6 أسئلة على الأقل."); return;
+            }
+            await db.collection('settings').doc('main').update({ [type]: parsed });
+            alert("تم الحفظ بنجاح!");
+        } catch(e) { alert("خطأ في كود الـ JSON! تأكد من الأقواس والفواصل."); }
+    };
+
+    const exportEx = () => { 
+        const formattedData = users.map(u => ({
+            'الاسم': u.name,
+            'البريد الإلكتروني': u.email,
+            'البراند': u.brand,
+            'أدى الامتحان؟': u.hasExamined ? 'نعم' : 'لا',
+            'الدرجة (من 6)': u.hasExamined ? u.score : '-',
+            'الوقت (ثواني)': u.hasExamined ? u.timeTaken : '-'
+        }));
+        const ws = XLSX.utils.json_to_sheet(formattedData); 
+        const wb = XLSX.utils.book_new(); 
+        XLSX.utils.book_append_sheet(wb, ws, "تقرير النتائج"); 
+        XLSX.writeFile(wb, "RAYA_Results.xlsx"); 
+    };
+
     return (
         <div className="max-w-7xl mx-auto space-y-6">
             <div className="bg-white p-6 rounded-xl shadow flex flex-wrap justify-between items-center gap-4">
-                <h2 className="text-2xl font-bold">الإدارة <span className={`text-sm px-2 ${settings.examActive?'text-green-600':'text-red-600'}`}>{settings.examActive?"مفعل":"معطل"}</span></h2>
+                <h2 className="text-2xl font-bold">الإدارة <span className={`text-sm px-2 ${settings.examActive?'text-green-600':'text-red-600'}`}>{settings.examActive?"الامتحان متاح":"الامتحان مغلق"}</span></h2>
                 <div className="flex gap-2">
-                    <button onClick={()=>db.collection('settings').doc('main').update({examActive:!settings.examActive})} className="bg-blue-600 text-white px-4 py-2 rounded">تبديل الامتحان</button>
-                    <button onClick={async()=>{if(confirm("تصفير؟")){const b=db.batch();users.forEach(u=>b.update(db.collection('users').doc(u.id),{hasExamined:false,score:0,timeTaken:0,mistakes:[]}));await b.commit();alert("تم!");}}} className="bg-red-500 text-white px-4 py-2 rounded">تصفير النتائج</button>
+                    <button onClick={toggleExam} className="bg-blue-600 text-white px-4 py-2 rounded font-bold shadow-sm">{settings.examActive ? 'إغلاق الامتحان' : 'إتاحة الامتحان'}</button>
+                    <button onClick={startNewExam} className="bg-red-500 text-white px-4 py-2 rounded font-bold shadow-sm">تصفير النتائج وبدء عرض جديد</button>
                 </div>
             </div>
+            
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="bg-white p-6 rounded-xl shadow"><h3 className="font-bold mb-2">رفع العروض (JSON) - {settings.offers?.length||0}</h3><input type="file" accept=".json" onChange={e=>handleFile(e,'offers')} className="w-full border p-2 rounded" /></div>
-                <div className="bg-white p-6 rounded-xl shadow"><h3 className="font-bold mb-2">رفع الأسئلة (JSON) - {settings.questionsPool?.length||0}</h3><input type="file" accept=".json" onChange={e=>handleFile(e,'questionsPool')} className="w-full border p-2 rounded" /></div>
+                <div className="bg-white p-6 rounded-xl shadow flex flex-col">
+                    <h3 className="font-bold mb-3 text-lg text-gray-800">العروض الحالية (نسخ JSON)</h3>
+                    <textarea dir="ltr" className="w-full flex-grow h-48 p-3 border-2 border-gray-200 rounded-lg text-left font-mono text-sm focus:border-blue-500 outline-none mb-3 resize-none bg-gray-50" value={offersJSON} onChange={e=>setOffersJSON(e.target.value)}></textarea>
+                    <button onClick={()=>saveJSON('offers')} className="bg-green-600 text-white font-bold py-2 rounded-lg shadow-sm hover:bg-green-700">حفظ العروض</button>
+                </div>
+                <div className="bg-white p-6 rounded-xl shadow flex flex-col">
+                    <h3 className="font-bold mb-3 text-lg text-gray-800">بنك الأسئلة (نسخ JSON)</h3>
+                    <textarea dir="ltr" className="w-full flex-grow h-48 p-3 border-2 border-gray-200 rounded-lg text-left font-mono text-sm focus:border-blue-500 outline-none mb-3 resize-none bg-gray-50" value={questionsJSON} onChange={e=>setQuestionsJSON(e.target.value)}></textarea>
+                    <button onClick={()=>saveJSON('questionsPool')} className="bg-green-600 text-white font-bold py-2 rounded-lg shadow-sm hover:bg-green-700">حفظ الأسئلة</button>
+                </div>
             </div>
+
             <div className="bg-white p-6 rounded-xl shadow overflow-x-auto">
-                <div className="flex justify-between mb-4 gap-2"><input type="text" placeholder="بحث..." className="border p-2 rounded" onChange={e=>setSearch(e.target.value)} /><button onClick={exportEx} className="bg-green-600 text-white px-4 py-2 rounded">تصدير</button></div>
-                <table className="w-full text-right"><thead className="bg-gray-50"><tr><th className="p-2">الاسم</th><th className="p-2">البراند</th><th className="p-2">النتيجة</th><th className="p-2">إجراء</th></tr></thead><tbody>{users.filter(u=>u.name.includes(search)||u.brand.includes(search)).map(u=><tr key={u.id} className="border-t"><td className="p-2 font-bold">{u.name}</td><td className="p-2">{u.brand}</td><td className="p-2 text-blue-600">{u.hasExamined?`${u.score}/6 - ${u.timeTaken}ث`:''}</td><td className="p-2"><button onClick={()=>db.collection('users').doc(u.email).delete()} className="text-red-500 bg-red-50 px-2 rounded">حذف</button></td></tr>)}</tbody></table>
+                <div className="flex justify-between items-center mb-6 flex-wrap gap-4">
+                    <h3 className="text-xl font-bold">سجل الموظفين ({users.length})</h3>
+                    <div className="flex gap-3">
+                        <input type="text" placeholder="بحث بالاسم أو البراند..." className="border-2 border-gray-200 p-2 rounded-lg bg-gray-50 outline-none focus:border-blue-500" onChange={e=>setSearch(e.target.value)} />
+                        <button onClick={exportEx} className="bg-blue-800 text-white px-5 py-2 rounded-lg font-bold shadow-sm">تصدير إكسيل</button>
+                    </div>
+                </div>
+                <table className="w-full text-right border-collapse"><thead className="bg-gray-100 text-gray-700"><tr><th className="p-3 border-b">الاسم</th><th className="p-3 border-b">البراند</th><th className="p-3 border-b">الحالة</th><th className="p-3 border-b">النتيجة</th><th className="p-3 border-b text-center">إجراء</th></tr></thead><tbody>{users.filter(u=>u.name.includes(search)||u.brand.includes(search)).map(u=><tr key={u.id} className="border-b hover:bg-blue-50 transition-colors"><td className="p-3 font-bold text-gray-800">{u.name}<br/><span className="text-xs text-gray-500 font-normal">{u.email}</span></td><td className="p-3 font-semibold text-gray-700">{u.brand}</td><td className="p-3">{u.hasExamined ? <span className="bg-green-100 text-green-700 px-2 py-1 rounded text-xs font-bold">امتحن</span> : <span className="bg-yellow-100 text-yellow-700 px-2 py-1 rounded text-xs font-bold">لم يمتحن</span>}</td><td className="p-3 font-bold text-blue-700">{u.hasExamined?`${u.score}/6 - ${u.timeTaken}ث`:''}</td><td className="p-3 text-center"><button onClick={()=>db.collection('users').doc(u.email).delete()} className="text-red-600 bg-red-100 px-3 py-1 rounded font-bold hover:bg-red-200">حذف</button></td></tr>)}</tbody></table>
             </div>
         </div>
     );
@@ -129,34 +191,43 @@ function UserDashboard({ user, dbUser, setDbUser, onStartExam }) {
     const rank = board.findIndex(u => u.email === user.email) + 1;
     return (
         <div className="max-w-4xl mx-auto space-y-6">
-            <div className="bg-white p-6 rounded-2xl shadow text-center flex flex-col md:flex-row items-center justify-between gap-4">
-                <div><h2 className="text-2xl font-bold">مرحباً {dbUser.name}</h2><p className="text-blue-600 font-bold bg-blue-50 px-4 py-1 rounded-full mt-2 border">براند: {dbUser.brand}</p></div>
-                <div><div className="text-5xl bg-gray-50 p-2 rounded-full border mb-2 inline-block">{dbUser.avatar}</div><div className="flex gap-2 text-2xl">{AVATARS.map(a=><div key={a.id} onClick={()=>{setDbUser({...dbUser,avatar:a.icon});db.collection('users').doc(user.email).update({avatar:a.icon});}} className={`p-1 cursor-pointer rounded ${dbUser.avatar===a.icon?'bg-blue-100 border-2':''}`}>{a.icon}</div>)}</div></div>
+            <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col md:flex-row items-center justify-between gap-6">
+                <div><h2 className="text-2xl font-bold">مرحباً {dbUser.name}</h2><p className="text-blue-600 font-bold bg-blue-50 px-4 py-1 rounded-full mt-2 border border-blue-100">براند: {dbUser.brand}</p></div>
+                <div><div className="text-5xl bg-gray-50 p-2 rounded-full border mb-2 inline-block">{dbUser.avatar}</div><div className="flex gap-2 text-2xl">{AVATARS.map(a=><div key={a.id} onClick={()=>{setDbUser({...dbUser,avatar:a.icon});db.collection('users').doc(user.email).update({avatar:a.icon});}} className={`p-1 cursor-pointer rounded-xl ${dbUser.avatar===a.icon?'bg-blue-100 border-2 border-blue-400':'bg-gray-50 hover:bg-gray-100'}`}>{a.icon}</div>)}</div></div>
             </div>
-            <div className="bg-white p-6 rounded-2xl shadow text-center">
-                <h2 className="text-2xl font-bold mb-4">📢 العروض الحالية</h2>
-                <div className="bg-blue-50 p-4 rounded-xl mb-4 text-right min-h-[100px]">{settings.offers?.length>0 ? settings.offers.map((o,i)=><p key={i} className="font-bold mb-2">📌 {o.title||o.text||JSON.stringify(o)}</p>) : "لا توجد عروض"}</div>
-                {dbUser.hasExamined ? <div className="p-4 bg-green-50 text-green-700 rounded-xl font-bold">✅ تم الامتحان!</div> : <button onClick={onStartExam} disabled={!settings.examActive} className={`w-full py-4 rounded-xl font-bold text-white ${settings.examActive?'bg-blue-600':'bg-gray-400'}`}>{settings.examActive?'ابدأ الامتحان':'الامتحان مغلق'}</button>}
+            
+            <div className="bg-white p-6 md:p-8 rounded-2xl shadow-sm border-t-4 border-blue-600 text-center">
+                <h2 className="text-2xl font-bold mb-6 text-gray-800">📢 العروض الحالية</h2>
+                <div className="grid gap-4 mb-8 text-right">
+                    {settings.offers?.length>0 ? settings.offers.map((o,i)=>(
+                        <div key={i} className="bg-blue-50 border border-blue-100 p-4 rounded-xl shadow-sm">
+                            {o.image && <img src={o.image} alt="عرض" className="w-full max-h-64 object-cover rounded-lg mb-3 shadow-sm border border-gray-200" />}
+                            {o.text && <p className="font-bold text-gray-800 text-lg">📌 {o.text}</p>}
+                        </div>
+                    )) : <div className="bg-gray-50 p-6 rounded-xl border text-gray-500 font-bold">لا توجد عروض حالياً.</div>}
+                </div>
+                {dbUser.hasExamined ? <div className="p-4 bg-green-50 text-green-700 rounded-xl font-bold border border-green-200 shadow-sm">✅ قمت بأداء الامتحان المخصص لهذه العروض. انتظر العرض القادم!</div> : <button onClick={onStartExam} disabled={!settings.examActive} className={`w-full md:w-2/3 py-4 rounded-xl font-bold text-xl text-white shadow-md transition-all ${settings.examActive?'bg-blue-600 hover:bg-blue-700 transform hover:-translate-y-1':'bg-gray-400 cursor-not-allowed'}`}>{settings.examActive?'فهمت العروض.. ابدأ الامتحان الآن':'🔒 الامتحان مغلق حالياً من الإدارة'}</button>}
             </div>
-            <div className="bg-white p-6 rounded-2xl shadow"><h2 className="text-2xl font-bold text-center text-yellow-800 mb-4">🏆 لوحة الشرف</h2>{dbUser.hasExamined&&rank>0&&<div className="text-center font-bold mb-4 text-blue-700">ترتيبك: {rank}</div>}<div className="space-y-2">{board.map((u,i)=><div key={i} className={`flex justify-between p-3 rounded font-bold border ${i===0?'bg-yellow-50':i===1?'bg-gray-100':i===2?'bg-orange-50':'bg-white'}`}><div className="flex items-center gap-3"><span className="w-4">{i+1}</span><span className="text-2xl">{u.avatar}</span>{u.name} <span className="text-xs text-gray-500">({u.brand})</span></div><div className="text-blue-700">{u.score}/6 <span className="text-xs text-gray-500">⏱{u.timeTaken}ث</span></div></div>)}</div></div>
+
+            <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100"><h2 className="text-2xl font-bold text-center text-yellow-800 mb-6">🏆 لوحة الشرف للأوائل</h2>{dbUser.hasExamined&&rank>0&&<div className="text-center font-bold mb-6 text-blue-800 bg-blue-50 py-3 rounded-xl border border-blue-200 shadow-sm">ترتيبك الحالي: المركز {rank}</div>}<div className="space-y-3">{board.length===0&&<p className="text-center text-gray-400">لا توجد نتائج مسجلة.</p>}{board.map((u,i)=><div key={i} className={`flex justify-between items-center p-4 rounded-xl font-bold border-2 ${i===0?'bg-yellow-50 border-yellow-400 text-yellow-900':i===1?'bg-gray-100 border-gray-300 text-gray-800':i===2?'bg-orange-50 border-orange-300 text-orange-900':'bg-white border-gray-100'}`}><div className="flex items-center gap-4"><span className="text-xl w-6 text-center">{i===0?'🥇':i===1?'🥈':i===2?'🥉':i+1}</span><span className="text-3xl bg-white rounded-full p-1 shadow-sm">{u.avatar}</span><div><div>{u.name}</div><div className="text-xs font-normal opacity-75">{u.brand}</div></div></div><div className="bg-white/50 px-3 py-1 rounded-lg text-left"><div className="text-blue-700 text-lg">{u.score}/6</div><div className="text-xs text-gray-600">⏱ {u.timeTaken} ث</div></div></div>)}</div></div>
         </div>
     );
 }
 
 function ExamRoom({ user, onFinish }) {
     const [qs, setQs] = useState([]); const [ans, setAns] = useState({}); const [cd, setCd] = useState(3); const [time, setTime] = useState(300); const [on, setOn] = useState(false);
-    useEffect(() => { db.collection('settings').doc('main').get().then(d => { if(d.exists&&d.data().questionsPool?.length>=6) setQs([...d.data().questionsPool].sort(()=>0.5-Math.random()).slice(0,6).map(q=>{const opts=q.options.map((t,i)=>({t,i})).sort(()=>0.5-Math.random()); return{q:q.question,opts:opts.map(o=>o.t),cor:opts.findIndex(o=>o.i===q.correct)};})); else{alert("لا توجد أسئلة");window.location.reload();} }); }, []);
+    useEffect(() => { db.collection('settings').doc('main').get().then(d => { if(d.exists&&d.data().questionsPool?.length>=6) setQs([...d.data().questionsPool].sort(()=>0.5-Math.random()).slice(0,6).map(q=>{const opts=q.options.map((t,i)=>({t,i})).sort(()=>0.5-Math.random()); return{q:q.question,opts:opts.map(o=>o.t),cor:opts.findIndex(o=>o.i===q.correct)};})); else{alert("لا توجد أسئلة كافية!");window.location.reload();} }); }, []);
     useEffect(() => { if(qs.length>0&&cd>0) setTimeout(()=>setCd(cd-1),1000); else if(qs.length>0&&cd===0) setOn(true); }, [cd, qs]);
     useEffect(() => { if(on&&time>0) setTimeout(()=>setTime(time-1),1000); else if(on&&time===0) submit(); }, [on, time]);
     useEffect(() => { const ch = ()=>{if(document.hidden&&on){alert("تسليم بصفر للغش!");force();}}; document.addEventListener('visibilitychange',ch); return ()=>document.removeEventListener('visibilitychange',ch); }, [on]);
     const force = async()=>{ await db.collection('users').doc(user.email).update({hasExamined:true,score:0,timeTaken:300-time,mistakes:[]}); onFinish(0,[],300-time); };
     const submit = async()=>{ let s=0;let m=[]; qs.forEach((q,i)=>{if(ans[i]===q.cor)s++;else m.push({q:q.q,correctAns:q.opts[q.cor],userAns:ans[i]!==undefined?q.opts[ans[i]]:"فارغ"});}); await db.collection('users').doc(user.email).update({hasExamined:true,score:s,timeTaken:300-time,mistakes:m}); onFinish(s,m,300-time); };
-    if(!on) return <div className="flex items-center justify-center h-screen"><div className="text-8xl text-blue-600 font-bold animate-bounce">{cd}</div></div>;
+    if(!on) return <div className="flex items-center justify-center h-[70vh]"><div className="bg-white p-12 rounded-full shadow-2xl border-8 border-blue-100 text-center w-64 h-64 flex flex-col justify-center"><div className="text-blue-500 font-bold mb-2">استعد...</div><div className="text-8xl text-blue-700 font-extrabold animate-bounce">{cd}</div></div></div>;
     return (
         <div className="max-w-3xl mx-auto pb-24">
-            <div className="bg-white p-4 rounded shadow mb-4 sticky top-0 flex justify-between font-bold z-50"><div className="text-blue-800">امتحان GEOX</div><div className={`${time<60?'text-red-600 animate-pulse':'text-blue-700'}`}>⏱ {Math.floor(time/60)}:{('0'+(time%60)).slice(-2)}</div></div>
-            <div className="space-y-6">{qs.map((q,i)=><div key={i} className="bg-white p-6 rounded shadow"><h3 className="font-bold mb-4">{i+1}. {q.q}</h3><div className="space-y-2">{q.opts.map((o,idx)=><div key={idx} onClick={()=>setAns({...ans,[i]:idx})} className={`p-3 rounded border cursor-pointer ${ans[i]===idx?'bg-blue-50 border-blue-500':'bg-gray-50'}`}>{o}</div>)}</div></div>)}</div>
-            <div className="fixed bottom-0 left-0 right-0 p-4 bg-white shadow-lg"><button onClick={()=>{if(confirm("تسليم؟"))submit();}} className="w-full max-w-3xl mx-auto block bg-green-500 text-white font-bold py-3 rounded">تسليم النهائي</button></div>
+            <div className="bg-white p-4 rounded-xl shadow-lg mb-6 sticky top-2 z-50 border-b-4 border-blue-600 flex justify-between items-center"><div className="text-lg font-bold text-blue-900 hidden md:block">امتحان RAYA</div><div className="flex gap-4 items-center font-bold"><span className="text-gray-500 text-sm">الإجابات: {Object.keys(ans).length}/6</span><span className={`text-2xl px-4 py-1 rounded border-2 ${time<60?'text-red-600 bg-red-50 border-red-200 animate-pulse':'text-blue-700 bg-blue-50 border-blue-100'}`}>⏱ {Math.floor(time/60)}:{('0'+(time%60)).slice(-2)}</span></div></div>
+            <div className="space-y-8">{qs.map((q,i)=><div key={i} className="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-gray-100"><h3 className="text-xl font-bold mb-6 text-gray-800 flex gap-3"><span className="bg-blue-100 text-blue-800 w-8 h-8 flex items-center justify-center rounded-full shrink-0">{i+1}</span>{q.q}</h3><div className="space-y-3 pl-2 md:pl-8">{q.opts.map((o,idx)=><div key={idx} onClick={()=>setAns({...ans,[i]:idx})} className={`flex items-center p-4 rounded-xl border-2 cursor-pointer transition ${ans[i]===idx?'bg-blue-50 border-blue-500 shadow-sm ring-1 ring-blue-200':'bg-gray-50 border-gray-200 hover:bg-gray-100'}`}><div className={`w-5 h-5 rounded-full border-2 ml-4 flex items-center justify-center shrink-0 ${ans[i]===idx?'border-blue-600':'border-gray-400'}`}>{ans[i]===idx&&<div className="w-2.5 h-2.5 bg-blue-600 rounded-full"></div>}</div><span className={`text-lg font-medium ${ans[i]===idx?'text-blue-800':'text-gray-700'}`}>{o}</span></div>)}</div></div>)}</div>
+            <div className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t border-gray-200 shadow-[0_-10px_15px_-3px_rgba(0,0,0,0.1)] z-40"><button onClick={()=>{if(confirm("تأكيد التسليم؟"))submit();}} className="w-full max-w-3xl mx-auto block bg-green-500 hover:bg-green-600 text-white font-extrabold text-xl py-4 rounded-xl shadow-lg transition-transform transform active:scale-95">تسليم الإجابات النهائية</button></div>
         </div>
     );
 }
