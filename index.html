@@ -3,7 +3,18 @@
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>RAYA - منصة العروض والامتحانات</title>
 <script src="https://cdn.tailwindcss.com"></script>
-<style>body{user-select:none;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background-color:#f8fafc;}.avatar-option{cursor:pointer;transition:transform 0.2s;}.avatar-option:hover{transform:scale(1.1);}.selected-avatar{border:4px solid #3b82f6;border-radius:50%;background-color:#eff6ff;}::-webkit-scrollbar{width:8px;}::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:4px;}::-webkit-scrollbar-thumb:hover{background:#94a3b8;}</style>
+<style>
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f8fafc; color: #0f172a; }
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #64748b; }
+    
+    /* منع السكرين شوت والنسخ وقت الامتحان فقط */
+    @media print { .exam-protected { display: none !important; } }
+    .exam-protected {
+        -webkit-touch-callout: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none;
+    }
+</style>
 <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
 <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
 <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -16,18 +27,31 @@
 <div id="root"></div>
 <script type="text/babel">
 const { useState, useEffect, useRef } = React;
+
+// إعدادات فايربيز
 const firebaseConfig = { apiKey: "AIzaSyAkSD8k1Q4_gSwar3mwfDPVpUPWzHJevNk", authDomain: "geox-platform.firebaseapp.com", databaseURL: "https://geox-platform-default-rtdb.firebaseio.com", projectId: "geox-platform", storageBucket: "geox-platform.firebasestorage.app", messagingSenderId: "691272759644", appId: "1:691272759644:web:297e11465b2fbe83ef6999", measurementId: "G-HVEFX0HGMM" };
 if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth(); const db = firebase.firestore(); const googleProvider = new firebase.auth.GoogleAuthProvider();
 googleProvider.setCustomParameters({ prompt: 'select_account' });
 
-// إضافة حسابات المديرين المتعددة هنا
+// حسابات الإدارة
 const ADMIN_EMAILS = ["abdoo.ashraf353@gmail.com", "yousef74joe74@gmail.com"];
 
-const AVATARS = [{id:1,icon:'🧽'},{id:2,icon:'🦑'},{id:3,icon:'⭐'},{id:4,icon:'💼'},{id:5,icon:'🤡'}];
+// الأفاتار كصور مرفوعة
+const AVATARS = [ {id:1, src:'avatar1.png'}, {id:2, src:'avatar2.png'}, {id:3, src:'avatar3.png'}, {id:4, src:'avatar4.png'}, {id:5, src:'avatar5.png'} ];
+
+// دالة عرض الأفاتار (تدعم الصور والإيموجي القديم للحسابات السابقة)
+const RenderAvatar = ({ avatarValue, sizeClass="w-16 h-16" }) => {
+    if(!avatarValue) return <img src="avatar1.png" alt="User" className={`${sizeClass} rounded-full object-cover shadow-md border-2 border-white`} onError={e=>e.target.src='https://cdn-icons-png.flaticon.com/512/149/149071.png'}/>;
+    if(avatarValue.includes('.png') || avatarValue.includes('.jpg')) {
+        return <img src={avatarValue} alt="User" className={`${sizeClass} rounded-full object-cover shadow-md border-2 border-white`} onError={e=>e.target.src='https://cdn-icons-png.flaticon.com/512/149/149071.png'}/>;
+    }
+    return <div className={`flex items-center justify-center bg-blue-50 text-blue-600 rounded-full shadow-md border-2 border-white ${sizeClass}`}><span style={{fontSize:'200%'}}>{avatarValue}</span></div>;
+};
 
 function App() {
     const [user, setUser] = useState(null); const [dbUser, setDbUser] = useState(null); const [role, setRole] = useState(null); const [brandInput, setBrandInput] = useState(''); const [view, setView] = useState('login'); const [loading, setLoading] = useState(true);
+    
     useEffect(() => {
         const timer = setTimeout(() => setLoading(false), 5000);
         const unsubscribe = auth.onAuthStateChanged(async (currentUser) => {
@@ -54,40 +78,61 @@ function App() {
             const userDocRef = db.collection('users').doc(email); const userDoc = await userDocRef.get();
             if(!userDoc.exists) {
                 if(!brandInput.trim()) { alert("تنبيه: اكتب اسم البراند أولاً قبل الدخول."); await auth.signOut(); setLoading(false); return; }
-                const newData = { name: result.user.displayName || email.split('@')[0], email: email, brand: brandInput.trim(), status: 'active', hasExamined: false, score: 0, timeTaken: 0, avatar: '🧽', mistakes: [] };
+                const newData = { name: result.user.displayName || email.split('@')[0], email: email, brand: brandInput.trim(), status: 'active', hasExamined: false, score: 0, timeTaken: 0, avatar: 'avatar1.png', mistakes: [] };
                 await userDocRef.set(newData);
                 setDbUser(newData); setUser(result.user); setRole('user'); setView('dashboard');
             }
         } catch(error) { if(error.code !== 'auth/popup-closed-by-user') alert("Error: " + error.message); } finally { setLoading(false); }
     };
 
-    const handleLogout = async () => { if(window.confirm("تسجيل الخروج؟")) { await auth.signOut(); window.location.reload(); } };
-    if(loading) return <div className="flex h-screen items-center justify-center bg-gray-50"><div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div></div>;
+    const handleLogout = async () => { if(window.confirm("هل تريد تسجيل الخروج؟")) { await auth.signOut(); window.location.reload(); } };
+    
+    if(loading) return <div className="flex h-screen items-center justify-center bg-slate-50"><div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div></div>;
 
     return (
-        <div className="min-h-screen flex flex-col bg-gray-50">
+        <div className="min-h-screen flex flex-col bg-slate-50">
             {user && (
-                <div className="bg-white shadow p-4 flex justify-between items-center sticky top-0 z-50">
-                    <div className="flex gap-3">
-                        <button onClick={handleLogout} className="bg-gray-100 px-4 py-2 rounded-lg font-bold hover:bg-gray-200">خروج</button>
-                        {role === 'user' && dbUser?.mistakes?.length > 0 && <button onClick={() => alert("أخطاؤك:\n\n" + dbUser.mistakes.map(m => `السؤال: ${m.q}\nإجابتك: ${m.userAns}\nالصحيح: ${m.correctAns}`).join('\n\n'))} className="bg-red-50 text-red-600 px-3 py-2 rounded-lg font-bold">❌ أخطائي</button>}
+                <header className="bg-white border-b border-slate-200 sticky top-0 z-40 shadow-sm">
+                    <div className="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
+                        <div className="flex gap-3 items-center">
+                            <button onClick={handleLogout} className="text-sm font-semibold text-slate-600 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 px-4 py-2 rounded-md transition-colors">تسجيل خروج</button>
+                            {role === 'user' && dbUser?.mistakes?.length > 0 && <button onClick={() => alert("مراجعة الأخطاء السابقة:\n\n" + dbUser.mistakes.map(m => `السؤال: ${m.q}\nإجابتك: ${m.userAns}\nالصحيح: ${m.correctAns}`).join('\n\n---\n'))} className="text-sm font-semibold text-red-600 bg-red-50 hover:bg-red-100 px-4 py-2 rounded-md transition-colors border border-red-100 flex items-center gap-2"><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> بنك الأخطاء</button>}
+                        </div>
+                        <div className="flex items-center gap-4">
+                            {role === 'admin' && <span className="bg-blue-100 text-blue-800 text-xs font-bold px-3 py-1 rounded-full border border-blue-200">لوحة الإدارة</span>}
+                            <img src="logo.png" alt="RAYA" className="h-8 md:h-10 object-contain" onError={(e)=>{e.target.style.display='none'; e.target.nextSibling.style.display='block';}} />
+                            <h1 className="text-2xl font-black text-blue-900 tracking-wider hidden">RAYA</h1>
+                        </div>
                     </div>
-                    <h1 className="text-3xl font-extrabold text-blue-800">RAYA {role==='admin'&&<span className="text-xs bg-blue-100 px-2 rounded">الإدارة</span>}</h1>
-                </div>
+                </header>
             )}
-            <main className="flex-grow p-4">
+            
+            <main className="flex-grow p-4 md:p-8">
                 {view === 'login' && (
-                    <div className="flex flex-col items-center justify-center min-h-[85vh]">
-                        <div className="bg-white p-10 rounded-2xl shadow-xl w-full max-w-md text-center border-t-8 border-blue-600">
-                            <h1 className="text-5xl font-extrabold text-blue-800 mb-8">RAYA</h1>
-                            <input type="text" placeholder="اكتب البراند هنا (لأول مرة فقط)" className="w-full p-4 mb-4 bg-gray-50 border rounded-xl text-right font-bold" value={brandInput} onChange={e => setBrandInput(e.target.value)} />
-                            <button onClick={handleGoogleLogin} className="w-full bg-blue-600 text-white font-bold py-4 rounded-xl shadow-md hover:bg-blue-700">دخول بواسطة Google</button>
+                    <div className="flex flex-col items-center justify-center min-h-[80vh]">
+                        <div className="bg-white p-8 md:p-12 rounded-2xl shadow-xl border border-slate-100 w-full max-w-md text-center relative overflow-hidden">
+                            <div className="absolute top-0 left-0 w-full h-2 bg-blue-600"></div>
+                            <img src="logo.png" alt="RAYA" className="h-16 mx-auto mb-6 object-contain" onError={(e)=>{e.target.style.display='none'; e.target.nextSibling.style.display='block';}} />
+                            <h1 className="text-4xl font-black text-blue-900 mb-2 tracking-wide hidden">RAYA</h1>
+                            <p className="text-slate-500 mb-8 font-medium">بوابة الموظفين للعروض والامتحانات</p>
+                            
+                            <div className="space-y-5">
+                                <div className="text-right">
+                                    <label className="block text-sm font-semibold text-slate-700 mb-2">اسم البراند (للمستخدم الجديد فقط)</label>
+                                    <input type="text" placeholder="اكتب البراند التابع له..." className="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition font-medium text-slate-800" value={brandInput} onChange={e => setBrandInput(e.target.value)} />
+                                </div>
+                                <button onClick={handleGoogleLogin} className="w-full bg-blue-600 text-white font-bold py-4 rounded-xl shadow-md hover:bg-blue-700 transition flex items-center justify-center gap-3 active:scale-95">
+                                    <svg className="w-5 h-5" viewBox="0 0 24 24"><path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="currentColor" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="currentColor" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="currentColor" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+                                    تسجيل الدخول بواسطة جوجل
+                                </button>
+                            </div>
+                            <p className="mt-6 text-xs text-slate-400">إذا كان حسابك مسجلاً، اترك خانة البراند فارغة واضغط دخول.</p>
                         </div>
                     </div>
                 )}
                 {view === 'admin' && <AdminPanel />}
                 {view === 'dashboard' && role === 'user' && <UserDashboard user={user} dbUser={dbUser} setDbUser={setDbUser} onStartExam={() => setView('exam')} />}
-                {view === 'exam' && role === 'user' && <ExamRoom user={user} onFinish={(s,m,t) => { alert(`انتهى الامتحان بنجاح!\n\nالنتيجة: ${s}/6\nالوقت المستغرق: ${t} ثانية`); setDbUser(p=>({...p,hasExamined:true,score:s,mistakes:m,timeTaken:t})); setView('dashboard'); }} />}
+                {view === 'exam' && role === 'user' && <ExamRoom user={user} onFinish={(s,m,t) => { alert(`انتهى الامتحان!\n\nالنتيجة: ${s}/6\nالوقت المستغرق: ${t} ثانية`); setDbUser(p=>({...p,hasExamined:true,score:s,mistakes:m,timeTaken:t})); setView('dashboard'); }} />}
             </main>
         </div>
     );
@@ -98,13 +143,13 @@ function AdminPanel() {
     const [search, setSearch] = useState('');
     const [offersJSON, setOffersJSON] = useState('');
     const [questionsJSON, setQuestionsJSON] = useState('');
+    const [mistakesModal, setMistakesModal] = useState(null);
 
     useEffect(() => {
         db.collection('users').onSnapshot(s => setUsers(s.docs.map(d => ({id:d.id,...d.data()}))));
         db.collection('settings').doc('main').onSnapshot(d => {
             if(d.exists) {
-                const data = d.data();
-                setSettings(data);
+                const data = d.data(); setSettings(data);
                 if(!offersJSON) setOffersJSON(JSON.stringify(data.offers || [], null, 2));
                 if(!questionsJSON) setQuestionsJSON(JSON.stringify(data.questionsPool || [], null, 2));
             } else db.collection('settings').doc('main').set({examActive:false,questionsPool:[],offers:[]});
@@ -113,11 +158,13 @@ function AdminPanel() {
 
     const toggleExam = () => db.collection('settings').doc('main').update({examActive:!settings.examActive});
     const startNewExam = async () => {
-        if(window.confirm("سيتم تصفير نتيجة الامتحان لجميع الموظفين. تأكيد؟")) {
+        if(window.confirm("تأكيد: سيتم تصفير نتيجة الامتحان لجميع الموظفين المقبولين ليتمكنوا من دخول الامتحان الجديد؟")) {
             const batch = db.batch();
-            users.forEach(u => batch.update(db.collection('users').doc(u.id), { hasExamined: false, score: 0, timeTaken: 0, mistakes: [] }));
+            users.forEach(u => {
+                if(u.status === 'active') batch.update(db.collection('users').doc(u.id), { hasExamined: false, score: 0, timeTaken: 0, mistakes: [] });
+            });
             await batch.commit();
-            alert("تم تصفير النتائج بنجاح!");
+            alert("تم تصفير النتائج بنجاح وتجهيز النظام للعرض الجديد!");
         }
     };
 
@@ -125,63 +172,127 @@ function AdminPanel() {
         try {
             const raw = type === 'offers' ? offersJSON : questionsJSON;
             const parsed = JSON.parse(raw);
-            if(type === 'questionsPool' && (!Array.isArray(parsed) || parsed.length < 6)) {
-                alert("تأكد أن بنك الأسئلة يحتوي على 6 أسئلة على الأقل."); return;
-            }
-            const safeParsed = JSON.parse(JSON.stringify(parsed));
-            await db.collection('settings').doc('main').update({ [type]: safeParsed });
-            alert("تم الحفظ بنجاح!");
-        } catch(e) { alert("خطأ في كود الـ JSON! تأكد من الأقواس والفواصل."); }
+            if(type === 'questionsPool' && (!Array.isArray(parsed) || parsed.length < 6)) { alert("خطأ: يجب أن يحتوي بنك الأسئلة على 6 أسئلة على الأقل."); return; }
+            await db.collection('settings').doc('main').update({ [type]: JSON.parse(JSON.stringify(parsed)) });
+            alert("تم الحفظ في قاعدة البيانات بنجاح!");
+        } catch(e) { alert("خطأ في صيغة الـ JSON! يرجى مراجعة الأقواس والفواصل."); }
     };
 
     const exportEx = () => { 
-        const formattedData = users.map(u => ({
-            'الاسم': u.name,
-            'البريد الإلكتروني': u.email,
-            'البراند': u.brand,
-            'أدى الامتحان؟': u.hasExamined ? 'نعم' : 'لا',
-            'الدرجة (من 6)': u.hasExamined ? u.score : '-',
-            'الوقت (ثواني)': u.hasExamined ? u.timeTaken : '-'
-        }));
-        const ws = XLSX.utils.json_to_sheet(formattedData); 
-        const wb = XLSX.utils.book_new(); 
-        XLSX.utils.book_append_sheet(wb, ws, "تقرير النتائج"); 
-        XLSX.writeFile(wb, "RAYA_Results.xlsx"); 
+        const formattedData = users.map(u => ({ 'الاسم': u.name, 'البريد الإلكتروني': u.email, 'البراند': u.brand, 'حالة الحساب': u.status === 'active' ? 'مقبول' : 'مرفوض/مراجعة', 'أدى الامتحان': u.hasExamined ? 'نعم' : 'لا', 'الدرجة (من 6)': u.hasExamined ? u.score : '-', 'الوقت (ثواني)': u.hasExamined ? u.timeTaken : '-' }));
+        const ws = XLSX.utils.json_to_sheet(formattedData); const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "تقرير النتائج"); XLSX.writeFile(wb, "RAYA_Corporate_Report.xlsx"); 
     };
+
+    const activeUsers = users.filter(u => (u.name.includes(search) || u.brand.includes(search)) && u.status === 'active');
+    const pendingUsers = users.filter(u => u.status === 'pending');
 
     return (
         <div className="max-w-7xl mx-auto space-y-6">
-            <div className="bg-white p-6 rounded-xl shadow flex flex-wrap justify-between items-center gap-4">
-                <h2 className="text-2xl font-bold">الإدارة <span className={`text-sm px-2 ${settings.examActive?'text-green-600':'text-red-600'}`}>{settings.examActive?"الامتحان متاح":"الامتحان مغلق"}</span></h2>
-                <div className="flex gap-2">
-                    <button onClick={toggleExam} className="bg-blue-600 text-white px-4 py-2 rounded font-bold shadow-sm">{settings.examActive ? 'إغلاق الامتحان' : 'إتاحة الامتحان'}</button>
-                    <button onClick={startNewExam} className="bg-red-500 text-white px-4 py-2 rounded font-bold shadow-sm">تصفير النتائج وبدء عرض جديد</button>
+            <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col md:flex-row justify-between items-center gap-4">
+                <div>
+                    <h2 className="text-2xl font-black text-blue-900 mb-1">لوحة تحكم الإدارة</h2>
+                    <div className="flex items-center gap-2 text-sm font-semibold">
+                        حالة النظام: <span className={`flex items-center gap-1 ${settings.examActive?'text-emerald-600':'text-rose-600'}`}>
+                            <span className={`w-2 h-2 rounded-full ${settings.examActive?'bg-emerald-500':'bg-rose-500'}`}></span>
+                            {settings.examActive?"الامتحان متاح للموظفين":"الامتحان مغلق حالياً"}
+                        </span>
+                    </div>
+                </div>
+                <div className="flex gap-3 flex-wrap">
+                    <button onClick={toggleExam} className={`px-5 py-2.5 rounded-lg font-bold text-white shadow-sm transition ${settings.examActive ? 'bg-rose-600 hover:bg-rose-700' : 'bg-emerald-600 hover:bg-emerald-700'}`}>{settings.examActive ? 'إغلاق نافذة الامتحان' : 'إتاحة الامتحان للجميع'}</button>
+                    <button onClick={startNewExam} className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-lg font-bold shadow-sm transition">تصفير النتائج وبدء عرض جديد</button>
                 </div>
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="bg-white p-6 rounded-xl shadow flex flex-col">
-                    <h3 className="font-bold mb-3 text-lg text-gray-800">العروض الحالية (نسخ JSON)</h3>
-                    <textarea dir="ltr" className="w-full flex-grow h-48 p-3 border-2 border-gray-200 rounded-lg text-left font-mono text-sm focus:border-blue-500 outline-none mb-3 resize-none bg-gray-50" value={offersJSON} onChange={e=>setOffersJSON(e.target.value)}></textarea>
-                    <button onClick={()=>saveJSON('offers')} className="bg-green-600 text-white font-bold py-2 rounded-lg shadow-sm hover:bg-green-700">حفظ العروض</button>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col">
+                    <div className="flex justify-between items-center mb-4">
+                        <h3 className="font-bold text-lg text-slate-800">إدارة العروض (JSON)</h3>
+                        <span className="bg-slate-100 text-slate-600 px-2 py-1 rounded text-xs font-bold">{settings.offers?.length||0} عروض</span>
+                    </div>
+                    <textarea dir="ltr" className="w-full flex-grow h-48 p-4 border border-slate-300 rounded-xl text-left font-mono text-sm focus:ring-2 focus:ring-blue-500 outline-none mb-4 resize-none bg-slate-50 text-slate-700 shadow-inner" value={offersJSON} onChange={e=>setOffersJSON(e.target.value)}></textarea>
+                    <button onClick={()=>saveJSON('offers')} className="bg-slate-800 text-white font-bold py-3 rounded-xl shadow hover:bg-slate-900 transition">حفظ وتحديث العروض</button>
                 </div>
-                <div className="bg-white p-6 rounded-xl shadow flex flex-col">
-                    <h3 className="font-bold mb-3 text-lg text-gray-800">بنك الأسئلة (نسخ JSON)</h3>
-                    <textarea dir="ltr" className="w-full flex-grow h-48 p-3 border-2 border-gray-200 rounded-lg text-left font-mono text-sm focus:border-blue-500 outline-none mb-3 resize-none bg-gray-50" value={questionsJSON} onChange={e=>setQuestionsJSON(e.target.value)}></textarea>
-                    <button onClick={()=>saveJSON('questionsPool')} className="bg-green-600 text-white font-bold py-2 rounded-lg shadow-sm hover:bg-green-700">حفظ الأسئلة</button>
+                <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col">
+                    <div className="flex justify-between items-center mb-4">
+                        <h3 className="font-bold text-lg text-slate-800">بنك الأسئلة (JSON)</h3>
+                        <span className="bg-slate-100 text-slate-600 px-2 py-1 rounded text-xs font-bold">{settings.questionsPool?.length||0} أسئلة</span>
+                    </div>
+                    <textarea dir="ltr" className="w-full flex-grow h-48 p-4 border border-slate-300 rounded-xl text-left font-mono text-sm focus:ring-2 focus:ring-blue-500 outline-none mb-4 resize-none bg-slate-50 text-slate-700 shadow-inner" value={questionsJSON} onChange={e=>setQuestionsJSON(e.target.value)}></textarea>
+                    <button onClick={()=>saveJSON('questionsPool')} className="bg-slate-800 text-white font-bold py-3 rounded-xl shadow hover:bg-slate-900 transition">حفظ وتحديث بنك الأسئلة</button>
                 </div>
             </div>
 
-            <div className="bg-white p-6 rounded-xl shadow overflow-x-auto">
-                <div className="flex justify-between items-center mb-6 flex-wrap gap-4">
-                    <h3 className="text-xl font-bold">سجل الموظفين ({users.length})</h3>
-                    <div className="flex gap-3">
-                        <input type="text" placeholder="بحث بالاسم أو البراند..." className="border-2 border-gray-200 p-2 rounded-lg bg-gray-50 outline-none focus:border-blue-500" onChange={e=>setSearch(e.target.value)} />
-                        <button onClick={exportEx} className="bg-blue-800 text-white px-5 py-2 rounded-lg font-bold shadow-sm">تصدير إكسيل</button>
+            {pendingUsers.length > 0 && (
+                <div className="bg-amber-50 p-6 rounded-2xl border border-amber-200 shadow-sm">
+                    <h3 className="text-lg font-bold text-amber-900 mb-4 flex items-center gap-2">⏳ طلبات تسجيل بانتظار الموافقة ({pendingUsers.length})</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        {pendingUsers.map(u => (
+                            <div key={u.id} className="bg-white p-4 rounded-xl shadow-sm border border-amber-100 flex justify-between items-center">
+                                <div><p className="font-bold text-slate-800">{u.name}</p><p className="text-xs font-semibold text-blue-600">{u.brand}</p></div>
+                                <div className="flex gap-2">
+                                    <button onClick={()=>db.collection('users').doc(u.email).update({status: 'active'})} className="bg-emerald-100 hover:bg-emerald-200 text-emerald-700 px-3 py-1.5 rounded-lg text-sm font-bold transition">قبول</button>
+                                    <button onClick={()=>db.collection('users').doc(u.email).delete()} className="bg-rose-100 hover:bg-rose-200 text-rose-700 px-3 py-1.5 rounded-lg text-sm font-bold transition">رفض</button>
+                                </div>
+                            </div>
+                        ))}
                     </div>
                 </div>
-                <table className="w-full text-right border-collapse"><thead className="bg-gray-100 text-gray-700"><tr><th className="p-3 border-b">الاسم</th><th className="p-3 border-b">البراند</th><th className="p-3 border-b">الحالة</th><th className="p-3 border-b">النتيجة</th><th className="p-3 border-b text-center">إجراء</th></tr></thead><tbody>{users.filter(u=>u.name.includes(search)||u.brand.includes(search)).map(u=><tr key={u.id} className="border-b hover:bg-blue-50 transition-colors"><td className="p-3 font-bold text-gray-800">{u.name}<br/><span className="text-xs text-gray-500 font-normal">{u.email}</span></td><td className="p-3 font-semibold text-gray-700">{u.brand}</td><td className="p-3">{u.hasExamined ? <span className="bg-green-100 text-green-700 px-2 py-1 rounded text-xs font-bold">امتحن</span> : <span className="bg-yellow-100 text-yellow-700 px-2 py-1 rounded text-xs font-bold">لم يمتحن</span>}</td><td className="p-3 font-bold text-blue-700">{u.hasExamined?`${u.score}/6 - ${u.timeTaken}ث`:''}</td><td className="p-3 text-center"><button onClick={()=>db.collection('users').doc(u.email).delete()} className="text-red-600 bg-red-100 px-3 py-1 rounded font-bold hover:bg-red-200">حذف</button></td></tr>)}</tbody></table>
+            )}
+
+            <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden flex flex-col">
+                <div className="p-6 border-b border-slate-100 flex justify-between items-center flex-wrap gap-4 bg-slate-50">
+                    <h3 className="text-xl font-bold text-blue-900">سجل الموظفين المقبولين ({activeUsers.length})</h3>
+                    <div className="flex gap-3 w-full md:w-auto">
+                        <input type="text" placeholder="بحث باسم أو براند..." className="flex-grow md:w-64 border border-slate-300 p-2.5 rounded-xl bg-white outline-none focus:ring-2 focus:ring-blue-500 font-medium text-sm" onChange={e=>setSearch(e.target.value)} />
+                        <button onClick={exportEx} className="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2.5 rounded-xl font-bold shadow-sm transition flex items-center gap-2 text-sm"><svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clipRule="evenodd"></path></svg> تصدير إكسيل</button>
+                    </div>
+                </div>
+                <div className="overflow-x-auto">
+                    <table className="w-full text-right border-collapse">
+                        <thead className="bg-slate-50 text-slate-600 border-b border-slate-200">
+                            <tr><th className="p-4 font-semibold">الموظف</th><th className="p-4 font-semibold">البراند</th><th className="p-4 font-semibold text-center">حالة الامتحان</th><th className="p-4 font-semibold text-center">النتيجة والوقت</th><th className="p-4 font-semibold text-center">بنك الأخطاء</th><th className="p-4 font-semibold text-center">إدارة</th></tr>
+                        </thead>
+                        <tbody className="divide-y divide-slate-100">
+                            {activeUsers.map(u => (
+                                <tr key={u.id} className="hover:bg-blue-50/50 transition-colors">
+                                    <td className="p-4"><div className="font-bold text-slate-800">{u.name}</div><div className="text-xs text-slate-500">{u.email}</div></td>
+                                    <td className="p-4 font-semibold text-blue-700">{u.brand}</td>
+                                    <td className="p-4 text-center">{u.hasExamined ? <span className="inline-block bg-emerald-100 text-emerald-700 px-3 py-1 rounded-full text-xs font-bold border border-emerald-200">أدى الامتحان</span> : <span className="inline-block bg-slate-100 text-slate-600 px-3 py-1 rounded-full text-xs font-bold border border-slate-200">بانتظار الامتحان</span>}</td>
+                                    <td className="p-4 text-center">{u.hasExamined ? <div className="inline-flex flex-col items-center"><span className="text-lg font-black text-blue-900">{u.score}/6</span><span className="text-xs font-semibold text-slate-500">⏱ {u.timeTaken} ثانية</span></div> : <span className="text-slate-300">-</span>}</td>
+                                    <td className="p-4 text-center">{u.hasExamined && u.mistakes?.length > 0 ? <button onClick={()=>setMistakesModal(u)} className="bg-rose-50 text-rose-600 hover:bg-rose-100 border border-rose-200 px-3 py-1.5 rounded-lg text-xs font-bold transition">عرض الأخطاء ({u.mistakes.length})</button> : (u.hasExamined ? <span className="text-emerald-500 font-bold text-sm">علامة كاملة 🏆</span> : <span className="text-slate-300">-</span>)}</td>
+                                    <td className="p-4 text-center"><button onClick={()=>{if(confirm("هل أنت متأكد من حذف هذا الموظف نهائياً؟")) db.collection('users').doc(u.email).delete()}} className="text-rose-500 hover:text-rose-700 bg-rose-50 hover:bg-rose-100 px-3 py-1.5 rounded-lg text-xs font-bold transition">حذف</button></td>
+                                </tr>
+                            ))}
+                            {activeUsers.length === 0 && <tr><td colSpan="6" className="p-8 text-center text-slate-500 font-medium">لا يوجد موظفين مسجلين مطابقين للبحث.</td></tr>}
+                        </tbody>
+                    </table>
+                </div>
             </div>
+
+            {/* Modal عرض الأخطاء */}
+            {mistakesModal && (
+                <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+                    <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[85vh] flex flex-col overflow-hidden animate-[fadeIn_0.2s_ease-out]">
+                        <div className="p-5 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+                            <div><h3 className="font-bold text-xl text-blue-900">سجل أخطاء: {mistakesModal.name}</h3><p className="text-sm font-semibold text-slate-500 mt-1">{mistakesModal.brand} | النتيجة: {mistakesModal.score}/6</p></div>
+                            <button onClick={()=>setMistakesModal(null)} className="w-8 h-8 flex items-center justify-center rounded-full bg-slate-200 text-slate-600 hover:bg-rose-500 hover:text-white transition font-bold">&times;</button>
+                        </div>
+                        <div className="p-6 overflow-y-auto space-y-4 bg-slate-50/50 flex-grow">
+                            {mistakesModal.mistakes.map((m, i) => (
+                                <div key={i} className="bg-white p-5 rounded-xl border border-rose-100 shadow-sm relative overflow-hidden">
+                                    <div className="absolute left-0 top-0 bottom-0 w-1 bg-rose-500"></div>
+                                    <p className="font-bold text-slate-800 mb-3 text-lg leading-snug">{i+1}. {m.q}</p>
+                                    <div className="space-y-2 bg-slate-50 p-3 rounded-lg border border-slate-100">
+                                        <p className="text-sm flex items-start gap-2"><span className="text-rose-600 font-bold bg-rose-100 px-2 py-0.5 rounded text-xs shrink-0">إجابته الخاطئة:</span> <span className="font-medium text-slate-700">{m.userAns}</span></p>
+                                        <p className="text-sm flex items-start gap-2"><span className="text-emerald-600 font-bold bg-emerald-100 px-2 py-0.5 rounded text-xs shrink-0">الإجابة الصحيحة:</span> <span className="font-bold text-emerald-800">{m.correctAns}</span></p>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
@@ -197,26 +308,83 @@ function UserDashboard({ user, dbUser, setDbUser, onStartExam }) {
     }, []);
     const rank = board.findIndex(u => u.email === user.email) + 1;
     return (
-        <div className="max-w-4xl mx-auto space-y-6">
-            <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col md:flex-row items-center justify-between gap-6">
-                <div><h2 className="text-2xl font-bold">مرحباً {dbUser.name}</h2><p className="text-blue-600 font-bold bg-blue-50 px-4 py-1 rounded-full mt-2 border border-blue-100">براند: {dbUser.brand}</p></div>
-                <div><div className="text-5xl bg-gray-50 p-2 rounded-full border mb-2 inline-block">{dbUser.avatar}</div><div className="flex gap-2 text-2xl">{AVATARS.map(a=><div key={a.id} onClick={()=>{setDbUser({...dbUser,avatar:a.icon});db.collection('users').doc(user.email).update({avatar:a.icon});}} className={`p-1 cursor-pointer rounded-xl ${dbUser.avatar===a.icon?'bg-blue-100 border-2 border-blue-400':'bg-gray-50 hover:bg-gray-100'}`}>{a.icon}</div>)}</div></div>
+        <div className="max-w-4xl mx-auto space-y-8">
+            <div className="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-slate-200 flex flex-col md:flex-row items-center justify-between gap-8 relative overflow-hidden">
+                <div className="absolute -right-10 -top-10 w-40 h-40 bg-blue-50 rounded-full blur-3xl opacity-60"></div>
+                <div className="relative z-10 text-center md:text-right">
+                    <h2 className="text-3xl font-black text-slate-800 mb-2">مرحباً، {dbUser.name}</h2>
+                    <span className="inline-flex items-center gap-2 bg-blue-50 text-blue-700 border border-blue-200 px-4 py-1.5 rounded-full text-sm font-bold shadow-sm">🏢 براند: {dbUser.brand}</span>
+                </div>
+                <div className="relative z-10 text-center bg-slate-50 p-4 rounded-2xl border border-slate-100">
+                    <p className="text-xs font-bold text-slate-400 mb-3 uppercase tracking-wider">اختر صورة بروفايلك</p>
+                    <div className="flex justify-center mb-4">
+                        <RenderAvatar avatarValue={dbUser.avatar} sizeClass="w-20 h-20" />
+                    </div>
+                    <div className="flex gap-2 justify-center bg-white p-2 rounded-xl shadow-sm border border-slate-100">
+                        {AVATARS.map(a=>(
+                            <div key={a.id} onClick={()=>{setDbUser({...dbUser,avatar:a.src}); db.collection('users').doc(user.email).update({avatar:a.src});}} className={`cursor-pointer rounded-lg p-1 transition-all ${dbUser.avatar===a.src ? 'bg-blue-100 ring-2 ring-blue-500 scale-110' : 'hover:bg-slate-100 opacity-70 hover:opacity-100'}`}>
+                                <RenderAvatar avatarValue={a.src} sizeClass="w-10 h-10" />
+                            </div>
+                        ))}
+                    </div>
+                </div>
             </div>
             
-            <div className="bg-white p-6 md:p-8 rounded-2xl shadow-sm border-t-4 border-blue-600 text-center">
-                <h2 className="text-2xl font-bold mb-6 text-gray-800">📢 العروض الحالية</h2>
-                <div className="grid gap-4 mb-8 text-right">
+            <div className="bg-white p-6 md:p-10 rounded-2xl shadow-sm border border-slate-200 border-t-4 border-t-blue-600 text-center">
+                <h2 className="text-2xl font-black mb-8 text-blue-900 flex items-center justify-center gap-2">📢 العروض الحالية (يجب قراءتها جيداً)</h2>
+                <div className="grid gap-4 mb-10 text-right">
                     {settings.offers?.length>0 ? settings.offers.map((o,i)=>(
-                        <div key={i} className="bg-blue-50 border border-blue-100 p-4 rounded-xl shadow-sm">
-                            {o.image && <img src={o.image} alt="عرض" className="w-full max-h-64 object-cover rounded-lg mb-3 shadow-sm border border-gray-200" />}
-                            {o.text && <p className="font-bold text-gray-800 text-lg">📌 {o.text}</p>}
+                        <div key={i} className="bg-slate-50 border border-slate-200 p-5 rounded-2xl shadow-sm hover:shadow-md transition">
+                            {o.image && <img src={o.image} alt="عرض" className="w-full max-h-72 object-contain rounded-xl mb-4 bg-white border border-slate-100" />}
+                            {o.text && <p className="font-bold text-slate-800 text-lg leading-relaxed flex items-start gap-3"><span className="text-blue-500 text-xl shrink-0 mt-0.5">📌</span> <span>{o.text}</span></p>}
                         </div>
-                    )) : <div className="bg-gray-50 p-6 rounded-xl border text-gray-500 font-bold">لا توجد عروض حالياً.</div>}
+                    )) : <div className="bg-slate-50 p-8 rounded-2xl border border-dashed border-slate-300 text-slate-400 font-bold text-lg">لا توجد عروض مضافة حالياً. يرجى الانتظار.</div>}
                 </div>
-                {dbUser.hasExamined ? <div className="p-4 bg-green-50 text-green-700 rounded-xl font-bold border border-green-200 shadow-sm">✅ قمت بأداء الامتحان المخصص لهذه العروض. انتظر العرض القادم!</div> : <button onClick={onStartExam} disabled={!settings.examActive} className={`w-full md:w-2/3 py-4 rounded-xl font-bold text-xl text-white shadow-md transition-all ${settings.examActive?'bg-blue-600 hover:bg-blue-700 transform hover:-translate-y-1':'bg-gray-400 cursor-not-allowed'}`}>{settings.examActive?'فهمت العروض.. ابدأ الامتحان الآن':'🔒 الامتحان مغلق حالياً من الإدارة'}</button>}
+                
+                {dbUser.hasExamined ? (
+                    <div className="p-5 bg-emerald-50 text-emerald-800 rounded-2xl font-bold text-lg border border-emerald-200 shadow-inner flex items-center justify-center gap-3"><svg className="w-6 h-6 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> قمت بأداء الامتحان المخصص لهذه العروض بنجاح.</div>
+                ) : (
+                    <button onClick={onStartExam} disabled={!settings.examActive} className={`w-full md:w-2/3 py-5 rounded-2xl font-black text-xl text-white shadow-lg transition-all ${settings.examActive ? 'bg-blue-600 hover:bg-blue-700 hover:shadow-blue-500/30 transform hover:-translate-y-1' : 'bg-slate-300 cursor-not-allowed border border-slate-300'}`}>
+                        {settings.examActive ? 'فهمت العروض جيداً.. ابدأ الامتحان الآن' : '🔒 الامتحان مغلق حالياً من قِبل الإدارة'}
+                    </button>
+                )}
             </div>
 
-            <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100"><h2 className="text-2xl font-bold text-center text-yellow-800 mb-6">🏆 لوحة الشرف للأوائل</h2>{dbUser.hasExamined&&rank>0&&<div className="text-center font-bold mb-6 text-blue-800 bg-blue-50 py-3 rounded-xl border border-blue-200 shadow-sm">ترتيبك الحالي: المركز {rank}</div>}<div className="space-y-3">{board.length===0&&<p className="text-center text-gray-400">لا توجد نتائج مسجلة.</p>}{board.map((u,i)=><div key={i} className={`flex justify-between items-center p-4 rounded-xl font-bold border-2 ${i===0?'bg-yellow-50 border-yellow-400 text-yellow-900':i===1?'bg-gray-100 border-gray-300 text-gray-800':i===2?'bg-orange-50 border-orange-300 text-orange-900':'bg-white border-gray-100'}`}><div className="flex items-center gap-4"><span className="text-xl w-6 text-center">{i===0?'🥇':i===1?'🥈':i===2?'🥉':i+1}</span><span className="text-3xl bg-white rounded-full p-1 shadow-sm">{u.avatar}</span><div><div>{u.name}</div><div className="text-xs font-normal opacity-75">{u.brand}</div></div></div><div className="bg-white/50 px-3 py-1 rounded-lg text-left"><div className="text-blue-700 text-lg">{u.score}/6</div><div className="text-xs text-gray-600">⏱ {u.timeTaken} ث</div></div></div>)}</div></div>
+            <div className="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-slate-200">
+                <h2 className="text-2xl font-black text-center text-slate-800 mb-8 flex items-center justify-center gap-2">🏆 لوحة الشرف للأوائل</h2>
+                
+                {dbUser.hasExamined && rank > 0 && (
+                    <div className="text-center font-black mb-8 text-blue-900 bg-blue-50 py-4 rounded-xl border border-blue-200 shadow-sm text-xl flex items-center justify-center gap-2">
+                        🌟 ترتيبك الحالي: المركز {rank} 🌟
+                    </div>
+                )}
+                
+                <div className="space-y-4">
+                    {board.length===0 && <p className="text-center text-slate-400 font-medium py-4">لم يتم تسجيل أي نتائج حتى الآن.</p>}
+                    {board.map((u,i) => {
+                        const isFirst = i===0; const isSecond = i===1; const isThird = i===2;
+                        const cardClass = isFirst ? 'bg-gradient-to-r from-amber-50 to-yellow-100 border-amber-300 text-amber-900 shadow-md transform scale-[1.02]' : 
+                                          isSecond ? 'bg-slate-50 border-slate-300 text-slate-800 shadow-sm' : 
+                                          isThird ? 'bg-orange-50 border-orange-200 text-orange-900 shadow-sm' : 'bg-white border-slate-100 text-slate-700 hover:bg-slate-50';
+                        return (
+                            <div key={i} className={`flex justify-between items-center p-4 rounded-2xl font-bold border-2 transition-all ${cardClass}`}>
+                                <div className="flex items-center gap-4">
+                                    <div className="flex items-center justify-center w-10 text-2xl drop-shadow-sm">{isFirst?'🥇':isSecond?'🥈':isThird?'🥉':<span className="text-lg text-slate-400">#{i+1}</span>}</div>
+                                    <RenderAvatar avatarValue={u.avatar} sizeClass="w-14 h-14" />
+                                    <div>
+                                        <div className="text-lg">{u.name}</div>
+                                        <div className={`text-xs font-semibold px-2 py-0.5 rounded-md inline-block mt-1 ${isFirst?'bg-amber-200/50':isSecond?'bg-slate-200/50':isThird?'bg-orange-200/50':'bg-slate-100'}`}>{u.brand}</div>
+                                    </div>
+                                </div>
+                                <div className="bg-white/60 backdrop-blur-sm px-4 py-2 rounded-xl text-left border border-white/40 shadow-sm">
+                                    <div className="text-blue-700 text-xl font-black">{u.score}/6</div>
+                                    <div className="text-xs font-bold text-slate-500 mt-1">⏱ {u.timeTaken} ثانية</div>
+                                </div>
+                            </div>
+                        )
+                    })}
+                </div>
+            </div>
         </div>
     );
 }
@@ -224,27 +392,80 @@ function UserDashboard({ user, dbUser, setDbUser, onStartExam }) {
 function ExamRoom({ user, onFinish }) {
     const [qs, setQs] = useState([]); const [ans, setAns] = useState({}); const [cd, setCd] = useState(3); const [time, setTime] = useState(300); const [on, setOn] = useState(false); const [isSubmitting, setIsSubmitting] = useState(false);
     
-    useEffect(() => { db.collection('settings').doc('main').get().then(d => { if(d.exists&&d.data().questionsPool?.length>=6) setQs([...d.data().questionsPool].sort(()=>0.5-Math.random()).slice(0,6).map(q=>{const opts=q.options.map((t,i)=>({t,i})).sort(()=>0.5-Math.random()); let corIdx = opts.findIndex(o=>o.i===Number(q.correct)); if(corIdx===-1) corIdx=0; return{q:q.question,opts:opts.map(o=>o.t),cor:corIdx};})); else{alert("لا توجد أسئلة كافية!");window.location.reload();} }); }, []);
+    // المراجع (Refs) هامة جداً لكي يتمكن كود كشف الغش من قراءة الإجابات الحالية في أي لحظة
+    const ansRef = useRef({});
+    const timeRef = useRef(300);
+    const warnings = useRef(0);
+
+    useEffect(() => { 
+        db.collection('settings').doc('main').get().then(d => { 
+            if(d.exists && d.data().questionsPool?.length >= 6) {
+                const pool = d.data().questionsPool;
+                const shuffled = [...pool].sort(()=>0.5-Math.random()).slice(0,6);
+                const processed = shuffled.map(q => {
+                    const opts = q.options.map((t,i)=>({t,i})).sort(()=>0.5-Math.random()); 
+                    let corIdx = opts.findIndex(o=>o.i===Number(q.correct)); if(corIdx===-1) corIdx=0; 
+                    return{q:q.question, opts:opts.map(o=>o.t), cor:corIdx};
+                });
+                setQs(processed);
+            } else {
+                alert("نعتذر، لا توجد أسئلة كافية لبدء الامتحان. يرجى مراجعة الإدارة."); window.location.reload();
+            } 
+        }); 
+    }, []);
+    
     useEffect(() => { if(qs.length>0&&cd>0) setTimeout(()=>setCd(cd-1),1000); else if(qs.length>0&&cd===0) setOn(true); }, [cd, qs]);
-    useEffect(() => { if(on&&time>0&&!isSubmitting) setTimeout(()=>setTime(time-1),1000); else if(on&&time===0&&!isSubmitting) submit(); }, [on, time, isSubmitting]);
-    useEffect(() => { const ch = ()=>{if(document.hidden&&on&&!isSubmitting){alert("تسليم بصفر لمخالفة القواعد (الخروج من الصفحة)!");force();}}; window.addEventListener('blur',ch); document.addEventListener('visibilitychange',ch); return ()=>{window.removeEventListener('blur',ch); document.removeEventListener('visibilitychange',ch);}; }, [on, isSubmitting]);
     
-    const force = async()=>{ 
+    useEffect(() => { 
+        if(on && time>0 && !isSubmitting) {
+            const timerId = setTimeout(()=>{ setTime(time-1); timeRef.current = time-1; }, 1000);
+            return () => clearTimeout(timerId);
+        } else if(on && time===0 && !isSubmitting) submit(true); 
+    }, [on, time, isSubmitting]);
+
+    // نظام منع السكرين شوت ومراقبة الخروج (Anti-Cheat & Screenshot protection)
+    useEffect(() => {
+        const handleCheat = () => {
+            if(on && !isSubmitting) {
+                warnings.current += 1;
+                if(warnings.current === 1) {
+                    alert("⚠️ تحذير أمني: يمنع الخروج من شاشة الامتحان أو فقدان التركيز عليها! إذا كررت ذلك سيتم تسليم إجاباتك الحالية فوراً وإنهاء الامتحان.");
+                } else if(warnings.current >= 2) {
+                    alert("🚫 تم تسليم الامتحان تلقائياً لمخالفتك القواعد (الخروج من الشاشة مرتين).");
+                    submit(true); // Forced submit with current answers
+                }
+            }
+        };
+
+        const onVisibilityChange = () => { if(document.hidden) handleCheat(); };
+        const onBlur = () => { handleCheat(); };
+        
+        // منع زر PrintScreen
+        const onKeyDown = (e) => {
+            if(e.key === 'PrintScreen') { navigator.clipboard.writeText(''); alert('غير مسموح بأخذ لقطة شاشة في وضع الامتحان!'); }
+        };
+
+        if(on) {
+            document.body.classList.add('exam-protected');
+            document.addEventListener('visibilitychange', onVisibilityChange);
+            window.addEventListener('blur', onBlur);
+            window.addEventListener('keyup', onKeyDown);
+        }
+
+        return () => {
+            document.body.classList.remove('exam-protected');
+            document.removeEventListener('visibilitychange', onVisibilityChange);
+            window.removeEventListener('blur', onBlur);
+            window.removeEventListener('keyup', onKeyDown);
+        };
+    }, [on, isSubmitting]);
+    
+    const submit = async(isForced = false) => { 
         if(isSubmitting) return; setIsSubmitting(true);
-        try { 
-            const payload = JSON.parse(JSON.stringify({hasExamined:true,score:0,timeTaken:300-time,mistakes:[]}));
-            await db.collection('users').doc(user.email).update(payload); 
-            onFinish(0,[],300-time); 
-        } catch(e) { onFinish(0,[],300-time); }
-    };
-    
-    const submit = async()=>{ 
-        if(isSubmitting) return;
-        setIsSubmitting(true);
         try {
-            let s=0;let m=[]; 
-            qs.forEach((q,i)=>{
-                const answeredIdx = ans[i];
+            let s=0; let m=[]; 
+            qs.forEach((q,i) => {
+                const answeredIdx = ansRef.current[i];
                 if(answeredIdx===q.cor) s++;
                 else {
                     let qText = q.q ? String(q.q) : "سؤال غير معروف";
@@ -253,37 +474,59 @@ function ExamRoom({ user, onFinish }) {
                     m.push({q: qText, correctAns: cText, userAns: uText});
                 }
             }); 
-            const finalTime = 300-time;
-            const payload = JSON.parse(JSON.stringify({
-                hasExamined: true,
-                score: s,
-                timeTaken: finalTime,
-                mistakes: m
-            }));
+            const finalTime = 300 - timeRef.current;
+            const payload = JSON.parse(JSON.stringify({ hasExamined: true, score: s, timeTaken: finalTime, mistakes: m }));
             await db.collection('users').doc(user.email).update(payload); 
             onFinish(s,m,finalTime);
         } catch(error) {
-            alert("حدث خطأ أثناء الإرسال: " + error.message);
-            setIsSubmitting(false);
+            alert("حدث خطأ أثناء الإرسال: " + error.message); setIsSubmitting(false);
         }
     };
     
-    if(!on) return <div className="flex items-center justify-center h-[70vh]"><div className="bg-white p-12 rounded-full shadow-2xl border-8 border-blue-100 text-center w-64 h-64 flex flex-col justify-center"><div className="text-blue-500 font-bold mb-2">استعد...</div><div className="text-8xl text-blue-700 font-extrabold animate-bounce">{cd}</div></div></div>;
+    const handleOptionSelect = (qIndex, optIndex) => {
+        if(isSubmitting) return;
+        const newAns = {...ansRef.current, [qIndex]: optIndex};
+        ansRef.current = newAns;
+        setAns(newAns);
+    };
+
+    if(!on) return <div className="flex items-center justify-center h-screen bg-blue-600"><div className="bg-white p-12 rounded-[3rem] shadow-2xl border-8 border-blue-400 text-center w-64 h-64 flex flex-col justify-center transform transition-transform"><div className="text-blue-500 font-bold mb-2 text-xl">استعد...</div><div className="text-8xl text-blue-800 font-black animate-pulse">{cd}</div></div></div>;
+    
     return (
-        <div className="max-w-3xl mx-auto pb-24">
-            <div className="bg-white p-4 rounded-xl shadow-lg mb-6 sticky top-2 z-50 border-b-4 border-blue-600 flex justify-between items-center"><div className="text-lg font-bold text-blue-900 hidden md:block">امتحان RAYA</div><div className="flex gap-4 items-center font-bold"><span className="text-gray-500 text-sm">الإجابات: {Object.keys(ans).length}/6</span><span className={`text-2xl px-4 py-1 rounded border-2 ${time<60?'text-red-600 bg-red-50 border-red-200 animate-pulse':'text-blue-700 bg-blue-50 border-blue-100'}`}>⏱ {Math.floor(time/60)}:{('0'+(time%60)).slice(-2)}</span></div></div>
-            <div className="space-y-8">{qs.map((q,i)=><div key={i} className="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-gray-100"><h3 className="text-xl font-bold mb-6 text-gray-800 flex gap-3"><span className="bg-blue-100 text-blue-800 w-8 h-8 flex items-center justify-center rounded-full shrink-0">{i+1}</span>{q.q}</h3><div className="space-y-3 pl-2 md:pl-8">{q.opts.map((o,idx)=><div key={idx} onClick={()=>{
-                if(isSubmitting) return;
-                const newAns = {...ans}; newAns[i] = idx; setAns(newAns);
-            }} className={`flex items-center p-4 rounded-xl border-2 cursor-pointer transition ${ans[i]===idx?'bg-blue-50 border-blue-500 shadow-sm ring-1 ring-blue-200':'bg-gray-50 border-gray-200 hover:bg-gray-100'}`}><div className={`w-5 h-5 rounded-full border-2 ml-4 flex items-center justify-center shrink-0 ${ans[i]===idx?'border-blue-600':'border-gray-400'}`}>{ans[i]===idx&&<div className="w-2.5 h-2.5 bg-blue-600 rounded-full"></div>}</div><span className={`text-lg font-medium ${ans[i]===idx?'text-blue-800':'text-gray-700'}`}>{o}</span></div>)}</div></div>)}</div>
-            <div className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t border-gray-200 shadow-[0_-10px_15px_-3px_rgba(0,0,0,0.1)] z-40">
-                <button disabled={isSubmitting} onClick={()=>{if(window.confirm("هل أنت متأكد من تسليم الإجابات النهائية؟"))submit();}} className={`w-full max-w-3xl mx-auto block ${isSubmitting ? 'bg-gray-400' : 'bg-green-500 hover:bg-green-600'} text-white font-extrabold text-xl py-4 rounded-xl shadow-lg transition-transform transform active:scale-95`}>
-                    {isSubmitting ? 'جاري التسليم والإرسال...' : 'تسليم الإجابات النهائية'}
+        <div className="max-w-3xl mx-auto pb-28 pt-4">
+            <div className="bg-white p-5 rounded-2xl shadow-md mb-8 sticky top-4 z-50 border-b-4 border-blue-600 flex justify-between items-center bg-opacity-95 backdrop-blur-sm">
+                <div className="text-xl font-black text-blue-900 hidden md:flex items-center gap-2"><span className="w-3 h-3 rounded-full bg-rose-500 animate-ping"></span> امتحان RAYA</div>
+                <div className="flex gap-6 items-center font-bold">
+                    <span className="text-slate-500 text-sm bg-slate-100 px-3 py-1.5 rounded-lg border border-slate-200">الإجابات: <span className="text-blue-700 font-black">{Object.keys(ans).length}</span>/6</span>
+                    <span className={`text-2xl px-5 py-1.5 rounded-xl border-2 shadow-sm font-mono ${time<60?'text-rose-600 bg-rose-50 border-rose-200 animate-pulse':'text-blue-800 bg-blue-50 border-blue-200'}`}>⏱ {Math.floor(time/60)}:{('0'+(time%60)).slice(-2)}</span>
+                </div>
+            </div>
+
+            <div className="space-y-8">
+                {qs.map((q,i)=>(
+                    <div key={i} className="bg-white p-6 md:p-8 rounded-3xl shadow-sm border border-slate-200 hover:shadow-md transition-shadow">
+                        <h3 className="text-xl font-bold mb-8 text-slate-800 flex gap-4 leading-relaxed"><span className="bg-blue-100 text-blue-800 w-10 h-10 flex items-center justify-center rounded-xl shrink-0 font-black shadow-sm">{i+1}</span>{q.q}</h3>
+                        <div className="space-y-4 pl-2 md:pl-10">
+                            {q.opts.map((o,idx)=>(
+                                <div key={idx} onClick={()=>handleOptionSelect(i, idx)} className={`flex items-center p-5 rounded-2xl border-2 cursor-pointer transition-all ${ans[i]===idx?'bg-blue-50 border-blue-500 shadow-md ring-2 ring-blue-100 scale-[1.01]':'bg-slate-50 border-slate-200 hover:bg-white hover:border-blue-300'}`}>
+                                    <div className={`w-6 h-6 rounded-full border-2 ml-5 flex items-center justify-center shrink-0 bg-white ${ans[i]===idx?'border-blue-600':'border-slate-300'}`}>{ans[i]===idx&&<div className="w-3 h-3 bg-blue-600 rounded-full"></div>}</div>
+                                    <span className={`text-lg font-bold ${ans[i]===idx?'text-blue-900':'text-slate-700'}`}>{o}</span>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                ))}
+            </div>
+
+            <div className="fixed bottom-0 left-0 right-0 p-5 bg-white border-t border-slate-200 shadow-[0_-15px_30px_-15px_rgba(0,0,0,0.1)] z-40">
+                <button disabled={isSubmitting} onClick={()=>{if(window.confirm("تأكيد: هل أنت متأكد من تسليم الإجابات النهائية؟ لا يمكنك التراجع."))submit();}} className={`w-full max-w-3xl mx-auto flex justify-center items-center gap-3 ${isSubmitting ? 'bg-slate-400' : 'bg-emerald-600 hover:bg-emerald-700'} text-white font-black text-xl py-5 rounded-2xl shadow-lg transition-transform transform active:scale-95`}>
+                    {isSubmitting ? 'جاري التشفير والإرسال...' : 'تسليم الإجابات النهائية واعتماد النتيجة'}
                 </button>
             </div>
         </div>
     );
 }
+
 const root = ReactDOM.createRoot(document.getElementById('root')); root.render(<App />);
 </script>
 </body>
