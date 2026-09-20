@@ -58,7 +58,7 @@ function App() {
         } catch(error) { if(error.code !== 'auth/popup-closed-by-user') alert("Error: " + error.message); } finally { setLoading(false); }
     };
 
-    const handleLogout = async () => { if(confirm("تسجيل الخروج؟")) { await auth.signOut(); window.location.reload(); } };
+    const handleLogout = async () => { if(window.confirm("تسجيل الخروج؟")) { await auth.signOut(); window.location.reload(); } };
     if(loading) return <div className="flex h-screen items-center justify-center bg-gray-50"><div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div></div>;
 
     return (
@@ -84,7 +84,7 @@ function App() {
                 )}
                 {view === 'admin' && <AdminPanel />}
                 {view === 'dashboard' && role === 'user' && <UserDashboard user={user} dbUser={dbUser} setDbUser={setDbUser} onStartExam={() => setView('exam')} />}
-                {view === 'exam' && role === 'user' && <ExamRoom user={user} onFinish={(s,m,t) => { alert(`النتيجة: ${s}/6\nالوقت: ${t}ث`); setDbUser(p=>({...p,hasExamined:true,score:s,mistakes:m,timeTaken:t})); setView('dashboard'); }} />}
+                {view === 'exam' && role === 'user' && <ExamRoom user={user} onFinish={(s,m,t) => { alert(`انتهى الامتحان بنجاح!\n\nالنتيجة: ${s}/6\nالوقت المستغرق: ${t} ثانية`); setDbUser(p=>({...p,hasExamined:true,score:s,mistakes:m,timeTaken:t})); setView('dashboard'); }} />}
             </main>
         </div>
     );
@@ -110,7 +110,7 @@ function AdminPanel() {
 
     const toggleExam = () => db.collection('settings').doc('main').update({examActive:!settings.examActive});
     const startNewExam = async () => {
-        if(confirm("سيتم تصفير نتيجة الامتحان لجميع الموظفين. تأكيد؟")) {
+        if(window.confirm("سيتم تصفير نتيجة الامتحان لجميع الموظفين. تأكيد؟")) {
             const batch = db.batch();
             users.forEach(u => batch.update(db.collection('users').doc(u.id), { hasExamined: false, score: 0, timeTaken: 0, mistakes: [] }));
             await batch.commit();
@@ -186,7 +186,11 @@ function UserDashboard({ user, dbUser, setDbUser, onStartExam }) {
     const [settings, setSettings] = useState({examActive:false,offers:[]}); const [board, setBoard] = useState([]);
     useEffect(() => {
         db.collection('settings').doc('main').onSnapshot(d => d.exists && setSettings(d.data()));
-        db.collection('users').where('hasExamined','==',true).onSnapshot(s => setBoard(s.docs.map(d=>d.data()).sort((a,b)=>b.score-a.score||a.timeTaken-b.timeTaken)));
+        db.collection('users').where('hasExamined','==',true).onSnapshot(s => {
+            // ترتيب بالدرجة الأعلى أولاً، ثم بالوقت الأقل (كما طلبت تماماً)
+            const sortedData = s.docs.map(d=>d.data()).sort((a,b)=> b.score - a.score || a.timeTaken - b.timeTaken);
+            setBoard(sortedData);
+        });
     }, []);
     const rank = board.findIndex(u => u.email === user.email) + 1;
     return (
@@ -215,23 +219,46 @@ function UserDashboard({ user, dbUser, setDbUser, onStartExam }) {
 }
 
 function ExamRoom({ user, onFinish }) {
-    const [qs, setQs] = useState([]); const [ans, setAns] = useState({}); const [cd, setCd] = useState(3); const [time, setTime] = useState(300); const [on, setOn] = useState(false);
+    const [qs, setQs] = useState([]); const [ans, setAns] = useState({}); const [cd, setCd] = useState(3); const [time, setTime] = useState(300); const [on, setOn] = useState(false); const [isSubmitting, setIsSubmitting] = useState(false);
+    
     useEffect(() => { db.collection('settings').doc('main').get().then(d => { if(d.exists&&d.data().questionsPool?.length>=6) setQs([...d.data().questionsPool].sort(()=>0.5-Math.random()).slice(0,6).map(q=>{const opts=q.options.map((t,i)=>({t,i})).sort(()=>0.5-Math.random()); return{q:q.question,opts:opts.map(o=>o.t),cor:opts.findIndex(o=>o.i===q.correct)};})); else{alert("لا توجد أسئلة كافية!");window.location.reload();} }); }, []);
     useEffect(() => { if(qs.length>0&&cd>0) setTimeout(()=>setCd(cd-1),1000); else if(qs.length>0&&cd===0) setOn(true); }, [cd, qs]);
-    useEffect(() => { if(on&&time>0) setTimeout(()=>setTime(time-1),1000); else if(on&&time===0) submit(); }, [on, time]);
-    useEffect(() => { const ch = ()=>{if(document.hidden&&on){alert("تسليم بصفر للغش!");force();}}; document.addEventListener('visibilitychange',ch); return ()=>document.removeEventListener('visibilitychange',ch); }, [on]);
-    const force = async()=>{ await db.collection('users').doc(user.email).update({hasExamined:true,score:0,timeTaken:300-time,mistakes:[]}); onFinish(0,[],300-time); };
-    const submit = async()=>{ let s=0;let m=[]; qs.forEach((q,i)=>{if(ans[i]===q.cor)s++;else m.push({q:q.q,correctAns:q.opts[q.cor],userAns:ans[i]!==undefined?q.opts[ans[i]]:"فارغ"});}); await db.collection('users').doc(user.email).update({hasExamined:true,score:s,timeTaken:300-time,mistakes:m}); onFinish(s,m,300-time); };
+    useEffect(() => { if(on&&time>0&&!isSubmitting) setTimeout(()=>setTime(time-1),1000); else if(on&&time===0&&!isSubmitting) submit(); }, [on, time, isSubmitting]);
+    useEffect(() => { const ch = ()=>{if(document.hidden&&on&&!isSubmitting){alert("تسليم بصفر لمخالفة القواعد (الخروج من الصفحة)!");force();}}; window.addEventListener('blur',ch); document.addEventListener('visibilitychange',ch); return ()=>{window.removeEventListener('blur',ch); document.removeEventListener('visibilitychange',ch);}; }, [on, isSubmitting]);
+    
+    const force = async()=>{ 
+        if(isSubmitting) return; setIsSubmitting(true);
+        try { await db.collection('users').doc(user.email).update({hasExamined:true,score:0,timeTaken:300-time,mistakes:[]}); onFinish(0,[],300-time); } catch(e) { onFinish(0,[],300-time); }
+    };
+    
+    const submit = async()=>{ 
+        if(isSubmitting) return;
+        setIsSubmitting(true);
+        try {
+            let s=0;let m=[]; 
+            qs.forEach((q,i)=>{if(ans[i]===q.cor)s++;else m.push({q:q.q,correctAns:q.opts[q.cor],userAns:ans[i]!==undefined?q.opts[ans[i]]:"لم يُجب"});}); 
+            const finalTime = 300-time;
+            await db.collection('users').doc(user.email).update({hasExamined:true,score:s,timeTaken:finalTime,mistakes:m}); 
+            onFinish(s,m,finalTime);
+        } catch(error) {
+            alert("حدث خطأ أثناء الإرسال: " + error.message);
+            setIsSubmitting(false);
+        }
+    };
+    
     if(!on) return <div className="flex items-center justify-center h-[70vh]"><div className="bg-white p-12 rounded-full shadow-2xl border-8 border-blue-100 text-center w-64 h-64 flex flex-col justify-center"><div className="text-blue-500 font-bold mb-2">استعد...</div><div className="text-8xl text-blue-700 font-extrabold animate-bounce">{cd}</div></div></div>;
     return (
         <div className="max-w-3xl mx-auto pb-24">
             <div className="bg-white p-4 rounded-xl shadow-lg mb-6 sticky top-2 z-50 border-b-4 border-blue-600 flex justify-between items-center"><div className="text-lg font-bold text-blue-900 hidden md:block">امتحان RAYA</div><div className="flex gap-4 items-center font-bold"><span className="text-gray-500 text-sm">الإجابات: {Object.keys(ans).length}/6</span><span className={`text-2xl px-4 py-1 rounded border-2 ${time<60?'text-red-600 bg-red-50 border-red-200 animate-pulse':'text-blue-700 bg-blue-50 border-blue-100'}`}>⏱ {Math.floor(time/60)}:{('0'+(time%60)).slice(-2)}</span></div></div>
             <div className="space-y-8">{qs.map((q,i)=><div key={i} className="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-gray-100"><h3 className="text-xl font-bold mb-6 text-gray-800 flex gap-3"><span className="bg-blue-100 text-blue-800 w-8 h-8 flex items-center justify-center rounded-full shrink-0">{i+1}</span>{q.q}</h3><div className="space-y-3 pl-2 md:pl-8">{q.opts.map((o,idx)=><div key={idx} onClick={()=>{
-                const newAns = {...ans};
-                newAns[i] = idx;
-                setAns(newAns);
+                if(isSubmitting) return;
+                const newAns = {...ans}; newAns[i] = idx; setAns(newAns);
             }} className={`flex items-center p-4 rounded-xl border-2 cursor-pointer transition ${ans[i]===idx?'bg-blue-50 border-blue-500 shadow-sm ring-1 ring-blue-200':'bg-gray-50 border-gray-200 hover:bg-gray-100'}`}><div className={`w-5 h-5 rounded-full border-2 ml-4 flex items-center justify-center shrink-0 ${ans[i]===idx?'border-blue-600':'border-gray-400'}`}>{ans[i]===idx&&<div className="w-2.5 h-2.5 bg-blue-600 rounded-full"></div>}</div><span className={`text-lg font-medium ${ans[i]===idx?'text-blue-800':'text-gray-700'}`}>{o}</span></div>)}</div></div>)}</div>
-            <div className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t border-gray-200 shadow-[0_-10px_15px_-3px_rgba(0,0,0,0.1)] z-40"><button onClick={()=>{if(confirm("تأكيد التسليم؟"))submit();}} className="w-full max-w-3xl mx-auto block bg-green-500 hover:bg-green-600 text-white font-extrabold text-xl py-4 rounded-xl shadow-lg transition-transform transform active:scale-95">تسليم الإجابات النهائية</button></div>
+            <div className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t border-gray-200 shadow-[0_-10px_15px_-3px_rgba(0,0,0,0.1)] z-40">
+                <button disabled={isSubmitting} onClick={()=>{if(window.confirm("هل أنت متأكد من تسليم الإجابات النهائية؟"))submit();}} className={`w-full max-w-3xl mx-auto block ${isSubmitting ? 'bg-gray-400' : 'bg-green-500 hover:bg-green-600'} text-white font-extrabold text-xl py-4 rounded-xl shadow-lg transition-transform transform active:scale-95`}>
+                    {isSubmitting ? 'جاري التسليم والإرسال...' : 'تسليم الإجابات النهائية'}
+                </button>
+            </div>
         </div>
     );
 }
