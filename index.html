@@ -209,25 +209,20 @@ function AdminPanel() {
         } catch(e) { alert("خطأ في صيغة الـ JSON! يرجى المراجعة."); }
     };
 
-    // إصلاح مشكلة الإكسيل جذرياً
     const exportEx = () => { 
         const activeU = users.filter(u => u.status === 'active');
         const wb = XLSX.utils.book_new();
         
         if(settings.examType === 'softSkills') {
-            const formattedData = activeU.map(u => {
-                let row = { 'الاسم': u.name, 'البريد': u.email, 'البراند': u.brand, 'أدى التقييم': u.hasExamined ? 'نعم' : 'لا', 'مؤشر الأنانية (%)': u.hasExamined ? (u.selfishnessScore || 0) + '%' : '-' };
-                if (u.hasExamined && u.allAnswers) {
-                    u.allAnswers.forEach((ans, i) => { 
-                        row[`موقف ${i+1}`] = ans.q; 
-                        row[`إجابته ${i+1}`] = ans.userAns; 
-                        row[`أنانية الإجابة ${i+1}`] = (ans.selfishness || 0) + '%';
-                    });
-                }
-                return row;
-            });
+            const formattedData = activeU.map(u => ({
+                'الاسم': u.name,
+                'البريد': u.email,
+                'البراند': u.brand,
+                'أدى التقييم': u.hasExamined ? 'نعم' : 'لا',
+                'التركيز على منتجه (%)': u.hasExamined ? (u.selfishnessScore || 0) + '%' : '-'
+            }));
             const ws = XLSX.utils.json_to_sheet(formattedData);
-            XLSX.utils.book_append_sheet(wb, ws, "مواقف السوفت سكيلز");
+            XLSX.utils.book_append_sheet(wb, ws, "نتائج السوفت سكيلز");
             XLSX.writeFile(wb, "SoftSkills_Report.xlsx"); 
         } else {
             const formattedData = activeU.map(u => ({ 'الاسم': u.name, 'البريد': u.email, 'البراند': u.brand, 'أدى الامتحان': u.hasExamined ? 'نعم' : 'لا', 'الدرجة': u.hasExamined ? `${u.score}/${u.maxScore||6}` : '-', 'الوقت (ثواني)': u.hasExamined ? u.timeTaken : '-' }));
@@ -294,7 +289,7 @@ function AdminPanel() {
                     <button onClick={()=>saveJSON('questionsPool')} className="bg-raya-600 text-white text-xs font-bold py-2 rounded">حفظ</button>
                 </div>
                 <div className="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex flex-col">
-                    <h3 className="font-bold text-xs text-slate-800 mb-2">مواقف السوفت سكيلز (ومؤشر الأنانية)</h3>
+                    <h3 className="font-bold text-xs text-slate-800 mb-2">مواقف السوفت سكيلز (ومؤشر تركيز الموظف)</h3>
                     <textarea dir="ltr" className="w-full flex-grow h-32 p-2 border rounded text-[10px] font-mono outline-none mb-2 bg-amber-50" value={softSkillsJSON} onChange={e=>setSoftSkillsJSON(e.target.value)}></textarea>
                     <button onClick={()=>saveJSON('softSkillsPool')} className="bg-amber-500 text-white text-xs font-bold py-2 rounded">حفظ</button>
                 </div>
@@ -335,7 +330,7 @@ function AdminPanel() {
                                 {settings.examType === 'softSkills' ? (
                                     <React.Fragment>
                                         <th className="p-2 border-b text-center">الإجابات والمواقف</th>
-                                        <th className="p-2 border-b text-center w-24">مؤشر الأنانية</th>
+                                        <th className="p-2 border-b text-center w-24">التركيز على منتجه</th>
                                     </React.Fragment>
                                 ) : (
                                     <React.Fragment>
@@ -415,7 +410,7 @@ function AdminPanel() {
                 <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-3">
                     <div className="bg-white rounded-xl shadow-xl w-full max-w-lg max-h-[85vh] flex flex-col overflow-hidden animate-[fadeIn_0.2s_ease-out]">
                         <div className="p-4 border-b border-slate-100 flex justify-between items-center bg-amber-50">
-                            <div><h3 className="font-bold text-base text-amber-900">مواقف بيعية: {answersModal.name}</h3><p className="text-[11px] font-bold text-slate-500">{answersModal.brand} | متوسط الأنانية: {answersModal.selfishnessScore||0}%</p></div>
+                            <div><h3 className="font-bold text-base text-amber-900">مواقف بيعية: {answersModal.name}</h3><p className="text-[11px] font-bold text-slate-500">{answersModal.brand} | متوسط التركيز على منتجه: {answersModal.selfishnessScore||0}%</p></div>
                             <button onClick={()=>setAnswersModal(null)} className="w-8 h-8 rounded-full bg-amber-200 text-amber-800 font-bold hover:bg-rose-500 hover:text-white">&times;</button>
                         </div>
                         <div className="p-4 overflow-y-auto space-y-3 bg-slate-50 flex-grow">
@@ -426,7 +421,7 @@ function AdminPanel() {
                                     <p className="font-bold text-slate-800 text-xs mb-3 leading-relaxed"><span className="text-amber-500 ml-1">{i+1}.</span> {ans.q}</p>
                                     <div className="bg-slate-50 p-2.5 rounded text-[11px] border border-slate-100 space-y-2">
                                         <p className="flex items-start gap-1"><span className="text-raya-700 font-bold bg-raya-100 px-1.5 py-0.5 rounded shrink-0">رد الموظف:</span> <span className="font-bold text-slate-700 leading-relaxed">{ans.userAns}</span></p>
-                                        <p className="flex items-start gap-1"><span className={`font-bold px-1.5 py-0.5 rounded shrink-0 ${ans.selfishness > 60 ? 'bg-rose-100 text-rose-700' : ans.selfishness > 30 ? 'bg-amber-100 text-amber-700' : 'bg-emerald-100 text-emerald-700'}`}>نسبة أنانية الإجابة: {ans.selfishness||0}%</span></p>
+                                        <p className="flex items-start gap-1"><span className={`font-bold px-1.5 py-0.5 rounded shrink-0 ${ans.selfishness > 60 ? 'bg-rose-100 text-rose-700' : ans.selfishness > 30 ? 'bg-amber-100 text-amber-700' : 'bg-emerald-100 text-emerald-700'}`}>مؤشر التركيز على بيعته: {ans.selfishness||0}%</span></p>
                                     </div>
                                 </div>
                             ))}
@@ -558,15 +553,15 @@ function ExamRoom({ user, onFinish }) {
                         let exactCorrectString = "";
                         if (q.answer !== undefined) { exactCorrectString = String(q.answer).trim(); } 
                         else if (q.correct !== undefined) { 
-                            // التوافق مع JSON السوفت سكيلز (Object) أو العروض (String)
                             let cOpt = q.options[Number(q.correct)];
                             exactCorrectString = typeof cOpt === 'object' ? String(cOpt.text).trim() : String(cOpt).trim(); 
                         }
 
                         const optsWithMeta = q.options.map(opt => {
                             let textVal = typeof opt === 'object' ? String(opt.text).trim() : String(opt).trim();
-                            let selfishVal = typeof opt === 'object' && opt.selfishness ? Number(opt.selfishness) : 0;
-                            return { text: textVal, selfishness: selfishVal, isCorrect: textVal === exactCorrectString };
+                            // قراءة التركيز سواء كانت مكتوبة focus أو selfishness 
+                            let focusVal = typeof opt === 'object' && (opt.focus !== undefined ? Number(opt.focus) : (opt.selfishness !== undefined ? Number(opt.selfishness) : 0));
+                            return { text: textVal, selfishness: focusVal, isCorrect: textVal === exactCorrectString };
                         });
                         optsWithMeta.sort(()=>0.5-Math.random()); 
                         
