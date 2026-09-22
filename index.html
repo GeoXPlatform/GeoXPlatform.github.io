@@ -96,7 +96,7 @@ function App() {
                     alert("تنبيه: يجب كتابة (الاسم) و (اسم البراند) أولاً قبل التسجيل لتفعيل حسابك."); 
                     await auth.signOut(); setLoading(false); return; 
                 }
-                const newData = { name: nameInput.trim(), email: email, brand: brandInput.trim(), status: 'active', hasExamined: false, score: 0, maxScore: 6, timeTaken: 0, avatar: 'avatar1.png', mistakes: [], allAnswers: [], lastExamType: 'closed', selfishnessScore: 0 };
+                const newData = { name: nameInput.trim(), email: email, brand: brandInput.trim(), status: 'active', hasExamined: false, score: 0, maxScore: 6, timeTaken: 0, avatar: 'avatar1.png', mistakes: [], allAnswers: [], lastExamType: 'closed', selfishnessScore: 0, offersResult: null, softSkillsResult: null };
                 await userDocRef.set(newData);
                 setDbUser(newData); setUser(result.user); setRole('user'); setView('dashboard');
             } else {
@@ -109,6 +109,8 @@ function App() {
     
     if(loading) return <div className="flex flex-col h-screen items-center justify-center bg-slate-50"><div className="w-12 h-12 border-4 border-raya-500 border-t-transparent rounded-full animate-spin mb-3"></div><div className="text-raya-800 font-bold text-base animate-pulse">جاري التحميل...</div></div>;
 
+    const myOffersData = dbUser?.offersResult || (dbUser?.hasExamined && dbUser?.lastExamType !== 'softSkills' ? dbUser : null);
+
     return (
         <div className="min-h-screen flex flex-col bg-slate-50">
             {user && (
@@ -116,7 +118,7 @@ function App() {
                     <div className="max-w-7xl mx-auto px-4 py-2.5 flex justify-between items-center">
                         <div className="flex gap-2 items-center">
                             <button onClick={handleLogout} className="text-sm font-bold text-slate-600 hover:text-slate-900 bg-slate-100 px-4 py-2 rounded-lg transition-colors border border-slate-200">خروج</button>
-                            {role === 'user' && dbUser?.lastExamType !== 'softSkills' && dbUser?.mistakes?.length > 0 && <button onClick={() => alert("مراجعة الأخطاء السابقة:\n\n" + dbUser.mistakes.map(m => `السؤال: ${m.q}\nإجابتك: ${m.userAns}\nالصحيح: ${m.correctAns}`).join('\n\n---\n'))} className="text-sm font-bold text-rose-600 bg-rose-50 px-4 py-2 rounded-lg transition-colors border border-rose-200 flex items-center gap-1"> بنك أخطائي</button>}
+                            {role === 'user' && myOffersData && myOffersData.mistakes?.length > 0 && <button onClick={() => alert("مراجعة الأخطاء السابقة:\n\n" + myOffersData.mistakes.map(m => `السؤال: ${m.q}\nإجابتك: ${m.userAns}\nالصحيح: ${m.correctAns}`).join('\n\n---\n'))} className="text-sm font-bold text-rose-600 bg-rose-50 px-4 py-2 rounded-lg transition-colors border border-rose-200 flex items-center gap-1"> بنك أخطائي</button>}
                         </div>
                         <div className="flex items-center gap-3">
                             {role === 'admin' && <span className="bg-raya-100 text-raya-800 text-[10px] font-bold px-2 py-1 rounded-md border border-raya-200">مدير النظام</span>}
@@ -153,13 +155,13 @@ function App() {
                 )}
                 {view === 'admin' && <AdminPanel />}
                 {view === 'dashboard' && role === 'user' && <UserDashboard user={user} dbUser={dbUser} setDbUser={setDbUser} onStartExam={() => setView('exam')} />}
-                {view === 'exam' && role === 'user' && <ExamRoom user={user} onFinish={(s,m,t,max,type,allAns, selfishnessScore) => { 
+                {view === 'exam' && role === 'user' && <ExamRoom user={user} onFinish={(s,m,t,max,type,allAns, selfishnessScore, updatedFields) => { 
                     if(type === 'softSkills') {
-                        alert(`تم تسجيل إجاباتك ومواقفك بنجاح في قاعدة البيانات.`);
+                        alert(`تم تسجيل إجاباتك ومواقفك بنجاح.`);
                     } else {
                         alert(`تم الاعتماد بنجاح!\n\nالنتيجة النهائية: ${s} من ${max}\nالوقت المستغرق: ${t} ثانية`); 
                     }
-                    setDbUser(p=>({...p,hasExamined:true,score:s,maxScore:max,mistakes:m,timeTaken:t, lastExamType:type, allAnswers:allAns, selfishnessScore: selfishnessScore})); 
+                    setDbUser(p=>({...p, ...updatedFields})); 
                     setView('dashboard'); 
                 }} />}
             </main>
@@ -167,7 +169,6 @@ function App() {
     );
 }
 
-// لوحة الإدارة المعدلة بأحجام مصغرة ومناسبة للموبايل
 function AdminPanel() {
     const [users, setUsers] = useState([]); const [settings, setSettings] = useState({examType:'closed',questionsPool:[],softSkillsPool:[],offers:[]}); 
     const [search, setSearch] = useState('');
@@ -194,7 +195,11 @@ function AdminPanel() {
     const startNewExam = async () => {
         if(window.confirm("تأكيد: سيتم تصفير جميع النتائج وإلغاء إجابات الموظفين الحالية للتقييم الجديد؟")) {
             const batch = db.batch();
-            users.forEach(u => { if(u.status === 'active') batch.update(db.collection('users').doc(u.id), { hasExamined: false, score: 0, timeTaken: 0, mistakes: [], allAnswers: [], selfishnessScore: 0 }); });
+            users.forEach(u => { 
+                if(u.status === 'active') {
+                    batch.update(db.collection('users').doc(u.id), { hasExamined: false, score: 0, timeTaken: 0, mistakes: [], allAnswers: [], selfishnessScore: 0, offersResult: null, softSkillsResult: null }); 
+                }
+            });
             await batch.commit(); alert("تم تصفير النتائج بنجاح!");
         }
     };
@@ -215,18 +220,26 @@ function AdminPanel() {
         const wb = XLSX.utils.book_new();
         
         if(settings.examType === 'softSkills') {
-            const formattedData = activeU.map(u => ({
-                'الاسم': u.name,
-                'البريد': u.email,
-                'البراند': u.brand,
-                'أدى التقييم': u.hasExamined ? 'نعم' : 'لا',
-                'التركيز على منتجه (%)': u.hasExamined ? (u.selfishnessScore || 0) + '%' : '-'
-            }));
+            const formattedData = activeU.map(u => {
+                const examData = u.softSkillsResult || (u.hasExamined && u.lastExamType === 'softSkills' ? u : {hasExamined: false});
+                let row = { 'الاسم': u.name, 'البريد': u.email, 'البراند': u.brand, 'أدى التقييم': examData.hasExamined ? 'نعم' : 'لا', 'التركيز على منتجه (%)': examData.hasExamined ? (examData.selfishnessScore || 0) + '%' : '-' };
+                if (examData.hasExamined && examData.allAnswers) {
+                    examData.allAnswers.forEach((ans, i) => { 
+                        row[`موقف ${i+1}`] = ans.q; 
+                        row[`إجابته ${i+1}`] = ans.userAns; 
+                        row[`تركيزه ${i+1}`] = (ans.selfishness || 0) + '%';
+                    });
+                }
+                return row;
+            });
             const ws = XLSX.utils.json_to_sheet(formattedData);
             XLSX.utils.book_append_sheet(wb, ws, "نتائج السوفت سكيلز");
             XLSX.writeFile(wb, "SoftSkills_Report.xlsx"); 
         } else {
-            const formattedData = activeU.map(u => ({ 'الاسم': u.name, 'البريد': u.email, 'البراند': u.brand, 'أدى الامتحان': u.hasExamined ? 'نعم' : 'لا', 'الدرجة': u.hasExamined ? `${u.score}/${u.maxScore||6}` : '-', 'الوقت (ثواني)': u.hasExamined ? u.timeTaken : '-' }));
+            const formattedData = activeU.map(u => {
+                const examData = u.offersResult || (u.hasExamined && u.lastExamType !== 'softSkills' ? u : {hasExamined: false});
+                return { 'الاسم': u.name, 'البريد': u.email, 'البراند': u.brand, 'أدى الامتحان': examData.hasExamined ? 'نعم' : 'لا', 'الدرجة': examData.hasExamined ? `${examData.score}/${examData.maxScore||6}` : '-', 'الوقت (ثواني)': examData.hasExamined ? examData.timeTaken : '-' };
+            });
             const ws = XLSX.utils.json_to_sheet(formattedData);
             XLSX.utils.book_append_sheet(wb, ws, "نتائج العروض");
             XLSX.writeFile(wb, "Offers_Report.xlsx"); 
@@ -238,8 +251,9 @@ function AdminPanel() {
     
     let qMistakes = {}; let catMistakes = {};
     activeUsers.forEach(u => {
-        if(u.mistakes && settings.examType !== 'softSkills') {
-            u.mistakes.forEach(m => {
+        const examData = u.offersResult || (u.hasExamined && u.lastExamType !== 'softSkills' ? u : null);
+        if(examData && examData.mistakes && settings.examType !== 'softSkills') {
+            examData.mistakes.forEach(m => {
                 qMistakes[m.q] = (qMistakes[m.q] || 0) + 1;
                 const cat = m.category || 'عام';
                 catMistakes[cat] = (catMistakes[cat] || 0) + 1;
@@ -343,25 +357,33 @@ function AdminPanel() {
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-50">
-                            {activeUsers.map(u => (
+                            {activeUsers.map(u => {
+                                let examData = { hasExamined: false };
+                                if (settings.examType === 'softSkills') {
+                                    examData = u.softSkillsResult || (u.hasExamined && u.lastExamType === 'softSkills' ? u : {hasExamined: false});
+                                } else {
+                                    examData = u.offersResult || (u.hasExamined && u.lastExamType !== 'softSkills' ? u : {hasExamined: false});
+                                }
+
+                                return (
                                 <tr key={u.id} className="hover:bg-raya-50/30 transition-colors">
                                     <td className="p-2"><div className="font-bold text-slate-800 text-sm">{u.name}</div><div className="text-[9px] text-slate-400 mt-0.5">{u.email}</div></td>
                                     <td className="p-2"><span className="font-semibold text-slate-700 bg-slate-100 px-2 py-0.5 rounded text-[11px]">{u.brand}</span></td>
-                                    <td className="p-2 text-center">{u.hasExamined ? <span className="bg-emerald-50 text-emerald-600 px-2 py-0.5 rounded text-[10px] font-bold border border-emerald-100">مكتمل</span> : <span className="bg-slate-50 text-slate-500 px-2 py-0.5 rounded text-[10px] font-bold border border-slate-200">انتظار</span>}</td>
+                                    <td className="p-2 text-center">{examData.hasExamined ? <span className="bg-emerald-50 text-emerald-600 px-2 py-0.5 rounded text-[10px] font-bold border border-emerald-100">مكتمل</span> : <span className="bg-slate-50 text-slate-500 px-2 py-0.5 rounded text-[10px] font-bold border border-slate-200">انتظار</span>}</td>
                                     
                                     {settings.examType === 'softSkills' ? (
                                         <React.Fragment>
                                             <td className="p-2 text-center">
-                                                {u.hasExamined && u.allAnswers?.length > 0 ? 
-                                                    <button onClick={()=>setAnswersModal(u)} className="bg-amber-100 text-amber-700 border border-amber-200 px-2.5 py-1 rounded text-[10px] font-bold hover:bg-amber-200 transition-colors">عرض المواقف</button> 
+                                                {examData.hasExamined && examData.allAnswers?.length > 0 ? 
+                                                    <button onClick={()=>setAnswersModal({...u, examData})} className="bg-amber-100 text-amber-700 border border-amber-200 px-2.5 py-1 rounded text-[10px] font-bold hover:bg-amber-200 transition-colors">عرض المواقف</button> 
                                                     : '-'}
                                             </td>
                                             <td className="p-2 text-center">
-                                                {u.hasExamined ? (
+                                                {examData.hasExamined ? (
                                                     <div className="flex flex-col items-center">
-                                                        <span className={`font-bold text-[10px] ${u.selfishnessScore > 60 ? 'text-rose-600' : u.selfishnessScore > 30 ? 'text-amber-600' : 'text-emerald-600'}`}>{u.selfishnessScore || 0}%</span>
+                                                        <span className={`font-bold text-[10px] ${examData.selfishnessScore > 60 ? 'text-rose-600' : examData.selfishnessScore > 30 ? 'text-amber-600' : 'text-emerald-600'}`}>{examData.selfishnessScore || 0}%</span>
                                                         <div className="w-16 h-1.5 bg-slate-200 rounded-full mt-1 overflow-hidden">
-                                                            <div className={`h-full transition-all ${u.selfishnessScore > 60 ? 'bg-rose-500' : u.selfishnessScore > 30 ? 'bg-amber-500' : 'bg-emerald-500'}`} style={{width: `${u.selfishnessScore || 0}%`}}></div>
+                                                            <div className={`h-full transition-all ${examData.selfishnessScore > 60 ? 'bg-rose-500' : examData.selfishnessScore > 30 ? 'bg-amber-500' : 'bg-emerald-500'}`} style={{width: `${examData.selfishnessScore || 0}%`}}></div>
                                                         </div>
                                                     </div>
                                                 ) : '-'}
@@ -369,13 +391,13 @@ function AdminPanel() {
                                         </React.Fragment>
                                     ) : (
                                         <React.Fragment>
-                                            <td className="p-2 text-center">{u.hasExamined ? <div><span className="font-bold text-raya-800 text-sm">{u.score}/{u.maxScore||6}</span><div className="text-[9px] text-slate-500 mt-0.5">{u.timeTaken}ث</div></div> : '-'}</td>
-                                            <td className="p-2 text-center">{u.hasExamined && u.mistakes?.length > 0 ? <button onClick={()=>setMistakesModal(u)} className="bg-rose-50 text-rose-600 border border-rose-100 px-2 py-1 rounded text-[10px] font-bold hover:bg-rose-100 transition-colors">عرض</button> : (u.hasExamined ? <span className="text-emerald-500 text-[10px] font-bold">كاملة 🏆</span> : '-')}</td>
+                                            <td className="p-2 text-center">{examData.hasExamined ? <div><span className="font-bold text-raya-800 text-sm">{examData.score}/{examData.maxScore||6}</span><div className="text-[9px] text-slate-500 mt-0.5">{examData.timeTaken}ث</div></div> : '-'}</td>
+                                            <td className="p-2 text-center">{examData.hasExamined && examData.mistakes?.length > 0 ? <button onClick={()=>setMistakesModal({...u, examData})} className="bg-rose-50 text-rose-600 border border-rose-100 px-2 py-1 rounded text-[10px] font-bold hover:bg-rose-100 transition-colors">عرض</button> : (examData.hasExamined ? <span className="text-emerald-500 text-[10px] font-bold">كاملة 🏆</span> : '-')}</td>
                                         </React.Fragment>
                                     )}
-                                    <td className="p-2 text-center"><button onClick={()=>{if(confirm("حذف الموظف نهائياً؟")) db.collection('users').doc(u.email).delete()}} className="text-slate-400 hover:text-rose-600 p-1 font-bold text-sm">✖</button></td>
+                                    <td className="p-2 text-center"><button onClick={()=>{if(window.confirm("حذف الموظف نهائياً؟")) db.collection('users').doc(u.email).delete()}} className="text-slate-400 hover:text-rose-600 p-1 font-bold text-sm">✖</button></td>
                                 </tr>
-                            ))}
+                            )})}
                         </tbody>
                     </table>
                 </div>
@@ -385,11 +407,11 @@ function AdminPanel() {
                 <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-3">
                     <div className="bg-white rounded-xl shadow-xl w-full max-w-lg max-h-[85vh] flex flex-col overflow-hidden animate-[fadeIn_0.2s_ease-out]">
                         <div className="p-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
-                            <div><h3 className="font-bold text-sm text-raya-900">سجل: {mistakesModal.name}</h3><p className="text-[10px] font-bold text-slate-500 mt-1">{mistakesModal.brand} | النتيجة: {mistakesModal.score}/{mistakesModal.maxScore||6}</p></div>
+                            <div><h3 className="font-bold text-sm text-raya-900">سجل: {mistakesModal.name}</h3><p className="text-[10px] font-bold text-slate-500 mt-1">{mistakesModal.brand} | النتيجة: {mistakesModal.examData.score}/{mistakesModal.examData.maxScore||6}</p></div>
                             <button onClick={()=>setMistakesModal(null)} className="w-8 h-8 rounded-full bg-slate-200 text-slate-600 font-bold hover:bg-rose-500 hover:text-white transition-colors text-lg">&times;</button>
                         </div>
                         <div className="p-4 overflow-y-auto space-y-3 bg-slate-50/50 flex-grow">
-                            {mistakesModal.mistakes.map((m, i) => (
+                            {mistakesModal.examData.mistakes.map((m, i) => (
                                 <div key={i} className="bg-white p-3 rounded-lg border border-slate-200 shadow-sm relative overflow-hidden">
                                     <div className="absolute right-0 top-0 bottom-0 w-1 bg-rose-400"></div>
                                     <div className="mb-2"><span className="text-[9px] bg-slate-100 text-slate-500 px-1.5 py-0.5 rounded font-bold">{m.category||'عام'}</span></div>
@@ -409,11 +431,11 @@ function AdminPanel() {
                 <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-3">
                     <div className="bg-white rounded-xl shadow-xl w-full max-w-lg max-h-[85vh] flex flex-col overflow-hidden animate-[fadeIn_0.2s_ease-out]">
                         <div className="p-4 border-b border-slate-100 flex justify-between items-center bg-amber-50">
-                            <div><h3 className="font-bold text-sm text-amber-900">مواقف بيعية: {answersModal.name}</h3><p className="text-[10px] font-bold text-slate-500 mt-1">{answersModal.brand} | تركيزه على منتجه: {answersModal.selfishnessScore||0}%</p></div>
+                            <div><h3 className="font-bold text-sm text-amber-900">مواقف بيعية: {answersModal.name}</h3><p className="text-[10px] font-bold text-slate-500 mt-1">{answersModal.brand} | تركيزه على منتجه: {answersModal.examData.selfishnessScore||0}%</p></div>
                             <button onClick={()=>setAnswersModal(null)} className="w-8 h-8 rounded-full bg-amber-200 text-amber-800 font-bold hover:bg-rose-500 hover:text-white transition-colors text-lg">&times;</button>
                         </div>
                         <div className="p-4 overflow-y-auto space-y-3 bg-slate-50 flex-grow">
-                            {answersModal.allAnswers?.map((ans, i) => (
+                            {answersModal.examData.allAnswers?.map((ans, i) => (
                                 <div key={i} className="bg-white p-4 rounded-lg border border-amber-100 shadow-sm relative overflow-hidden">
                                     <div className="absolute right-0 top-0 bottom-0 w-1 bg-amber-400"></div>
                                     <div className="mb-2"><span className="text-[9px] bg-amber-50 text-amber-700 px-1.5 py-0.5 rounded border border-amber-100 font-bold">{ans.category||'موقف بيعي'}</span></div>
@@ -436,8 +458,16 @@ function UserDashboard({ user, dbUser, setDbUser, onStartExam }) {
     const [settings, setSettings] = useState({examType:'closed',offers:[]}); const [board, setBoard] = useState([]);
     useEffect(() => {
         db.collection('settings').doc('main').onSnapshot(d => d.exists && setSettings(d.data()));
-        db.collection('users').where('hasExamined','==',true).onSnapshot(s => {
-            const sortedData = s.docs.map(d=>d.data()).sort((a,b)=> b.score - a.score || a.timeTaken - b.timeTaken);
+        db.collection('users').onSnapshot(s => {
+            const allUsers = s.docs.map(d=>d.data());
+            const sortedData = allUsers
+                .map(u => {
+                    const oData = u.offersResult || (u.hasExamined && u.lastExamType !== 'softSkills' ? u : null);
+                    return { ...u, _oData: oData };
+                })
+                .filter(u => u._oData && u._oData.hasExamined)
+                .sort((a,b) => b._oData.score - a._oData.score || a._oData.timeTaken - b._oData.timeTaken)
+                .map(u => ({ ...u, score: u._oData.score, timeTaken: u._oData.timeTaken, maxScore: u._oData.maxScore })); 
             setBoard(sortedData);
         });
     }, []);
@@ -447,9 +477,16 @@ function UserDashboard({ user, dbUser, setDbUser, onStartExam }) {
     const isSoftSkillsMode = settings.examType === 'softSkills';
     const examLabel = settings.examType === 'offers' ? 'بدء تقييم العروض' : settings.examType === 'softSkills' ? 'بدء تقييم المهارات البيعية' : 'التقييم مغلق';
 
+    let myExamData = { hasExamined: false };
+    if (settings.examType === 'softSkills') {
+        myExamData = dbUser.softSkillsResult || (dbUser.hasExamined && dbUser.lastExamType === 'softSkills' ? dbUser : {hasExamined: false});
+    } else if (settings.examType === 'offers') {
+        myExamData = dbUser.offersResult || (dbUser.hasExamined && dbUser.lastExamType !== 'softSkills' ? dbUser : {hasExamined: false});
+    }
+
     return (
         <div className="max-w-4xl mx-auto space-y-6 fade-in">
-            <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-5 relative overflow-hidden">
+            <div className="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-5 relative overflow-hidden">
                 <div className="text-center sm:text-right flex-grow z-10">
                     <h2 className="text-xl md:text-2xl font-black text-raya-800 mb-2">مرحباً، {dbUser.name}</h2>
                     <span className="inline-flex items-center gap-1.5 bg-slate-50 text-slate-700 border border-slate-200 px-3 py-1 rounded-lg text-sm font-bold">البراند: <span className="text-raya-600">{dbUser.brand}</span></span>
@@ -481,9 +518,9 @@ function UserDashboard({ user, dbUser, setDbUser, onStartExam }) {
                     )) : <div className="bg-slate-50 p-6 rounded-xl border border-dashed border-slate-300 text-slate-400 font-bold text-sm">لا توجد تحديثات حالياً.</div>}
                 </div>
                 
-                {dbUser.hasExamined ? (
+                {myExamData.hasExamined ? (
                     <div className="p-4 bg-emerald-50 text-emerald-700 rounded-xl font-bold text-sm md:text-base border border-emerald-200 shadow-inner flex items-center justify-center gap-2">
-                        {dbUser.lastExamType === 'softSkills' ? '✅ تم استلام إجاباتك ومواقفك بنجاح.' : '✅ تم اجتياز التقييم بنجاح.'}
+                        {isSoftSkillsMode ? '✅ تم استلام إجاباتك ومواقفك بنجاح.' : '✅ تم اجتياز التقييم بنجاح.'}
                     </div>
                 ) : (
                     <div className="space-y-3">
@@ -615,9 +652,18 @@ function ExamRoom({ user, onFinish }) {
             const finalTime = 300 - timeRef.current;
             const avgSelfishness = answeredQs > 0 ? Math.round(totalSelfishness / answeredQs) : 0;
 
-            const payload = JSON.parse(JSON.stringify({ hasExamined: true, score: s, maxScore: maxScore, timeTaken: finalTime, mistakes: m, allAnswers: allAns, lastExamType: examTypeState, selfishnessScore: avgSelfishness }));
+            const resultObj = { hasExamined: true, score: s, maxScore: maxScore, timeTaken: finalTime };
+            let updatedFields = { lastExamType: examTypeState };
+            
+            if (examTypeState === 'softSkills') {
+                updatedFields.softSkillsResult = { ...resultObj, allAnswers: allAns, selfishnessScore: avgSelfishness };
+            } else {
+                updatedFields.offersResult = { ...resultObj, mistakes: m };
+            }
+
+            const payload = JSON.parse(JSON.stringify({ hasExamined: true, score: s, maxScore: maxScore, timeTaken: finalTime, mistakes: m, allAnswers: allAns, lastExamType: examTypeState, selfishnessScore: avgSelfishness, ...updatedFields }));
             await db.collection('users').doc(user.email).update(payload); 
-            onFinish(s,m,finalTime,maxScore, examTypeState, allAns, avgSelfishness);
+            onFinish(s,m,finalTime,maxScore, examTypeState, allAns, avgSelfishness, updatedFields);
         } catch(error) { alert("حدث خطأ: " + error.message); setIsSubmitting(false); }
     };
     
